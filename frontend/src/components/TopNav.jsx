@@ -1,6 +1,6 @@
 import { useBetSlip } from '../store/betSlip'
 
-const NAV_LINKS = ['Home', 'Live', 'Sports', 'Casino', 'Promos', 'Futures']
+const NAV_LINKS = ['Home', 'Sports', 'TCG', 'Casino', 'Promos']
 
 export default function TopNav() {
   const isOpen = useBetSlip((state) => state.isOpen)
