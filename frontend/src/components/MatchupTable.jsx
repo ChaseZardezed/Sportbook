@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query'
-import { fetchMatches } from '../api/client'
+import { useMatches } from '../hooks/useMatches'
 import { findMarket, formatOdds } from '../lib/odds'
 import { useBetSlip } from '../store/betSlip'
+import { useSportFilter } from '../store/sportFilter'
 
 function OddsButton({ id, label, odds, onClick }) {
   const isSelected = useBetSlip((state) => Boolean(state.selections[id]))
@@ -114,13 +114,15 @@ function MatchRow({ match }) {
 }
 
 export default function MatchupTable() {
-  const { data: matches, isLoading, error } = useQuery({
-    queryKey: ['matches'],
-    queryFn: fetchMatches,
-  })
+  const { data: matches, isLoading, error } = useMatches()
+  const selectedSport = useSportFilter((state) => state.selectedSport)
 
   if (isLoading) return <p className="p-4 text-gray-400">Loading matches…</p>
   if (error) return <p className="p-4 text-red-400">Failed to load matches: {error.message}</p>
+
+  const visibleMatches = selectedSport
+    ? matches.filter((match) => match.sport === selectedSport)
+    : matches
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-800 bg-gray-950">
@@ -130,9 +132,11 @@ export default function MatchupTable() {
         <span>Spread</span>
         <span>Total</span>
       </div>
-      {matches.map((match) => (
-        <MatchRow key={match.id} match={match} />
-      ))}
+      {visibleMatches.length === 0 ? (
+        <p className="p-4 text-sm text-gray-500">No matches for this sport yet.</p>
+      ) : (
+        visibleMatches.map((match) => <MatchRow key={match.id} match={match} />)
+      )}
     </div>
   )
 }
