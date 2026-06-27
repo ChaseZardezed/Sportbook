@@ -46,9 +46,14 @@ function MatchRow({ match }) {
         <div className="flex items-center gap-2">
           <span className="font-semibold text-white">{match.away_team}</span>
           {match.is_live && (
-            <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
-              Live
-            </span>
+            <>
+              <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
+                Live
+              </span>
+              <span className="rounded border border-purple-500 bg-purple-600/20 px-1.5 py-0.5 text-xs font-bold text-white">
+                {match.away_score} - {match.home_score}
+              </span>
+            </>
           )}
         </div>
         <span className="font-semibold text-white">{match.home_team}</span>
