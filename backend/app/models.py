@@ -102,5 +102,6 @@ class Card(Base):
     grade = Column(Integer, nullable=False)  # PSA grade
     rarity = Column(String, nullable=False)  # must match a key in pack_tier.rarity_odds
     market_value = Column(Float, nullable=False)
+    image_url = Column(String, nullable=True)  # e.g. "/cards/piplup.jpg"
 
     pack_tier = relationship("PackTier", back_populates="cards")

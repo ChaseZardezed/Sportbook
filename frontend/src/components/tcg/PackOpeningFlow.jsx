@@ -6,7 +6,7 @@ import { useTcgCollection } from '../../store/tcgCollection'
 import BoltIcon from '../icons/BoltIcon'
 
 const BUILD_UP_MS = 1800
-const FLIP_MS = 700
+const FLIP_MS = 1100
 
 export default function PackOpeningFlow({ tier, onDone, onBack }) {
   const [stage, setStage] = useState('ready') // ready | revealing | waiting | result
@@ -97,7 +97,7 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
       <div className="relative" style={{ perspective: '1200px' }}>
         <div
           onClick={handleFlip}
-          className={`relative h-72 w-52 transition-transform duration-700 ease-out [transform-style:preserve-3d] ${
+          className={`relative h-72 w-52 transition-transform duration-1000 ease-out [transform-style:preserve-3d] ${
             flipped ? '[transform:rotateY(180deg)]' : ''
           } ${stage === 'waiting' ? 'cursor-pointer' : ''}`}
         >
@@ -137,22 +137,28 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
           {/* Back face: the card, pre-rotated so it lands right-side-up after the flip */}
           {card && (
             <div
-              className={`absolute inset-0 flex flex-col overflow-hidden rounded-lg border-2 bg-gray-200 text-gray-900 [backface-visibility:hidden] [transform:rotateY(180deg)] ${colors.border}`}
+              className={`absolute inset-0 overflow-hidden rounded-lg border-2 bg-gray-200 text-gray-900 [backface-visibility:hidden] [transform:rotateY(180deg)] ${colors.border}`}
               style={{ boxShadow: `0 0 25px 6px ${colors.glow}` }}
             >
-              <div className="flex items-center justify-between bg-blue-700 px-2 py-1 text-[10px] font-bold text-white">
-                <span>PSA</span>
-                <span className="rounded bg-blue-900 px-1">{card.rarity.toUpperCase()}</span>
-              </div>
-              <div className="flex flex-1 flex-col items-center justify-center">
-                <p className="text-lg font-bold text-gray-700">{card.name}</p>
-                <p className="text-xs text-gray-500">{card.card_number}</p>
-              </div>
-              <div className="flex items-center justify-between bg-blue-700 px-2 py-1 text-xs font-bold text-white">
-                <span>GRADE</span>
-                <span>{card.grade}</span>
-              </div>
-              <div className="bg-gray-100 px-2 py-1 text-xs text-gray-700">{card.set_name}</div>
+              {card.image_url ? (
+                <img src={card.image_url} alt={card.name} className="h-full w-full object-cover" />
+              ) : (
+                <div className="flex h-full flex-col">
+                  <div className="flex items-center justify-between bg-blue-700 px-2 py-1 text-[10px] font-bold text-white">
+                    <span>PSA</span>
+                    <span className="rounded bg-blue-900 px-1">{card.rarity.toUpperCase()}</span>
+                  </div>
+                  <div className="flex flex-1 flex-col items-center justify-center">
+                    <p className="text-lg font-bold text-gray-700">{card.name}</p>
+                    <p className="text-xs text-gray-500">{card.card_number}</p>
+                  </div>
+                  <div className="flex items-center justify-between bg-blue-700 px-2 py-1 text-xs font-bold text-white">
+                    <span>GRADE</span>
+                    <span>{card.grade}</span>
+                  </div>
+                  <div className="bg-gray-100 px-2 py-1 text-xs text-gray-700">{card.set_name}</div>
+                </div>
+              )}
             </div>
           )}
         </div>
