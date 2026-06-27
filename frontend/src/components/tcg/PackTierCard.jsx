@@ -19,7 +19,7 @@ export default function PackTierCard({ tier, onBuy, disabled }) {
   const style = TIER_STYLES[tier.name] ?? TIER_STYLES['Bronze Slab']
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-gray-800 bg-gray-950">
+    <div className="flex flex-col overflow-hidden rounded-lg border border-gray-800 bg-gray-950 transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
       <div className={`bg-gradient-to-br ${style.header} px-4 py-4`}>
         <p className={`flex items-center gap-1 text-sm font-bold ${style.accent}`}>
           {style.icon} {tier.name}
@@ -52,7 +52,7 @@ export default function PackTierCard({ tier, onBuy, disabled }) {
           type="button"
           disabled={disabled}
           onClick={onBuy}
-          className="w-full rounded bg-green-600 py-2 text-sm font-bold text-white hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded bg-green-600 py-2 text-sm font-bold text-white transition-colors hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Buy Pack — ${tier.price.toFixed(0)}
         </button>
