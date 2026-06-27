@@ -1,45 +1,53 @@
+import { Link, useLocation } from 'react-router-dom'
 import { useBetSlip } from '../store/betSlip'
 import { useBalance } from '../store/balance'
+import BoltIcon from './icons/BoltIcon'
 
-const NAV_LINKS = ['Home', 'Sports', 'TCG', 'Casino', 'Promos']
+const NAV_LINKS = [
+  { label: 'Home', path: '/' },
+  { label: 'Sports', path: '/' },
+  { label: 'TCG', path: '/tcg' },
+  { label: 'Casino', path: null },
+  { label: 'Promos', path: null },
+]
 
 export default function TopNav() {
   const isOpen = useBetSlip((state) => state.isOpen)
   const toggleOpen = useBetSlip((state) => state.toggleOpen)
   const selectionCount = useBetSlip((state) => Object.keys(state.selections).length)
   const balance = useBalance((state) => state.balance)
+  const location = useLocation()
 
   return (
     <header className="flex items-center justify-between border-b border-gray-800 bg-gray-950 px-6 py-3">
       <div className="flex items-center gap-8">
         <span className="flex items-center gap-1 text-lg font-bold">
-          <svg
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="h-5 w-5 text-purple-500"
-            aria-hidden="true"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M14.615 1.595a.75.75 0 01.359.852l-1.99 7.302h7.27a.75.75 0 01.548 1.262l-10.5 11.25a.75.75 0 01-1.272-.71l1.992-7.302H3.75a.75.75 0 01-.548-1.262l10.5-11.25a.75.75 0 01.913-.143z"
-            />
-          </svg>
+          <BoltIcon className="h-5 w-5 text-purple-500" />
           <span className="text-white">Strike</span>
           <span className="text-purple-500">Bets</span>
         </span>
         <nav className="flex items-center gap-6">
-          {NAV_LINKS.map((link, index) => (
-            <button
-              key={link}
-              type="button"
-              className={`text-sm font-medium ${
-                index === 0 ? 'text-white' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              {link}
-            </button>
-          ))}
+          {NAV_LINKS.map((link) =>
+            link.path ? (
+              <Link
+                key={link.label}
+                to={link.path}
+                className={`text-sm font-medium ${
+                  location.pathname === link.path ? 'text-white' : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <button
+                key={link.label}
+                type="button"
+                className="text-sm font-medium text-gray-400 hover:text-white"
+              >
+                {link.label}
+              </button>
+            ),
+          )}
         </nav>
       </div>
 

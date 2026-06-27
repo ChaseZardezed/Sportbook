@@ -27,3 +27,29 @@ class MatchOut(BaseModel):
     clock: str | None
     periods: dict | None
     markets: list[MarketOut]
+
+
+class CardOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    set_name: str
+    card_number: str
+    grade: int
+    rarity: str
+    market_value: float
+    image_url: str | None
+
+
+class PackTierOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    category: str
+    name: str
+    price: float
+    description: str
+    top_pull_text: str
+    rarity_odds: dict
+    cards: list[CardOut]
