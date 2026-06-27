@@ -33,7 +33,7 @@ export default function HomePage() {
         {isChatOpen && <GameChat />}
         {isStatsOpen && <StatsPanel />}
         <div>
-          <h1 className="mb-4 text-xl font-bold text-white">{selectedSport ?? 'All Sports'}</h1>
+          <h1 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">{selectedSport ?? 'All Sports'}</h1>
           <MatchupTable />
         </div>
         {isBetSlipOpen && (

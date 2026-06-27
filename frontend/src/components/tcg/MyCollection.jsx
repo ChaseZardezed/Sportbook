@@ -18,8 +18,8 @@ function CollectionCard({ card }) {
   const wentUp = card.currentValue > card.pulledValue
 
   return (
-    <div className="w-44 rounded-lg border border-gray-800 bg-gray-950 p-3">
-      <div className="mb-2 flex aspect-[5/7] flex-col overflow-hidden rounded border-2 border-blue-500 bg-gray-200 text-gray-900">
+    <div className="w-44 rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-950">
+      <div className="mb-2 flex aspect-[5/7] flex-col overflow-hidden rounded border-2 border-gray-400 bg-gray-200 text-gray-900">
         {card.imageUrl ? (
           <img src={card.imageUrl} alt={card.name} className="h-full w-full object-contain" />
         ) : (
@@ -41,7 +41,7 @@ function CollectionCard({ card }) {
       <p className="text-xs text-gray-500">
         {card.rarity} • {card.category}
       </p>
-      <p className="font-bold text-white">{card.name}</p>
+      <p className="font-bold text-gray-900 dark:text-white">{card.name}</p>
       <p className="text-xs text-gray-500">
         PSA {card.grade} • {card.setName}
       </p>
@@ -60,7 +60,7 @@ function CollectionCard({ card }) {
         <button
           type="button"
           onClick={handleShip}
-          className="flex-1 rounded border border-gray-700 py-1 text-xs font-bold text-gray-300 hover:border-purple-500"
+          className="flex-1 rounded border border-gray-300 py-1 text-xs font-bold text-gray-600 hover:border-purple-500 dark:border-gray-700 dark:text-gray-300"
         >
           🚀 Ship
         </button>
@@ -79,22 +79,22 @@ export default function MyCollection({ category }) {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold text-white">
+      <h1 className="text-xl font-bold text-gray-900 dark:text-white">
         My Collection — {category === 'All' ? 'All Categories' : category} ({ownedCards.length})
       </h1>
 
-      <div className="flex gap-6 rounded-lg border border-gray-800 bg-gray-900 px-4 py-3">
+      <div className="flex gap-6 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
         <div>
           <p className="text-xs text-gray-500">Total Market Value</p>
           <p className="font-bold text-green-400">${totalValue.toFixed(0)}</p>
         </div>
         <div>
           <p className="text-xs text-gray-500">Cards Owned</p>
-          <p className="font-bold text-white">{ownedCards.length}</p>
+          <p className="font-bold text-gray-900 dark:text-white">{ownedCards.length}</p>
         </div>
         <div>
           <p className="text-xs text-gray-500">Avg Value</p>
-          <p className="font-bold text-white">${avgValue.toFixed(0)}</p>
+          <p className="font-bold text-gray-900 dark:text-white">${avgValue.toFixed(0)}</p>
         </div>
       </div>
 

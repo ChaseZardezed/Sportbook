@@ -186,8 +186,8 @@ function PlayerPropsSection({ match, select }) {
       <h2 className="mb-2 text-sm font-semibold uppercase text-gray-400">Player Props</h2>
       <div className="space-y-2">
         {props.map((market) => (
-          <div key={market.id} className="rounded border border-gray-800 bg-gray-900 p-3">
-            <p className="mb-2 text-sm font-semibold text-white">
+          <div key={market.id} className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
+            <p className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
               {market.data.player} — {market.data.prop} ({market.data.line})
             </p>
             <div className="grid grid-cols-2 gap-3">
@@ -248,7 +248,7 @@ export default function GamePage() {
     <div className={`grid gap-4 p-6 ${gridColsClass}`}>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-sm text-gray-400 hover:text-white">
+          <Link to="/" className="text-sm text-gray-400 hover:text-gray-900 dark:hover:text-white">
             ← Back to all games
           </Link>
           <button
@@ -259,8 +259,8 @@ export default function GamePage() {
             }
             className={`rounded border px-2 py-1.5 text-sm ${
               isChatOpen
-                ? 'border-purple-500 bg-purple-600/20 text-white'
-                : 'border-gray-700 text-gray-400 hover:border-purple-500 hover:text-white'
+                ? 'border-purple-500 bg-purple-600/20 text-gray-900 dark:text-white'
+                : 'border-gray-300 text-gray-400 hover:border-purple-500 hover:text-gray-900 dark:border-gray-700 dark:hover:text-white'
             }`}
           >
             💬 Chat
@@ -272,7 +272,7 @@ export default function GamePage() {
         <div className="flex items-start justify-between gap-6">
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-white">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                 {match.away_team} @ {match.home_team}
               </h1>
               {match.is_live && (

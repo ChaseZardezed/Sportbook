@@ -3,13 +3,13 @@ function PeriodRow({ team, values }) {
 
   return (
     <tr>
-      <td className="py-1 pr-3 text-left font-semibold text-white">{team}</td>
+      <td className="py-1 pr-3 text-left font-semibold text-gray-900 dark:text-white">{team}</td>
       {values.map((value, index) => (
-        <td key={index} className="px-2 py-1 text-center text-gray-300">
+        <td key={index} className="px-2 py-1 text-center text-gray-600 dark:text-gray-300">
           {value ?? '-'}
         </td>
       ))}
-      <td className="px-2 py-1 text-center font-bold text-white">{total}</td>
+      <td className="px-2 py-1 text-center font-bold text-gray-900 dark:text-white">{total}</td>
     </tr>
   )
 }
@@ -19,7 +19,7 @@ export default function Scoreboard({ match }) {
   if (!periods) return null
 
   return (
-    <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
+    <div className="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-950">
       <table className="text-sm">
         <thead>
           <tr className="text-xs uppercase text-gray-500">

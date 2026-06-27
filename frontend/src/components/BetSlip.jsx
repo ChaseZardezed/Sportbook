@@ -9,7 +9,7 @@ const QUICK_STAKES = [10, 25, 50, 100]
 
 function StakeInput({ value, onChange }) {
   return (
-    <div className="mt-2 flex items-center gap-1 rounded border border-gray-700 bg-gray-950 px-2 py-1">
+    <div className="mt-2 flex items-center gap-1 rounded border border-gray-300 bg-gray-50 px-2 py-1 dark:border-gray-700 dark:bg-gray-950">
       <span className="text-xs text-gray-500">$</span>
       <input
         type="number"
@@ -18,7 +18,7 @@ function StakeInput({ value, onChange }) {
         value={value || ''}
         onChange={(event) => onChange(Math.max(0, Number(event.target.value) || 0))}
         placeholder="Custom amount"
-        className="w-full bg-transparent text-sm text-white outline-none placeholder:text-gray-600"
+        className="w-full bg-transparent text-sm text-gray-900 outline-none placeholder:text-gray-600 dark:text-white"
       />
     </div>
   )
@@ -29,11 +29,11 @@ function LegHeader({ selection, onRemove }) {
     <div className="flex items-start justify-between">
       <div>
         <p className="text-xs text-gray-400">{selection.matchup}</p>
-        <p className="font-semibold text-white">
+        <p className="font-semibold text-gray-900 dark:text-white">
           {selection.label} ({formatOdds(selection.odds)})
         </p>
       </div>
-      <button type="button" onClick={onRemove} className="text-gray-500 hover:text-white">
+      <button type="button" onClick={onRemove} className="text-gray-500 hover:text-gray-900 dark:hover:text-white">
         ✕
       </button>
     </div>
@@ -45,7 +45,7 @@ function StraightBetRow({ selection }) {
   const setStake = useBetSlip((state) => state.setStake)
 
   return (
-    <div className="rounded border border-gray-800 bg-gray-900 p-3">
+    <div className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
       <LegHeader selection={selection} onRemove={() => removeSelection(selection.id)} />
       <div className="mt-2 flex gap-2">
         {QUICK_STAKES.map((amount) => (
@@ -55,8 +55,8 @@ function StraightBetRow({ selection }) {
             onClick={() => setStake(selection.id, amount)}
             className={`flex-1 rounded border px-2 py-1 text-xs font-medium ${
               selection.stake === amount
-                ? 'border-purple-500 bg-purple-600/20 text-white'
-                : 'border-gray-700 text-gray-300 hover:border-purple-500'
+                ? 'border-purple-500 bg-purple-600/20 text-gray-900 dark:text-white'
+                : 'border-gray-300 text-gray-600 hover:border-purple-500 dark:border-gray-700 dark:text-gray-300'
             }`}
           >
             ${amount}
@@ -72,7 +72,7 @@ function ParlayLegRow({ selection }) {
   const removeSelection = useBetSlip((state) => state.removeSelection)
 
   return (
-    <div className="rounded border border-gray-800 bg-gray-900 p-3">
+    <div className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
       <LegHeader selection={selection} onRemove={() => removeSelection(selection.id)} />
     </div>
   )
@@ -80,7 +80,7 @@ function ParlayLegRow({ selection }) {
 
 function PlacedBetRow({ bet }) {
   return (
-    <div className="rounded border border-gray-800 bg-gray-900 p-3">
+    <div className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
       <div className="flex items-center justify-between">
         <span className="rounded bg-purple-600/20 px-1.5 py-0.5 text-[10px] font-bold uppercase text-purple-400">
           {bet.type}
@@ -96,11 +96,11 @@ function PlacedBetRow({ bet }) {
           </p>
         ))}
       </div>
-      <div className="mt-2 flex items-center justify-between border-t border-gray-800 pt-2 text-sm">
+      <div className="mt-2 flex items-center justify-between border-t border-gray-200 dark:border-gray-800 pt-2 text-sm">
         <span className="text-gray-400">
           ${bet.stake.toFixed(2)} @ {formatOdds(bet.odds)}
         </span>
-        <span className="font-semibold text-white">Pays ${bet.payout.toFixed(2)}</span>
+        <span className="font-semibold text-gray-900 dark:text-white">Pays ${bet.payout.toFixed(2)}</span>
       </div>
       <button
         type="button"
@@ -165,13 +165,13 @@ export default function BetSlip() {
   }
 
   return (
-    <div className="flex flex-col rounded-lg border border-gray-800 bg-gray-950">
-      <div className="flex border-b border-gray-800">
+    <div className="flex flex-col rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
+      <div className="flex border-b border-gray-200 dark:border-gray-800">
         <button
           type="button"
           onClick={() => setTab('slip')}
           className={`flex-1 px-4 py-3 text-sm font-bold ${
-            tab === 'slip' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-500 hover:text-white'
+            tab === 'slip' ? 'border-b-2 border-purple-500 text-gray-900 dark:text-white' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
           Bet Slip {selections.length > 0 && `(${selections.length})`}
@@ -180,7 +180,7 @@ export default function BetSlip() {
           type="button"
           onClick={() => setTab('bets')}
           className={`flex-1 px-4 py-3 text-sm font-bold ${
-            tab === 'bets' ? 'border-b-2 border-purple-500 text-white' : 'text-gray-500 hover:text-white'
+            tab === 'bets' ? 'border-b-2 border-purple-500 text-gray-900 dark:text-white' : 'text-gray-500 hover:text-gray-900 dark:hover:text-white'
           }`}
         >
           My Bets {placedBets.length > 0 && `(${placedBets.length})`}
@@ -191,7 +191,7 @@ export default function BetSlip() {
         <>
           <div className="flex items-center justify-end px-4 py-2">
             {selections.length > 0 && (
-              <button type="button" onClick={clear} className="text-xs text-gray-400 hover:text-white">
+              <button type="button" onClick={clear} className="text-xs text-gray-400 hover:text-gray-900 dark:hover:text-white">
                 Clear All
               </button>
             )}
@@ -210,10 +210,10 @@ export default function BetSlip() {
           </div>
 
           {isParlay && (
-            <div className="border-t border-gray-800 p-3">
+            <div className="border-t border-gray-200 dark:border-gray-800 p-3">
               <div className="mb-2 flex items-center justify-between text-sm">
                 <span className="text-gray-400">Combined Odds</span>
-                <span className="font-semibold text-white">{formatOdds(parlayAmericanOdds)}</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{formatOdds(parlayAmericanOdds)}</span>
               </div>
               <div className="flex gap-2">
                 {QUICK_STAKES.map((amount) => (
@@ -223,8 +223,8 @@ export default function BetSlip() {
                     onClick={() => setParlayStake(amount)}
                     className={`flex-1 rounded border px-2 py-1 text-xs font-medium ${
                       parlayStake === amount
-                        ? 'border-purple-500 bg-purple-600/20 text-white'
-                        : 'border-gray-700 text-gray-300 hover:border-purple-500'
+                        ? 'border-purple-500 bg-purple-600/20 text-gray-900 dark:text-white'
+                        : 'border-gray-300 text-gray-600 hover:border-purple-500 dark:border-gray-700 dark:text-gray-300'
                     }`}
                   >
                     ${amount}
@@ -234,13 +234,13 @@ export default function BetSlip() {
               <StakeInput value={parlayStake} onChange={setParlayStake} />
               <div className="mt-2 flex items-center justify-between text-sm">
                 <span className="text-gray-400">Payout</span>
-                <span className="font-semibold text-white">${parlayPayout.toFixed(2)}</span>
+                <span className="font-semibold text-gray-900 dark:text-white">${parlayPayout.toFixed(2)}</span>
               </div>
             </div>
           )}
 
           {selections.length > 0 && (
-            <div className="border-t border-gray-800 p-3">
+            <div className="border-t border-gray-200 dark:border-gray-800 p-3">
               {stakeToPlace > balance && (
                 <p className="mb-2 text-center text-xs text-red-400">Insufficient balance</p>
               )}

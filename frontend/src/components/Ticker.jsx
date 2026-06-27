@@ -10,11 +10,11 @@ function TickerItem({ match }) {
           Live
         </span>
       )}
-      <span className="text-gray-300">
+      <span className="text-gray-600 dark:text-gray-300">
         {match.away_team} vs {match.home_team}
       </span>
       {match.is_live && (
-        <span className="font-semibold text-white">
+        <span className="font-semibold text-gray-900 dark:text-white">
           {match.away_score} - {match.home_score}
         </span>
       )}
@@ -45,7 +45,7 @@ export default function Ticker() {
   if (featuredMatches.length === 0) return null
 
   return (
-    <div className="overflow-hidden border-b border-gray-800 bg-gray-950 py-2">
+    <div className="overflow-hidden border-b border-gray-200 bg-white py-2 dark:border-gray-800 dark:bg-gray-950">
       <div className="flex w-max animate-ticker">
         <TickerLap matches={featuredMatches} />
         <TickerLap matches={featuredMatches} />

@@ -7,7 +7,7 @@ import TcgPage from './pages/TcgPage'
 function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-gray-950">
+      <div className="min-h-screen bg-white dark:bg-gray-950">
         <TopNav />
         <Routes>
           <Route path="/" element={<HomePage />} />
