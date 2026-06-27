@@ -41,6 +41,8 @@ class Match(Base):
     home_score = Column(Integer, default=0)
     away_score = Column(Integer, default=0)
     clock = Column(String, nullable=True)  # e.g. "Q2 2:12", "Bot 7th", "67'"
+    # Period-by-period score, e.g. {"labels": ["Q1","Q2"], "away": [7,3], "home": [7,7]}
+    periods = Column(JSON, nullable=True)
 
     markets = relationship("Market", back_populates="match")
 

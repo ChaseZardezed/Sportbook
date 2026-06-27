@@ -16,6 +16,11 @@ MATCHES = [
         "home_score": 14,
         "away_score": 10,
         "clock": "Q2 2:12",
+        "periods": {
+            "labels": ["Q1", "Q2", "Q3", "Q4"],
+            "away": [7, 3, None, None],
+            "home": [7, 7, None, None],
+        },
         "markets": [
             ("moneyline", {"home": -145, "away": 125}),
             ("spread", {"home": {"line": -2.5, "odds": -110}, "away": {"line": 2.5, "odds": -110}}),
@@ -80,6 +85,11 @@ MATCHES = [
         "home_score": 58,
         "away_score": 61,
         "clock": "Q3 4:47",
+        "periods": {
+            "labels": ["Q1", "Q2", "Q3", "Q4"],
+            "away": [30, 22, 9, None],
+            "home": [28, 20, 10, None],
+        },
         "markets": [
             ("moneyline", {"home": -130, "away": 110}),
             ("spread", {"home": {"line": -2.5, "odds": -110}, "away": {"line": 2.5, "odds": -110}}),
@@ -119,6 +129,11 @@ MATCHES = [
         "home_score": 3,
         "away_score": 4,
         "clock": "Bot 7th",
+        "periods": {
+            "labels": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+            "away": [1, 0, 0, 2, 0, 1, 0, None, None],
+            "home": [0, 1, 0, 0, 2, 0, None, None, None],
+        },
         "markets": [
             ("moneyline", {"home": 105, "away": -125}),
             ("spread", {"home": {"line": 1.5, "odds": -130}, "away": {"line": -1.5, "odds": 110}}),
@@ -146,6 +161,11 @@ MATCHES = [
         "home_score": 1,
         "away_score": 2,
         "clock": "67'",
+        "periods": {
+            "labels": ["1st Half", "2nd Half"],
+            "away": [1, 1],
+            "home": [0, 1],
+        },
         "markets": [
             ("moneyline", {"home": 220, "away": -120}),
             ("spread", {"home": {"line": 0.5, "odds": -105}, "away": {"line": -0.5, "odds": -115}}),
@@ -162,6 +182,11 @@ MATCHES = [
         "home_score": 1,
         "away_score": 1,
         "clock": "Set 2 4-4",
+        "periods": {
+            "labels": ["Set 1", "Set 2", "Set 3"],
+            "away": [4, 4, None],
+            "home": [6, 4, None],
+        },
         "markets": [
             ("moneyline", {"home": -135, "away": 115}),
             ("spread", {"home": {"line": -1.5, "odds": 145}, "away": {"line": 1.5, "odds": -175}}),

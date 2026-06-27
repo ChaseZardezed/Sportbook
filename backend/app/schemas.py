@@ -25,4 +25,5 @@ class MatchOut(BaseModel):
     home_score: int
     away_score: int
     clock: str | None
+    periods: dict | None
     markets: list[MarketOut]

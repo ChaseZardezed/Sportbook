@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useMatches } from '../hooks/useMatches'
 import { useBetSlip } from '../store/betSlip'
 import OddsButton from '../components/OddsButton'
+import Scoreboard from '../components/Scoreboard'
 import { formatStartTime } from '../lib/time'
 
 function GameLinesSection({ match, select }) {
@@ -236,26 +237,29 @@ export default function GamePage() {
         ← Back to all games
       </Link>
 
-      <div>
-        <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-white">
-            {match.away_team} @ {match.home_team}
-          </h1>
-          {match.is_live && (
-            <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
-              Live
-            </span>
-          )}
+      <div className="flex items-start justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-white">
+              {match.away_team} @ {match.home_team}
+            </h1>
+            {match.is_live && (
+              <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
+                Live
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-gray-500">
+            {match.is_live ? (
+              <>
+                {match.clock} · {match.away_score} - {match.home_score}
+              </>
+            ) : (
+              formatStartTime(match.start_time)
+            )}
+          </p>
         </div>
-        <p className="text-sm text-gray-500">
-          {match.is_live ? (
-            <>
-              {match.clock} · {match.away_score} - {match.home_score}
-            </>
-          ) : (
-            formatStartTime(match.start_time)
-          )}
-        </p>
+        <Scoreboard match={match} />
       </div>
 
       <GameLinesSection match={match} select={select} />
