@@ -3,6 +3,7 @@ import BetSlip from './components/BetSlip'
 import GameChat from './components/GameChat'
 import TopNav from './components/TopNav'
 import Ticker from './components/Ticker'
+import PromoBanner from './components/PromoBanner'
 import SportTabs from './components/SportTabs'
 import { useSportFilter } from './store/sportFilter'
 import { useBetSlip } from './store/betSlip'
@@ -22,6 +23,7 @@ function App() {
     <div className="min-h-screen bg-gray-950">
       <TopNav />
       <Ticker />
+      <PromoBanner />
       <div className="px-6 pt-4">
         <SportTabs />
       </div>
