@@ -143,9 +143,12 @@ export default function MatchupTable() {
   if (isLoading) return <p className="p-4 text-gray-400">Loading matches…</p>
   if (error) return <p className="p-4 text-red-400">Failed to load matches: {error.message}</p>
 
-  const visibleMatches = selectedSport
+  const filteredMatches = selectedSport
     ? matches.filter((match) => match.sport === selectedSport)
     : matches
+  const visibleMatches = [...filteredMatches].sort(
+    (a, b) => Number(b.is_live) - Number(a.is_live),
+  )
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-800 bg-gray-950">
