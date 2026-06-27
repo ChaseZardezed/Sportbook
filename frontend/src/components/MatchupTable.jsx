@@ -1,5 +1,6 @@
 import { useMatches } from '../hooks/useMatches'
 import { findMarket, formatOdds } from '../lib/odds'
+import { formatStartTime } from '../lib/time'
 import { useBetSlip } from '../store/betSlip'
 import { useSportFilter } from '../store/sportFilter'
 import { useGameChat } from '../store/gameChat'
@@ -57,6 +58,9 @@ function MatchRow({ match }) {
           )}
         </div>
         <span className="font-semibold text-white">{match.home_team}</span>
+        <p className="mt-0.5 text-xs text-gray-500">
+          {match.is_live ? match.clock : formatStartTime(match.start_time)}
+        </p>
       </div>
 
       <div className="flex flex-col gap-1">

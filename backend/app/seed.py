@@ -15,6 +15,7 @@ MATCHES = [
         "is_featured": True,
         "home_score": 14,
         "away_score": 10,
+        "clock": "Q2 2:12",
         "markets": [
             ("moneyline", {"home": -145, "away": 125}),
             ("spread", {"home": {"line": -2.5, "odds": -110}, "away": {"line": 2.5, "odds": -110}}),
@@ -62,6 +63,7 @@ MATCHES = [
         "is_featured": True,
         "home_score": 58,
         "away_score": 61,
+        "clock": "Q3 4:47",
         "markets": [
             ("moneyline", {"home": -130, "away": 110}),
             ("spread", {"home": {"line": -2.5, "odds": -110}, "away": {"line": 2.5, "odds": -110}}),
@@ -92,6 +94,7 @@ MATCHES = [
         "is_live": True,
         "home_score": 3,
         "away_score": 4,
+        "clock": "Bot 7th",
         "markets": [
             ("moneyline", {"home": 105, "away": -125}),
             ("spread", {"home": {"line": 1.5, "odds": -130}, "away": {"line": -1.5, "odds": 110}}),
@@ -108,6 +111,7 @@ MATCHES = [
         "is_featured": True,
         "home_score": 1,
         "away_score": 2,
+        "clock": "67'",
         "markets": [
             ("moneyline", {"home": 220, "away": -120}),
             ("spread", {"home": {"line": 0.5, "odds": -105}, "away": {"line": -0.5, "odds": -115}}),
@@ -123,6 +127,7 @@ MATCHES = [
         "is_live": True,
         "home_score": 1,
         "away_score": 1,
+        "clock": "Set 2 4-4",
         "markets": [
             ("moneyline", {"home": -135, "away": 115}),
             ("spread", {"home": {"line": -1.5, "odds": 145}, "away": {"line": 1.5, "odds": -175}}),

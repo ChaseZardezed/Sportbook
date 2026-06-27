@@ -40,6 +40,7 @@ class Match(Base):
     is_featured = Column(Boolean, default=False)
     home_score = Column(Integer, default=0)
     away_score = Column(Integer, default=0)
+    clock = Column(String, nullable=True)  # e.g. "Q2 2:12", "Bot 7th", "67'"
 
     markets = relationship("Market", back_populates="match")
 

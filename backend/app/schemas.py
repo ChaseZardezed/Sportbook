@@ -24,4 +24,5 @@ class MatchOut(BaseModel):
     is_featured: bool
     home_score: int
     away_score: int
+    clock: str | None
     markets: list[MarketOut]
