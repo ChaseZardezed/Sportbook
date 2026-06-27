@@ -42,7 +42,7 @@ function MatchRow({ match }) {
     })
 
   return (
-    <div className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] items-center gap-3 border-b border-gray-800 px-4 py-3">
+    <div className="grid grid-cols-[2fr_1fr_1fr_1fr_40px] items-center gap-3 border-b border-gray-800 px-4 py-3">
       <div>
         <div className="flex items-center gap-2">
           <span className="font-semibold text-white">{match.away_team}</span>
@@ -57,7 +57,7 @@ function MatchRow({ match }) {
             </>
           )}
         </div>
-        <span className="font-semibold text-white">{match.home_team}</span>
+        <span className="font-semibold text-white">@ {match.home_team}</span>
         <p className="mt-0.5 text-xs text-gray-500">
           {match.is_live ? match.clock : formatStartTime(match.start_time)}
         </p>
@@ -156,11 +156,11 @@ export default function MatchupTable() {
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-800 bg-gray-950">
-      <div className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-3 border-b border-gray-800 bg-gray-900 px-4 py-2 text-xs font-semibold uppercase text-gray-400">
+      <div className="grid grid-cols-[2fr_1fr_1fr_1fr_40px] gap-3 border-b border-gray-800 bg-gray-900 px-4 py-2 text-xs font-semibold uppercase text-gray-400">
         <span>Matchup</span>
-        <span>Moneyline</span>
-        <span>Spread</span>
-        <span>Total</span>
+        <span className="text-center">Moneyline</span>
+        <span className="text-center">Spread</span>
+        <span className="text-center">Total</span>
         <span></span>
       </div>
       {visibleMatches.length === 0 ? (
