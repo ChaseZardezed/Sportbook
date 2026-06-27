@@ -1,4 +1,5 @@
 import { useBetSlip } from '../store/betSlip'
+import { useBalance } from '../store/balance'
 
 const NAV_LINKS = ['Home', 'Sports', 'TCG', 'Casino', 'Promos']
 
@@ -6,6 +7,7 @@ export default function TopNav() {
   const isOpen = useBetSlip((state) => state.isOpen)
   const toggleOpen = useBetSlip((state) => state.toggleOpen)
   const selectionCount = useBetSlip((state) => Object.keys(state.selections).length)
+  const balance = useBalance((state) => state.balance)
 
   return (
     <header className="flex items-center justify-between border-b border-gray-800 bg-gray-950 px-6 py-3">
@@ -44,7 +46,7 @@ export default function TopNav() {
       <div className="flex items-center gap-4">
         <div className="text-right">
           <p className="text-[10px] uppercase text-gray-500">Balance</p>
-          <p className="text-sm font-semibold text-white">$0.00</p>
+          <p className="text-sm font-semibold text-white">${balance.toFixed(2)}</p>
         </div>
         <button
           type="button"

@@ -5,12 +5,15 @@ import { formatStartTime } from '../lib/time'
 import { useBetSlip } from '../store/betSlip'
 import { useSportFilter } from '../store/sportFilter'
 import { useGameChat } from '../store/gameChat'
+import { useStatsPanel } from '../store/statsPanel'
 import OddsButton from './OddsButton'
 
 function MatchRow({ match }) {
   const toggleSelection = useBetSlip((state) => state.toggleSelection)
   const toggleChat = useGameChat((state) => state.toggleChat)
   const isChatOpen = useGameChat((state) => state.openMatch?.matchId === match.id)
+  const toggleStats = useStatsPanel((state) => state.toggleStats)
+  const isStatsOpen = useStatsPanel((state) => state.openMatch?.matchId === match.id)
   const moneyline = findMarket(match.markets, 'moneyline')
   const spread = findMarket(match.markets, 'spread')
   const total = findMarket(match.markets, 'total')
@@ -118,20 +121,36 @@ function MatchRow({ match }) {
         />
       </div>
 
-      <button
-        type="button"
-        aria-label="Open game chat"
-        onClick={() =>
-          toggleChat({ matchId: match.id, matchup: `${match.away_team} @ ${match.home_team}` })
-        }
-        className={`rounded border px-2 py-1.5 text-sm ${
-          isChatOpen
-            ? 'border-purple-500 bg-purple-600/20 text-white'
-            : 'border-gray-700 text-gray-400 hover:border-purple-500 hover:text-white'
-        }`}
-      >
-        💬
-      </button>
+      <div className="flex flex-col items-center gap-1">
+        <button
+          type="button"
+          aria-label="Open game stats"
+          onClick={() =>
+            toggleStats({ matchId: match.id, matchup: `${match.away_team} @ ${match.home_team}` })
+          }
+          className={`flex h-9 w-9 items-center justify-center rounded border text-sm ${
+            isStatsOpen
+              ? 'border-purple-500 bg-purple-600/20 text-white'
+              : 'border-gray-700 text-gray-400 hover:border-purple-500 hover:text-white'
+          }`}
+        >
+          ☰
+        </button>
+        <button
+          type="button"
+          aria-label="Open game chat"
+          onClick={() =>
+            toggleChat({ matchId: match.id, matchup: `${match.away_team} @ ${match.home_team}` })
+          }
+          className={`flex h-9 w-9 items-center justify-center rounded border text-sm ${
+            isChatOpen
+              ? 'border-purple-500 bg-purple-600/20 text-white'
+              : 'border-gray-700 text-gray-400 hover:border-purple-500 hover:text-white'
+          }`}
+        >
+          💬
+        </button>
+      </div>
     </div>
   )
 }

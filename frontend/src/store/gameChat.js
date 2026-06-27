@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { useStatsPanel } from './statsPanel'
 
 export const useGameChat = create((set) => ({
   openMatch: null,
@@ -6,7 +7,11 @@ export const useGameChat = create((set) => ({
   openChat: (match) => set({ openMatch: match }),
   closeChat: () => set({ openMatch: null }),
   toggleChat: (match) =>
-    set((state) => ({
-      openMatch: state.openMatch?.matchId === match.matchId ? null : match,
-    })),
+    set((state) => {
+      if (state.openMatch?.matchId === match.matchId) {
+        return { openMatch: null }
+      }
+      useStatsPanel.getState().closeStats()
+      return { openMatch: match }
+    }),
 }))

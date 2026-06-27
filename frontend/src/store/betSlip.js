@@ -109,5 +109,6 @@ export const useBetSlip = create((set) => ({
 
   setParlayStake: (stake) => set({ parlayStake: stake }),
 
-  clear: () => set({ selections: {}, parlayStake: 0, isOpen: false }),
+  clear: (keepOpen = false) =>
+    set({ selections: {}, parlayStake: 0, isOpen: keepOpen }),
 }))
