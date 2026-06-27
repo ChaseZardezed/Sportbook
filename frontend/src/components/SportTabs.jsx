@@ -1,6 +1,15 @@
 import { useMatches } from '../hooks/useMatches'
 import { useSportFilter } from '../store/sportFilter'
 
+const SPORT_ICONS = {
+  NFL: '🏈',
+  NBA: '🏀',
+  MLB: '⚾',
+  Soccer: '⚽',
+  Tennis: '🎾',
+  NHL: '🏒',
+}
+
 function buildSportCounts(matches) {
   const counts = new Map()
   for (const match of matches) {
@@ -40,6 +49,7 @@ export default function SportTabs() {
               : 'text-gray-400 hover:text-white'
           }`}
         >
+          {SPORT_ICONS[sport] && <span className="mr-1">{SPORT_ICONS[sport]}</span>}
           {sport} ({count})
         </button>
       ))}

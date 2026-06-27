@@ -17,7 +17,7 @@ export const useBetSlip = create((set) => ({
       // Toggling an already-selected pick removes it.
       if (selections[selection.id]) {
         const { [selection.id]: _removed, ...rest } = selections
-        return { selections: rest }
+        return { selections: rest, isOpen: Object.keys(rest).length === 0 ? false : state.isOpen }
       }
 
       // Only one side of a given market (e.g. home ML vs away ML) can be
@@ -96,7 +96,7 @@ export const useBetSlip = create((set) => ({
   removeSelection: (id) =>
     set((state) => {
       const { [id]: _removed, ...rest } = state.selections
-      return { selections: rest }
+      return { selections: rest, isOpen: Object.keys(rest).length === 0 ? false : state.isOpen }
     }),
 
   setStake: (id, stake) =>
@@ -109,5 +109,5 @@ export const useBetSlip = create((set) => ({
 
   setParlayStake: (stake) => set({ parlayStake: stake }),
 
-  clear: () => set({ selections: {}, parlayStake: 0 }),
+  clear: () => set({ selections: {}, parlayStake: 0, isOpen: false }),
 }))
