@@ -9,7 +9,7 @@ import OddsButton from './OddsButton'
 
 function MatchRow({ match }) {
   const toggleSelection = useBetSlip((state) => state.toggleSelection)
-  const openChat = useGameChat((state) => state.openChat)
+  const toggleChat = useGameChat((state) => state.toggleChat)
   const isChatOpen = useGameChat((state) => state.openMatch?.matchId === match.id)
   const moneyline = findMarket(match.markets, 'moneyline')
   const spread = findMarket(match.markets, 'spread')
@@ -122,7 +122,7 @@ function MatchRow({ match }) {
         type="button"
         aria-label="Open game chat"
         onClick={() =>
-          openChat({ matchId: match.id, matchup: `${match.away_team} @ ${match.home_team}` })
+          toggleChat({ matchId: match.id, matchup: `${match.away_team} @ ${match.home_team}` })
         }
         className={`rounded border px-2 py-1.5 text-sm ${
           isChatOpen

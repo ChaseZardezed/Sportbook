@@ -5,4 +5,8 @@ export const useGameChat = create((set) => ({
 
   openChat: (match) => set({ openMatch: match }),
   closeChat: () => set({ openMatch: null }),
+  toggleChat: (match) =>
+    set((state) => ({
+      openMatch: state.openMatch?.matchId === match.matchId ? null : match,
+    })),
 }))

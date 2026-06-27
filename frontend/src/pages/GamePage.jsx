@@ -1,9 +1,11 @@
 import { Link, useParams } from 'react-router-dom'
 import { useMatches } from '../hooks/useMatches'
 import { useBetSlip } from '../store/betSlip'
+import { useGameChat } from '../store/gameChat'
 import OddsButton from '../components/OddsButton'
 import Scoreboard from '../components/Scoreboard'
 import BetSlip from '../components/BetSlip'
+import GameChat from '../components/GameChat'
 import { formatStartTime } from '../lib/time'
 
 function GameLinesSection({ match, select }) {
@@ -218,6 +220,8 @@ export default function GamePage() {
   const { data: matches, isLoading, error } = useMatches()
   const toggleSelection = useBetSlip((state) => state.toggleSelection)
   const isBetSlipOpen = useBetSlip((state) => state.isOpen)
+  const toggleChat = useGameChat((state) => state.toggleChat)
+  const isChatOpen = useGameChat((state) => state.openMatch?.matchId === Number(matchId))
 
   if (isLoading) return <p className="p-6 text-gray-400">Loading game…</p>
   if (error) return <p className="p-6 text-red-400">Failed to load game: {error.message}</p>
@@ -237,12 +241,33 @@ export default function GamePage() {
       odds,
     })
 
+  let gridColsClass = 'grid-cols-[1fr]'
+  if (isBetSlipOpen) gridColsClass = 'grid-cols-[1fr_320px]'
+
   return (
-    <div className={`grid gap-4 p-6 ${isBetSlipOpen ? 'grid-cols-[1fr_320px]' : 'grid-cols-[1fr]'}`}>
+    <div className={`grid gap-4 p-6 ${gridColsClass}`}>
       <div className="space-y-6">
-        <Link to="/" className="text-sm text-gray-400 hover:text-white">
-          ← Back to all games
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link to="/" className="text-sm text-gray-400 hover:text-white">
+            ← Back to all games
+          </Link>
+          <button
+            type="button"
+            aria-label="Toggle game chat"
+            onClick={() =>
+              toggleChat({ matchId: match.id, matchup: `${match.away_team} @ ${match.home_team}` })
+            }
+            className={`rounded border px-2 py-1.5 text-sm ${
+              isChatOpen
+                ? 'border-purple-500 bg-purple-600/20 text-white'
+                : 'border-gray-700 text-gray-400 hover:border-purple-500 hover:text-white'
+            }`}
+          >
+            💬 Chat
+          </button>
+        </div>
+
+        {isChatOpen && <GameChat />}
 
         <div className="flex items-start justify-between gap-6">
           <div>
