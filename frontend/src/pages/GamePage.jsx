@@ -1,8 +1,11 @@
 import { Link, useParams } from 'react-router-dom'
 import { useMatches } from '../hooks/useMatches'
 import { useBetSlip } from '../store/betSlip'
+import { useGameChat } from '../store/gameChat'
 import OddsButton from '../components/OddsButton'
 import Scoreboard from '../components/Scoreboard'
+import BetSlip from '../components/BetSlip'
+import GameChat from '../components/GameChat'
 import { formatStartTime } from '../lib/time'
 
 function GameLinesSection({ match, select }) {
@@ -46,6 +49,7 @@ function GameLinesSection({ match, select }) {
                   'away',
                   `${match.away_team} ${spread.data.away.line > 0 ? '+' : ''}${spread.data.away.line}`,
                   spread.data.away.odds,
+                  spread.data.away.line,
                 )
               }
             />
@@ -59,6 +63,7 @@ function GameLinesSection({ match, select }) {
                   'home',
                   `${match.home_team} ${spread.data.home.line > 0 ? '+' : ''}${spread.data.home.line}`,
                   spread.data.home.odds,
+                  spread.data.home.line,
                 )
               }
             />
@@ -214,6 +219,9 @@ export default function GamePage() {
   const { matchId } = useParams()
   const { data: matches, isLoading, error } = useMatches()
   const toggleSelection = useBetSlip((state) => state.toggleSelection)
+  const isBetSlipOpen = useBetSlip((state) => state.isOpen)
+  const toggleChat = useGameChat((state) => state.toggleChat)
+  const isChatOpen = useGameChat((state) => state.openMatch?.matchId === Number(matchId))
 
   if (isLoading) return <p className="p-6 text-gray-400">Loading game…</p>
   if (error) return <p className="p-6 text-red-400">Failed to load game: {error.message}</p>
@@ -221,51 +229,82 @@ export default function GamePage() {
   const match = matches.find((m) => String(m.id) === matchId)
   if (!match) return <p className="p-6 text-gray-400">Game not found.</p>
 
-  const select = (groupKey, side, label, odds) =>
+  const select = (groupKey, side, label, odds, line) =>
     toggleSelection({
       id: `${match.id}-${groupKey}-${side}`,
       matchId: match.id,
       matchup: `${match.away_team} @ ${match.home_team}`,
       marketType: groupKey,
+      side,
+      line,
       label,
       odds,
     })
 
-  return (
-    <div className="space-y-6 p-6">
-      <Link to="/" className="text-sm text-gray-400 hover:text-white">
-        ← Back to all games
-      </Link>
+  let gridColsClass = 'grid-cols-[1fr]'
+  if (isBetSlipOpen) gridColsClass = 'grid-cols-[1fr_320px]'
 
-      <div className="flex items-start justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-white">
-              {match.away_team} @ {match.home_team}
-            </h1>
-            {match.is_live && (
-              <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
-                Live
-              </span>
-            )}
-          </div>
-          <p className="text-sm text-gray-500">
-            {match.is_live ? (
-              <>
-                {match.clock} · {match.away_score} - {match.home_score}
-              </>
-            ) : (
-              formatStartTime(match.start_time)
-            )}
-          </p>
+  return (
+    <div className={`grid gap-4 p-6 ${gridColsClass}`}>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="text-sm text-gray-400 hover:text-white">
+            ← Back to all games
+          </Link>
+          <button
+            type="button"
+            aria-label="Toggle game chat"
+            onClick={() =>
+              toggleChat({ matchId: match.id, matchup: `${match.away_team} @ ${match.home_team}` })
+            }
+            className={`rounded border px-2 py-1.5 text-sm ${
+              isChatOpen
+                ? 'border-purple-500 bg-purple-600/20 text-white'
+                : 'border-gray-700 text-gray-400 hover:border-purple-500 hover:text-white'
+            }`}
+          >
+            💬 Chat
+          </button>
         </div>
-        <Scoreboard match={match} />
+
+        {isChatOpen && <GameChat />}
+
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-white">
+                {match.away_team} @ {match.home_team}
+              </h1>
+              {match.is_live && (
+                <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
+                  Live
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-gray-500">
+              {match.is_live ? (
+                <>
+                  {match.clock} · {match.away_score} - {match.home_score}
+                </>
+              ) : (
+                formatStartTime(match.start_time)
+              )}
+            </p>
+          </div>
+          <Scoreboard match={match} />
+        </div>
+
+        <GameLinesSection match={match} select={select} />
+        <AltLinesSection match={match} select={select} />
+        <NrfiSection match={match} select={select} />
+        <PlayerPropsSection match={match} select={select} />
       </div>
 
-      <GameLinesSection match={match} select={select} />
-      <AltLinesSection match={match} select={select} />
-      <NrfiSection match={match} select={select} />
-      <PlayerPropsSection match={match} select={select} />
+      {isBetSlipOpen && (
+        <div className="sticky top-4 self-start">
+          <BetSlip />
+        </div>
+      )}
     </div>
   )
 }

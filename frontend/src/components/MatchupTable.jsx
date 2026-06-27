@@ -5,22 +5,27 @@ import { formatStartTime } from '../lib/time'
 import { useBetSlip } from '../store/betSlip'
 import { useSportFilter } from '../store/sportFilter'
 import { useGameChat } from '../store/gameChat'
+import { useStatsPanel } from '../store/statsPanel'
 import OddsButton from './OddsButton'
 
 function MatchRow({ match }) {
   const toggleSelection = useBetSlip((state) => state.toggleSelection)
-  const openChat = useGameChat((state) => state.openChat)
+  const toggleChat = useGameChat((state) => state.toggleChat)
   const isChatOpen = useGameChat((state) => state.openMatch?.matchId === match.id)
+  const toggleStats = useStatsPanel((state) => state.toggleStats)
+  const isStatsOpen = useStatsPanel((state) => state.openMatch?.matchId === match.id)
   const moneyline = findMarket(match.markets, 'moneyline')
   const spread = findMarket(match.markets, 'spread')
   const total = findMarket(match.markets, 'total')
 
-  const select = (marketType, side, label, odds) =>
+  const select = (marketType, side, label, odds, line) =>
     toggleSelection({
       id: `${match.id}-${marketType}-${side}`,
       matchId: match.id,
       matchup: `${match.away_team} @ ${match.home_team}`,
       marketType,
+      side,
+      line,
       label,
       odds,
     })
@@ -30,6 +35,14 @@ function MatchRow({ match }) {
       <Link to={`/game/${match.id}`} className="hover:opacity-80">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-white">{match.away_team}</span>
+          {match.is_featured && (
+            <span
+              title="Featured"
+              className="rounded border border-amber-500 bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-400"
+            >
+              ★ Featured
+            </span>
+          )}
           {match.is_live && (
             <>
               <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
@@ -73,6 +86,7 @@ function MatchRow({ match }) {
               'away',
               `${match.away_team} ${spread.data.away.line > 0 ? '+' : ''}${spread.data.away.line}`,
               spread.data.away.odds,
+              spread.data.away.line,
             )
           }
         />
@@ -86,6 +100,7 @@ function MatchRow({ match }) {
               'home',
               `${match.home_team} ${spread.data.home.line > 0 ? '+' : ''}${spread.data.home.line}`,
               spread.data.home.odds,
+              spread.data.home.line,
             )
           }
         />
@@ -106,20 +121,36 @@ function MatchRow({ match }) {
         />
       </div>
 
-      <button
-        type="button"
-        aria-label="Open game chat"
-        onClick={() =>
-          openChat({ matchId: match.id, matchup: `${match.away_team} @ ${match.home_team}` })
-        }
-        className={`rounded border px-2 py-1.5 text-sm ${
-          isChatOpen
-            ? 'border-purple-500 bg-purple-600/20 text-white'
-            : 'border-gray-700 text-gray-400 hover:border-purple-500 hover:text-white'
-        }`}
-      >
-        💬
-      </button>
+      <div className="flex flex-col items-center gap-1">
+        <button
+          type="button"
+          aria-label="Open game stats"
+          onClick={() =>
+            toggleStats({ matchId: match.id, matchup: `${match.away_team} @ ${match.home_team}` })
+          }
+          className={`flex h-9 w-9 items-center justify-center rounded border text-sm ${
+            isStatsOpen
+              ? 'border-purple-500 bg-purple-600/20 text-white'
+              : 'border-gray-700 text-gray-400 hover:border-purple-500 hover:text-white'
+          }`}
+        >
+          ☰
+        </button>
+        <button
+          type="button"
+          aria-label="Open game chat"
+          onClick={() =>
+            toggleChat({ matchId: match.id, matchup: `${match.away_team} @ ${match.home_team}` })
+          }
+          className={`flex h-9 w-9 items-center justify-center rounded border text-sm ${
+            isChatOpen
+              ? 'border-purple-500 bg-purple-600/20 text-white'
+              : 'border-gray-700 text-gray-400 hover:border-purple-500 hover:text-white'
+          }`}
+        >
+          💬
+        </button>
+      </div>
     </div>
   )
 }
@@ -135,7 +166,7 @@ export default function MatchupTable() {
     ? matches.filter((match) => match.sport === selectedSport)
     : matches
   const visibleMatches = [...filteredMatches].sort(
-    (a, b) => Number(b.is_live) - Number(a.is_live),
+    (a, b) => Number(b.is_live) - Number(a.is_live) || Number(b.is_featured) - Number(a.is_featured),
   )
 
   return (

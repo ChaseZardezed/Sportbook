@@ -1,16 +1,33 @@
 import { useBetSlip } from '../store/betSlip'
+import { useBalance } from '../store/balance'
 
-const NAV_LINKS = ['Home', 'Live', 'Sports', 'Casino', 'Promos', 'Futures']
+const NAV_LINKS = ['Home', 'Sports', 'TCG', 'Casino', 'Promos']
 
 export default function TopNav() {
   const isOpen = useBetSlip((state) => state.isOpen)
   const toggleOpen = useBetSlip((state) => state.toggleOpen)
   const selectionCount = useBetSlip((state) => Object.keys(state.selections).length)
+  const balance = useBalance((state) => state.balance)
 
   return (
     <header className="flex items-center justify-between border-b border-gray-800 bg-gray-950 px-6 py-3">
       <div className="flex items-center gap-8">
-        <span className="text-lg font-bold text-white">Sportsbook</span>
+        <span className="flex items-center gap-1 text-lg font-bold">
+          <svg
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            className="h-5 w-5 text-purple-500"
+            aria-hidden="true"
+          >
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M14.615 1.595a.75.75 0 01.359.852l-1.99 7.302h7.27a.75.75 0 01.548 1.262l-10.5 11.25a.75.75 0 01-1.272-.71l1.992-7.302H3.75a.75.75 0 01-.548-1.262l10.5-11.25a.75.75 0 01.913-.143z"
+            />
+          </svg>
+          <span className="text-white">Strike</span>
+          <span className="text-purple-500">Bets</span>
+        </span>
         <nav className="flex items-center gap-6">
           {NAV_LINKS.map((link, index) => (
             <button
@@ -29,7 +46,7 @@ export default function TopNav() {
       <div className="flex items-center gap-4">
         <div className="text-right">
           <p className="text-[10px] uppercase text-gray-500">Balance</p>
-          <p className="text-sm font-semibold text-white">$0.00</p>
+          <p className="text-sm font-semibold text-white">${balance.toFixed(2)}</p>
         </div>
         <button
           type="button"
