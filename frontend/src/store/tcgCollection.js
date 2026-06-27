@@ -4,13 +4,14 @@ export const useTcgCollection = create((set) => ({
   ownedCards: [],
   lastPull: null,
 
-  recordPull: (card, packPrice, kept) =>
+  recordPull: (card, packPrice, kept, category) =>
     set((state) => ({
       ownedCards: kept
         ? [
             {
               ownedId: crypto.randomUUID(),
               cardId: card.id,
+              category,
               name: card.name,
               setName: card.set_name,
               cardNumber: card.card_number,

@@ -10,35 +10,35 @@ export const RARITY_COLORS = {
 }
 
 export const TIER_COLORS = {
-  'Bronze Slab': {
+  'Bronze Raw Card': {
     icon: '🥉',
     glow: 'rgba(249,115,22,0.45)',
     border: 'border-orange-500',
     text: 'text-orange-300',
     gradient: 'from-orange-700 to-orange-900',
   },
-  'Silver Slab': {
+  'Silver Raw Card': {
     icon: '🥈',
     glow: 'rgba(156,163,175,0.45)',
     border: 'border-gray-400',
     text: 'text-gray-300',
     gradient: 'from-gray-500 to-gray-700',
   },
-  'Gold Slab': {
+  'Gold Raw Card': {
     icon: '🥇',
     glow: 'rgba(245,158,11,0.45)',
     border: 'border-amber-500',
     text: 'text-amber-300',
     gradient: 'from-amber-600 to-orange-800',
   },
-  'Platinum Slab': {
+  'Platinum Raw Card': {
     icon: '💠',
     glow: 'rgba(20,184,166,0.45)',
     border: 'border-teal-500',
     text: 'text-teal-300',
     gradient: 'from-teal-600 to-cyan-800',
   },
-  'Diamond Slab': {
+  'Diamond Raw Card': {
     icon: '💎',
     glow: 'rgba(168,85,247,0.45)',
     border: 'border-purple-500',
@@ -52,7 +52,7 @@ export function rarityColor(rarity) {
 }
 
 export function tierColor(tierName) {
-  return TIER_COLORS[tierName] ?? TIER_COLORS['Bronze Slab']
+  return TIER_COLORS[tierName] ?? TIER_COLORS['Bronze Raw Card']
 }
 
 // The highest-ranked rarity a given pack tier can pull, regardless of its odds %.

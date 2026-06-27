@@ -80,7 +80,8 @@ class PackTier(Base):
     __tablename__ = "pack_tiers"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)  # e.g. "Bronze Slab"
+    category = Column(String, nullable=False, index=True)  # e.g. "Pokemon", "Basketball"
+    name = Column(String, nullable=False)  # e.g. "Bronze Raw Card"
     price = Column(Float, nullable=False)
     description = Column(String, nullable=False)
     top_pull_text = Column(String, nullable=False)  # e.g. "Eevee PSA 9 ~$45"
