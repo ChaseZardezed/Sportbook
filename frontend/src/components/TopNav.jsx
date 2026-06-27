@@ -3,13 +3,13 @@ import { useBetSlip } from '../store/betSlip'
 import { useBalance } from '../store/balance'
 import { useTheme } from '../store/theme'
 import BoltIcon from './icons/BoltIcon'
+import ProfileDropdown from './ProfileDropdown'
 
 const NAV_LINKS = [
   { label: 'Home', path: '/' },
   { label: 'Sports', path: '/' },
   { label: 'TCG', path: '/tcg' },
   { label: 'Casino', path: null },
-  { label: 'Promos', path: null },
 ]
 
 export default function TopNav() {
@@ -82,13 +82,7 @@ export default function TopNav() {
         >
           🔔
         </button>
-        <button
-          type="button"
-          aria-label="Account"
-          className="h-8 w-8 rounded-full bg-gray-100 text-sm font-semibold text-gray-900 dark:bg-gray-800 dark:text-white"
-        >
-          JD
-        </button>
+        <ProfileDropdown />
         <button
           type="button"
           onClick={toggleOpen}
