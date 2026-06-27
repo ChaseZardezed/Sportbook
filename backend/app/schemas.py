@@ -39,6 +39,7 @@ class CardOut(BaseModel):
     grade: int
     rarity: str
     market_value: float
+    image_url: str | None
 
 
 class PackTierOut(BaseModel):

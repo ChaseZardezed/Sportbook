@@ -17,6 +17,7 @@ export const useTcgCollection = create((set) => ({
               cardNumber: card.card_number,
               grade: card.grade,
               rarity: card.rarity,
+              imageUrl: card.image_url,
               pulledValue: card.market_value,
               currentValue: card.market_value,
               pulledAt: new Date().toISOString(),

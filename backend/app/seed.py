@@ -217,15 +217,15 @@ PACK_TIERS = [
         "category": "Pokemon",
         "price": 20,
         "description": "Common & Uncommon raw cards. Great for new collectors.",
-        "top_pull_text": "Eevee PSA 9 ~$45",
+        "top_pull_text": "Mega Gengar ex ~$73",
         "rarity_odds": {"Common": 60, "Uncommon": 30, "Rare": 10},
         "cards": [
-            ("Meowth", "Base Set", "#052", 10, "Common", 13),
-            ("Rattata", "Base Set", "#061", 9, "Common", 8),
-            ("Eevee", "Base Set", "#051", 9, "Uncommon", 45),
-            ("Vulpix", "Base Set", "#068", 9, "Uncommon", 22),
-            ("Machoke", "Base Set", "#034", 9, "Rare", 65),
-            ("Dratini", "Fossil", "#028", 9, "Rare", 90),
+            ("Cynthia's Spiritomb", "ME: Ascended Heroes", "244/217", 9, "Common", 13.26, "/cards/cynthias-spiritomb.jpg"),
+            ("Piplup", "ME02: Phantasmal Flames", "098/094", 9, "Common", 16.01, "/cards/piplup.jpg"),
+            ("Meowth", "ME02: Phantasmal Flames", "106/094", 9, "Uncommon", 22.22, "/cards/meowth.jpg"),
+            ("Surfer", "ME: Ascended Heroes", "293/217", 9, "Uncommon", 28.71, "/cards/surfer.jpg"),
+            ("Psyduck", "ME: Ascended Heroes", "226/217", 9, "Rare", 72.51, "/cards/psyduck.jpg"),
+            ("Mega Gengar ex", "ME: Ascended Heroes", "269/217", 10, "Rare", 72.57, "/cards/mega-gengar-ex.jpg"),
         ],
     },
     {
@@ -751,7 +751,9 @@ async def seed():
             session.add(tier)
             await session.flush()  # assigns tier.id
 
-            for name, set_name, card_number, grade, rarity, market_value in cards:
+            for card_data in cards:
+                name, set_name, card_number, grade, rarity, market_value = card_data[:6]
+                image_url = card_data[6] if len(card_data) > 6 else None
                 session.add(
                     Card(
                         pack_tier_id=tier.id,
@@ -761,6 +763,7 @@ async def seed():
                         grade=grade,
                         rarity=rarity,
                         market_value=market_value,
+                        image_url=image_url,
                     )
                 )
 
