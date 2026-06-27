@@ -2,6 +2,9 @@ import { create } from 'zustand'
 
 export const useBetSlip = create((set) => ({
   selections: {},
+  isOpen: true,
+
+  toggleOpen: () => set((state) => ({ isOpen: !state.isOpen })),
 
   toggleSelection: (selection) =>
     set((state) => {
