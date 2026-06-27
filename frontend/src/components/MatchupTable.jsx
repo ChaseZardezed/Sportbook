@@ -1,22 +1,41 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchMatches } from '../api/client'
 import { findMarket, formatOdds } from '../lib/odds'
+import { useBetSlip } from '../store/betSlip'
 
-function OddsButton({ children }) {
+function OddsButton({ id, label, odds, onClick }) {
+  const isSelected = useBetSlip((state) => Boolean(state.selections[id]))
+
   return (
     <button
       type="button"
-      className="w-full rounded border border-gray-700 bg-gray-900 px-2 py-1.5 text-sm font-medium text-gray-200 hover:border-purple-500 hover:text-white"
+      onClick={onClick}
+      className={`w-full rounded border px-2 py-1.5 text-sm font-medium ${
+        isSelected
+          ? 'border-purple-500 bg-purple-600/20 text-white'
+          : 'border-gray-700 bg-gray-900 text-gray-200 hover:border-purple-500 hover:text-white'
+      }`}
     >
-      {children}
+      {label ? `${label} (${formatOdds(odds)})` : formatOdds(odds)}
     </button>
   )
 }
 
 function MatchRow({ match }) {
+  const toggleSelection = useBetSlip((state) => state.toggleSelection)
   const moneyline = findMarket(match.markets, 'moneyline')
   const spread = findMarket(match.markets, 'spread')
   const total = findMarket(match.markets, 'total')
+
+  const select = (marketType, side, label, odds) =>
+    toggleSelection({
+      id: `${match.id}-${marketType}-${side}`,
+      matchId: match.id,
+      matchup: `${match.away_team} @ ${match.home_team}`,
+      marketType,
+      label,
+      odds,
+    })
 
   return (
     <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-3 border-b border-gray-800 px-4 py-3">
@@ -33,24 +52,62 @@ function MatchRow({ match }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <OddsButton>{formatOdds(moneyline.data.away)}</OddsButton>
-        <OddsButton>{formatOdds(moneyline.data.home)}</OddsButton>
+        <OddsButton
+          id={`${match.id}-moneyline-away`}
+          label=""
+          odds={moneyline.data.away}
+          onClick={() => select('moneyline', 'away', `${match.away_team} ML`, moneyline.data.away)}
+        />
+        <OddsButton
+          id={`${match.id}-moneyline-home`}
+          label=""
+          odds={moneyline.data.home}
+          onClick={() => select('moneyline', 'home', `${match.home_team} ML`, moneyline.data.home)}
+        />
       </div>
 
       <div className="flex flex-col gap-1">
-        <OddsButton>
-          {spread.data.away.line > 0 ? '+' : ''}
-          {spread.data.away.line} ({formatOdds(spread.data.away.odds)})
-        </OddsButton>
-        <OddsButton>
-          {spread.data.home.line > 0 ? '+' : ''}
-          {spread.data.home.line} ({formatOdds(spread.data.home.odds)})
-        </OddsButton>
+        <OddsButton
+          id={`${match.id}-spread-away`}
+          label={`${spread.data.away.line > 0 ? '+' : ''}${spread.data.away.line}`}
+          odds={spread.data.away.odds}
+          onClick={() =>
+            select(
+              'spread',
+              'away',
+              `${match.away_team} ${spread.data.away.line > 0 ? '+' : ''}${spread.data.away.line}`,
+              spread.data.away.odds,
+            )
+          }
+        />
+        <OddsButton
+          id={`${match.id}-spread-home`}
+          label={`${spread.data.home.line > 0 ? '+' : ''}${spread.data.home.line}`}
+          odds={spread.data.home.odds}
+          onClick={() =>
+            select(
+              'spread',
+              'home',
+              `${match.home_team} ${spread.data.home.line > 0 ? '+' : ''}${spread.data.home.line}`,
+              spread.data.home.odds,
+            )
+          }
+        />
       </div>
 
       <div className="flex flex-col gap-1">
-        <OddsButton>O {total.data.line} ({formatOdds(total.data.over)})</OddsButton>
-        <OddsButton>U {total.data.line} ({formatOdds(total.data.under)})</OddsButton>
+        <OddsButton
+          id={`${match.id}-total-over`}
+          label={`O ${total.data.line}`}
+          odds={total.data.over}
+          onClick={() => select('total', 'over', `Over ${total.data.line}`, total.data.over)}
+        />
+        <OddsButton
+          id={`${match.id}-total-under`}
+          label={`U ${total.data.line}`}
+          odds={total.data.under}
+          onClick={() => select('total', 'under', `Under ${total.data.line}`, total.data.under)}
+        />
       </div>
     </div>
   )
