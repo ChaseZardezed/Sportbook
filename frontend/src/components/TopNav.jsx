@@ -1,13 +1,21 @@
+import { Link, useLocation } from 'react-router-dom'
 import { useBetSlip } from '../store/betSlip'
 import { useBalance } from '../store/balance'
 
-const NAV_LINKS = ['Home', 'Sports', 'TCG', 'Casino', 'Promos']
+const NAV_LINKS = [
+  { label: 'Home', path: '/' },
+  { label: 'Sports', path: '/' },
+  { label: 'TCG', path: '/tcg' },
+  { label: 'Casino', path: null },
+  { label: 'Promos', path: null },
+]
 
 export default function TopNav() {
   const isOpen = useBetSlip((state) => state.isOpen)
   const toggleOpen = useBetSlip((state) => state.toggleOpen)
   const selectionCount = useBetSlip((state) => Object.keys(state.selections).length)
   const balance = useBalance((state) => state.balance)
+  const location = useLocation()
 
   return (
     <header className="flex items-center justify-between border-b border-gray-800 bg-gray-950 px-6 py-3">
@@ -29,17 +37,27 @@ export default function TopNav() {
           <span className="text-purple-500">Bets</span>
         </span>
         <nav className="flex items-center gap-6">
-          {NAV_LINKS.map((link, index) => (
-            <button
-              key={link}
-              type="button"
-              className={`text-sm font-medium ${
-                index === 0 ? 'text-white' : 'text-gray-400 hover:text-white'
-              }`}
-            >
-              {link}
-            </button>
-          ))}
+          {NAV_LINKS.map((link) =>
+            link.path ? (
+              <Link
+                key={link.label}
+                to={link.path}
+                className={`text-sm font-medium ${
+                  location.pathname === link.path ? 'text-white' : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ) : (
+              <button
+                key={link.label}
+                type="button"
+                className="text-sm font-medium text-gray-400 hover:text-white"
+              >
+                {link.label}
+              </button>
+            ),
+          )}
         </nav>
       </div>
 
