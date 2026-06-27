@@ -2,6 +2,7 @@ import { useMatches } from '../hooks/useMatches'
 import { findMarket, formatOdds } from '../lib/odds'
 import { useBetSlip } from '../store/betSlip'
 import { useSportFilter } from '../store/sportFilter'
+import { useGameChat } from '../store/gameChat'
 
 function OddsButton({ id, label, odds, onClick }) {
   const isSelected = useBetSlip((state) => Boolean(state.selections[id]))
@@ -23,6 +24,8 @@ function OddsButton({ id, label, odds, onClick }) {
 
 function MatchRow({ match }) {
   const toggleSelection = useBetSlip((state) => state.toggleSelection)
+  const openChat = useGameChat((state) => state.openChat)
+  const isChatOpen = useGameChat((state) => state.openMatch?.matchId === match.id)
   const moneyline = findMarket(match.markets, 'moneyline')
   const spread = findMarket(match.markets, 'spread')
   const total = findMarket(match.markets, 'total')
@@ -38,7 +41,7 @@ function MatchRow({ match }) {
     })
 
   return (
-    <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-3 border-b border-gray-800 px-4 py-3">
+    <div className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] items-center gap-3 border-b border-gray-800 px-4 py-3">
       <div>
         <div className="flex items-center gap-2">
           <span className="font-semibold text-white">{match.away_team}</span>
@@ -109,6 +112,21 @@ function MatchRow({ match }) {
           onClick={() => select('total', 'under', `Under ${total.data.line}`, total.data.under)}
         />
       </div>
+
+      <button
+        type="button"
+        aria-label="Open game chat"
+        onClick={() =>
+          openChat({ matchId: match.id, matchup: `${match.away_team} @ ${match.home_team}` })
+        }
+        className={`rounded border px-2 py-1.5 text-sm ${
+          isChatOpen
+            ? 'border-purple-500 bg-purple-600/20 text-white'
+            : 'border-gray-700 text-gray-400 hover:border-purple-500 hover:text-white'
+        }`}
+      >
+        💬
+      </button>
     </div>
   )
 }
@@ -126,11 +144,12 @@ export default function MatchupTable() {
 
   return (
     <div className="overflow-hidden rounded-lg border border-gray-800 bg-gray-950">
-      <div className="grid grid-cols-[2fr_1fr_1fr_1fr] gap-3 border-b border-gray-800 bg-gray-900 px-4 py-2 text-xs font-semibold uppercase text-gray-400">
+      <div className="grid grid-cols-[2fr_1fr_1fr_1fr_auto] gap-3 border-b border-gray-800 bg-gray-900 px-4 py-2 text-xs font-semibold uppercase text-gray-400">
         <span>Matchup</span>
         <span>Moneyline</span>
         <span>Spread</span>
         <span>Total</span>
+        <span></span>
       </div>
       {visibleMatches.length === 0 ? (
         <p className="p-4 text-sm text-gray-500">No matches for this sport yet.</p>
