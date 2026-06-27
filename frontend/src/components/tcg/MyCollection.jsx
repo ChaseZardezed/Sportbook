@@ -32,7 +32,9 @@ function CollectionCard({ card }) {
           <span>{card.grade}</span>
         </div>
       </div>
-      <p className="text-xs text-gray-500">{card.rarity}</p>
+      <p className="text-xs text-gray-500">
+        {card.rarity} • {card.category}
+      </p>
       <p className="font-bold text-white">{card.name}</p>
       <p className="text-xs text-gray-500">
         PSA {card.grade} • {card.setName}
@@ -61,15 +63,19 @@ function CollectionCard({ card }) {
   )
 }
 
-export default function MyCollection() {
-  const ownedCards = useTcgCollection((state) => state.ownedCards)
+export default function MyCollection({ category }) {
+  const allOwnedCards = useTcgCollection((state) => state.ownedCards)
+  const ownedCards =
+    category === 'All' ? allOwnedCards : allOwnedCards.filter((card) => card.category === category)
 
   const totalValue = ownedCards.reduce((sum, card) => sum + card.currentValue, 0)
   const avgValue = ownedCards.length > 0 ? totalValue / ownedCards.length : 0
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold text-white">My Collection ({ownedCards.length})</h1>
+      <h1 className="text-xl font-bold text-white">
+        My Collection — {category === 'All' ? 'All Categories' : category} ({ownedCards.length})
+      </h1>
 
       <div className="flex gap-6 rounded-lg border border-gray-800 bg-gray-900 px-4 py-3">
         <div>

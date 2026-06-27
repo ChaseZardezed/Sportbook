@@ -45,6 +45,7 @@ class PackTierOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    category: str
     name: str
     price: float
     description: str

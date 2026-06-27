@@ -33,7 +33,7 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
       // after the card was revealed but before Sell/Keep was chosen,
       // default to keeping it rather than losing it.
       if (lastStage === 'result' && lastCard && !resolvedRef.current) {
-        recordPull(lastCard, tier.price, true)
+        recordPull(lastCard, tier.price, true, tier.category)
       }
     }
   }, [])
@@ -60,13 +60,13 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
   const handleSell = () => {
     resolvedRef.current = true
     credit(card.market_value)
-    recordPull(card, tier.price, false)
+    recordPull(card, tier.price, false, tier.category)
     onDone()
   }
 
   const handleKeep = () => {
     resolvedRef.current = true
-    recordPull(card, tier.price, true)
+    recordPull(card, tier.price, true, tier.category)
     onDone()
   }
 
@@ -119,7 +119,7 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
             }
           >
             <div className="text-center">
-              <p className="text-xs font-bold uppercase tracking-wide text-gray-300">Slab Pack</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-gray-300">Raw Card Pack</p>
               <p className="text-sm font-bold text-white">{tier.name}</p>
             </div>
             <BoltIcon
