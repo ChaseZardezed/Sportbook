@@ -10,11 +10,41 @@ export const RARITY_COLORS = {
 }
 
 export const TIER_COLORS = {
-  'Bronze Slab': { glow: 'rgba(249,115,22,0.45)', border: 'border-orange-500', text: 'text-orange-300' },
-  'Silver Slab': { glow: 'rgba(156,163,175,0.45)', border: 'border-gray-400', text: 'text-gray-300' },
-  'Gold Slab': { glow: 'rgba(245,158,11,0.45)', border: 'border-amber-500', text: 'text-amber-300' },
-  'Platinum Slab': { glow: 'rgba(20,184,166,0.45)', border: 'border-teal-500', text: 'text-teal-300' },
-  'Diamond Slab': { glow: 'rgba(168,85,247,0.45)', border: 'border-purple-500', text: 'text-purple-300' },
+  'Bronze Slab': {
+    icon: '🥉',
+    glow: 'rgba(249,115,22,0.45)',
+    border: 'border-orange-500',
+    text: 'text-orange-300',
+    gradient: 'from-orange-700 to-orange-900',
+  },
+  'Silver Slab': {
+    icon: '🥈',
+    glow: 'rgba(156,163,175,0.45)',
+    border: 'border-gray-400',
+    text: 'text-gray-300',
+    gradient: 'from-gray-500 to-gray-700',
+  },
+  'Gold Slab': {
+    icon: '🥇',
+    glow: 'rgba(245,158,11,0.45)',
+    border: 'border-amber-500',
+    text: 'text-amber-300',
+    gradient: 'from-amber-600 to-orange-800',
+  },
+  'Platinum Slab': {
+    icon: '💠',
+    glow: 'rgba(20,184,166,0.45)',
+    border: 'border-teal-500',
+    text: 'text-teal-300',
+    gradient: 'from-teal-600 to-cyan-800',
+  },
+  'Diamond Slab': {
+    icon: '💎',
+    glow: 'rgba(168,85,247,0.45)',
+    border: 'border-purple-500',
+    text: 'text-purple-300',
+    gradient: 'from-purple-600 to-indigo-900',
+  },
 }
 
 export function rarityColor(rarity) {

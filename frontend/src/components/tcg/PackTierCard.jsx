@@ -1,10 +1,4 @@
-const TIER_STYLES = {
-  'Bronze Slab': { icon: '🥉', header: 'from-orange-700 to-orange-900', accent: 'text-orange-400' },
-  'Silver Slab': { icon: '🥈', header: 'from-gray-500 to-gray-700', accent: 'text-gray-300' },
-  'Gold Slab': { icon: '🥇', header: 'from-amber-600 to-orange-800', accent: 'text-amber-400' },
-  'Platinum Slab': { icon: '💠', header: 'from-teal-600 to-cyan-800', accent: 'text-teal-300' },
-  'Diamond Slab': { icon: '💎', header: 'from-purple-600 to-indigo-900', accent: 'text-purple-300' },
-}
+import { tierColor } from '../../lib/rarityColors'
 
 const RARITY_BAR_COLOR = {
   Common: 'bg-gray-400',
@@ -16,12 +10,12 @@ const RARITY_BAR_COLOR = {
 }
 
 export default function PackTierCard({ tier, onBuy, disabled }) {
-  const style = TIER_STYLES[tier.name] ?? TIER_STYLES['Bronze Slab']
+  const style = tierColor(tier.name)
 
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-gray-800 bg-gray-950 transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
-      <div className={`bg-gradient-to-br ${style.header} px-4 py-4`}>
-        <p className={`flex items-center gap-1 text-sm font-bold ${style.accent}`}>
+      <div className={`bg-gradient-to-br ${style.gradient} px-4 py-4`}>
+        <p className={`flex items-center gap-1 text-sm font-bold ${style.text}`}>
           {style.icon} {tier.name}
         </p>
         <p className="text-2xl font-bold text-white">${tier.price.toFixed(0)}</p>
