@@ -92,7 +92,7 @@ export default function BetSlip() {
   const canPlaceBet = isParlay ? parlayStake > 0 : straightTotal > 0
 
   return (
-    <div className="flex h-full flex-col rounded-lg border border-gray-800 bg-gray-950">
+    <div className="flex flex-col rounded-lg border border-gray-800 bg-gray-950">
       <div className="flex items-center justify-between border-b border-gray-800 px-4 py-3">
         <h2 className="font-bold text-white">
           {isParlay ? `Parlay (${selections.length} legs)` : 'Bet Slip'}
@@ -105,7 +105,7 @@ export default function BetSlip() {
         )}
       </div>
 
-      <div className="flex-1 space-y-2 overflow-y-auto p-3">
+      <div className="space-y-2 p-3">
         {selections.length === 0 ? (
           <p className="p-4 text-center text-sm text-gray-500">
             Click any odds to add it to your bet slip

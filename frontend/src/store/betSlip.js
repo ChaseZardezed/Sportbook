@@ -2,7 +2,7 @@ import { create } from 'zustand'
 
 export const useBetSlip = create((set) => ({
   selections: {},
-  isOpen: true,
+  isOpen: false,
   parlayStake: 0,
 
   toggleOpen: () => set((state) => ({ isOpen: !state.isOpen })),
@@ -26,8 +26,12 @@ export const useBetSlip = create((set) => ({
         ),
       )
 
+      // Auto-open the slip the first time a selection is added.
+      const isFirstSelection = Object.keys(selections).length === 0
+
       return {
         selections: { ...withoutOppositeSide, [selection.id]: { ...selection, stake: 0 } },
+        isOpen: isFirstSelection ? true : state.isOpen,
       }
     }),
 

@@ -3,6 +3,7 @@ import { useMatches } from '../hooks/useMatches'
 import { useBetSlip } from '../store/betSlip'
 import OddsButton from '../components/OddsButton'
 import Scoreboard from '../components/Scoreboard'
+import BetSlip from '../components/BetSlip'
 import { formatStartTime } from '../lib/time'
 
 function GameLinesSection({ match, select }) {
@@ -214,6 +215,7 @@ export default function GamePage() {
   const { matchId } = useParams()
   const { data: matches, isLoading, error } = useMatches()
   const toggleSelection = useBetSlip((state) => state.toggleSelection)
+  const isBetSlipOpen = useBetSlip((state) => state.isOpen)
 
   if (isLoading) return <p className="p-6 text-gray-400">Loading game…</p>
   if (error) return <p className="p-6 text-red-400">Failed to load game: {error.message}</p>
@@ -232,40 +234,48 @@ export default function GamePage() {
     })
 
   return (
-    <div className="space-y-6 p-6">
-      <Link to="/" className="text-sm text-gray-400 hover:text-white">
-        ← Back to all games
-      </Link>
+    <div className={`grid gap-4 p-6 ${isBetSlipOpen ? 'grid-cols-[1fr_320px]' : 'grid-cols-[1fr]'}`}>
+      <div className="space-y-6">
+        <Link to="/" className="text-sm text-gray-400 hover:text-white">
+          ← Back to all games
+        </Link>
 
-      <div className="flex items-start justify-between gap-6">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold text-white">
-              {match.away_team} @ {match.home_team}
-            </h1>
-            {match.is_live && (
-              <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
-                Live
-              </span>
-            )}
+        <div className="flex items-start justify-between gap-6">
+          <div>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-white">
+                {match.away_team} @ {match.home_team}
+              </h1>
+              {match.is_live && (
+                <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
+                  Live
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-gray-500">
+              {match.is_live ? (
+                <>
+                  {match.clock} · {match.away_score} - {match.home_score}
+                </>
+              ) : (
+                formatStartTime(match.start_time)
+              )}
+            </p>
           </div>
-          <p className="text-sm text-gray-500">
-            {match.is_live ? (
-              <>
-                {match.clock} · {match.away_score} - {match.home_score}
-              </>
-            ) : (
-              formatStartTime(match.start_time)
-            )}
-          </p>
+          <Scoreboard match={match} />
         </div>
-        <Scoreboard match={match} />
+
+        <GameLinesSection match={match} select={select} />
+        <AltLinesSection match={match} select={select} />
+        <NrfiSection match={match} select={select} />
+        <PlayerPropsSection match={match} select={select} />
       </div>
 
-      <GameLinesSection match={match} select={select} />
-      <AltLinesSection match={match} select={select} />
-      <NrfiSection match={match} select={select} />
-      <PlayerPropsSection match={match} select={select} />
+      {isBetSlipOpen && (
+        <div className="sticky top-4 self-start">
+          <BetSlip />
+        </div>
+      )}
     </div>
   )
 }
