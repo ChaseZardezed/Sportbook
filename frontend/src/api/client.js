@@ -7,3 +7,11 @@ export async function fetchMatches() {
   }
   return response.json()
 }
+
+export async function fetchPacks() {
+  const response = await fetch(`${API_BASE_URL}/packs`)
+  if (!response.ok) {
+    throw new Error(`Failed to fetch packs: ${response.status}`)
+  }
+  return response.json()
+}

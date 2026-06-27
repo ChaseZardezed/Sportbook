@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime, timedelta
 
 from app.database import AsyncSessionLocal, Base, engine
-from app.models import Match, Market
+from app.models import Match, Market, PackTier, Card
 
 MATCHES = [
     {
@@ -211,6 +211,91 @@ MATCHES = [
 ]
 
 
+PACK_TIERS = [
+    {
+        "name": "Bronze Slab",
+        "price": 20,
+        "description": "Common & Uncommon slabs. Great for new collectors.",
+        "top_pull_text": "Eevee PSA 9 ~$45",
+        "rarity_odds": {"Common": 60, "Uncommon": 30, "Rare": 10},
+        "cards": [
+            ("Meowth", "Base Set", "#052", 10, "Common", 13),
+            ("Rattata", "Base Set", "#061", 9, "Common", 8),
+            ("Eevee", "Base Set", "#051", 9, "Uncommon", 45),
+            ("Vulpix", "Base Set", "#068", 9, "Uncommon", 22),
+            ("Machoke", "Base Set", "#034", 9, "Rare", 65),
+            ("Dratini", "Fossil", "#028", 9, "Rare", 90),
+        ],
+    },
+    {
+        "name": "Silver Slab",
+        "price": 50,
+        "description": "Uncommon & Rare guaranteed. Ultra Rare chance.",
+        "top_pull_text": "Gyarados PSA 10 ~$320",
+        "rarity_odds": {"Common": 20, "Uncommon": 40, "Rare": 30, "Ultra Rare": 10},
+        "cards": [
+            ("Pidgey", "Base Set", "#057", 9, "Common", 18),
+            ("Caterpie", "Base Set", "#045", 9, "Common", 15),
+            ("Growlithe", "Base Set", "#028", 9, "Uncommon", 40),
+            ("Ponyta", "Base Set", "#060", 9, "Uncommon", 35),
+            ("Alakazam", "Base Set", "#001", 9, "Rare", 266),
+            ("Machamp", "Base Set", "#008", 9, "Rare", 180),
+            ("Gyarados", "Base Set", "#006", 10, "Ultra Rare", 320),
+            ("Dragonite", "Fossil", "#004", 9, "Ultra Rare", 300),
+        ],
+    },
+    {
+        "name": "Gold Slab",
+        "price": 100,
+        "description": "Rare & Ultra Rare slabs. Secret Rare 15% chance.",
+        "top_pull_text": "Charizard PSA 8 ~$1.2k",
+        "rarity_odds": {"Uncommon": 10, "Rare": 40, "Ultra Rare": 35, "Secret Rare": 15},
+        "cards": [
+            ("Kadabra", "Base Set", "#032", 9, "Uncommon", 55),
+            ("Magneton", "Base Set", "#009", 9, "Uncommon", 48),
+            ("Snorlax", "Jungle", "#011", 9, "Rare", 210),
+            ("Lapras", "Fossil", "#010", 9, "Rare", 190),
+            ("Blastoise", "Base Set", "#002", 9, "Ultra Rare", 650),
+            ("Venusaur", "Base Set", "#015", 9, "Ultra Rare", 600),
+            ("Charizard", "Base Set", "#004", 8, "Secret Rare", 1200),
+            ("Charizard", "Base Set", "#004", 9, "Secret Rare", 1300),
+        ],
+    },
+    {
+        "name": "Platinum Slab",
+        "price": 500,
+        "description": "Ultra Rare guaranteed. Trophy & promo slabs possible.",
+        "top_pull_text": "Trophy Pikachu PSA 9 ~$4.8k",
+        "rarity_odds": {"Rare": 10, "Ultra Rare": 40, "Secret Rare": 35, "1st Edition": 15},
+        "cards": [
+            ("Mewtwo", "Base Set", "#010", 9, "Rare", 400),
+            ("Gengar", "Fossil", "#005", 9, "Rare", 380),
+            ("Charizard", "Base Set", "#004", 7, "Ultra Rare", 1800),
+            ("Blastoise", "Base Set 1st Ed.", "#002", 8, "Ultra Rare", 2200),
+            ("Trophy Pikachu", "Promo", "#TR1", 9, "Secret Rare", 4800),
+            ("Master's Key Pikachu", "Promo", "#TR2", 9, "Secret Rare", 4500),
+            ("Charizard", "Base Set 1st Ed.", "#004", 7, "1st Edition", 4900),
+            ("Blastoise", "Base Set 1st Ed.", "#002", 9, "1st Edition", 5000),
+        ],
+    },
+    {
+        "name": "Diamond Slab",
+        "price": 1000,
+        "description": "Highest tier. 1st Edition pulls highly likely.",
+        "top_pull_text": "Charizard 1st Ed PSA 10 ~$15k",
+        "rarity_odds": {"Ultra Rare": 15, "Secret Rare": 45, "1st Edition": 40},
+        "cards": [
+            ("Charizard", "Base Set", "#004", 9, "Ultra Rare", 6000),
+            ("Blastoise", "Base Set", "#002", 9, "Ultra Rare", 5500),
+            ("Trophy Pikachu", "Promo", "#TR1", 10, "Secret Rare", 9000),
+            ("Pikachu Illustrator", "Promo", "#IL1", 8, "Secret Rare", 8500),
+            ("Charizard", "Base Set 1st Ed.", "#004", 9, "1st Edition", 12000),
+            ("Charizard", "Base Set 1st Ed.", "#004", 10, "1st Edition", 15000),
+        ],
+    },
+]
+
+
 async def seed():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
@@ -224,6 +309,25 @@ async def seed():
 
             for market_type, data in markets:
                 session.add(Market(match_id=match.id, market_type=market_type, data=data))
+
+        for tier_data in PACK_TIERS:
+            cards = tier_data.pop("cards")
+            tier = PackTier(**tier_data)
+            session.add(tier)
+            await session.flush()  # assigns tier.id
+
+            for name, set_name, card_number, grade, rarity, market_value in cards:
+                session.add(
+                    Card(
+                        pack_tier_id=tier.id,
+                        name=name,
+                        set_name=set_name,
+                        card_number=card_number,
+                        grade=grade,
+                        rarity=rarity,
+                        market_value=market_value,
+                    )
+                )
 
         await session.commit()
 

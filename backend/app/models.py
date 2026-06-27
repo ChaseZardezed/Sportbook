@@ -74,3 +74,32 @@ class Bet(Base):
 
     user = relationship("User", back_populates="bets")
     market = relationship("Market", back_populates="bets")
+
+
+class PackTier(Base):
+    __tablename__ = "pack_tiers"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)  # e.g. "Bronze Slab"
+    price = Column(Float, nullable=False)
+    description = Column(String, nullable=False)
+    top_pull_text = Column(String, nullable=False)  # e.g. "Eevee PSA 9 ~$45"
+    # Pull odds for this tier, e.g. {"Common": 60, "Uncommon": 30, "Rare": 10}
+    rarity_odds = Column(JSON, nullable=False)
+
+    cards = relationship("Card", back_populates="pack_tier")
+
+
+class Card(Base):
+    __tablename__ = "cards"
+
+    id = Column(Integer, primary_key=True)
+    pack_tier_id = Column(Integer, ForeignKey("pack_tiers.id"), nullable=False)
+    name = Column(String, nullable=False)
+    set_name = Column(String, nullable=False)
+    card_number = Column(String, nullable=False)
+    grade = Column(Integer, nullable=False)  # PSA grade
+    rarity = Column(String, nullable=False)  # must match a key in pack_tier.rarity_odds
+    market_value = Column(Float, nullable=False)
+
+    pack_tier = relationship("PackTier", back_populates="cards")
