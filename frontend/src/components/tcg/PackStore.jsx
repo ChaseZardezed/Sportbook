@@ -39,7 +39,7 @@ export default function PackStore({ category, onBuyPack }) {
       )}
 
       <div>
-        <h1 className="text-xl font-bold text-white">
+        <h1 className="text-xl font-bold text-gray-900 dark:text-white">
           {category === 'All' ? 'All Categories' : category} Raw Card Pack Store
         </h1>
         <p className="text-sm text-gray-500">Each pack contains one raw card. Higher tiers pull from exclusive card pools.</p>

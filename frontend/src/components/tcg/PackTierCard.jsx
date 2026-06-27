@@ -13,7 +13,7 @@ export default function PackTierCard({ tier, onBuy, disabled }) {
   const style = tierColor(tier.name)
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-gray-800 bg-gray-950 transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
+    <div className="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg dark:border-gray-800 dark:bg-gray-950">
       <div className={`bg-gradient-to-br ${style.gradient} px-4 py-4`}>
         <p className={`flex items-center gap-1 text-sm font-bold ${style.text}`}>
           {style.icon} {tier.name}
@@ -29,7 +29,7 @@ export default function PackTierCard({ tier, onBuy, disabled }) {
           {Object.entries(tier.rarity_odds).map(([rarity, odds]) => (
             <div key={rarity} className="flex items-center gap-2 text-xs">
               <span className="w-20 shrink-0 text-gray-400">{rarity}</span>
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-800">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-800">
                 <div
                   className={`h-full ${RARITY_BAR_COLOR[rarity] ?? 'bg-gray-500'}`}
                   style={{ width: `${odds}%` }}

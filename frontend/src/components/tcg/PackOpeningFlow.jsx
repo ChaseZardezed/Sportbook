@@ -79,13 +79,13 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
 
   return (
     <div className="flex flex-col items-center gap-6 py-10">
-      <button type="button" onClick={onBack} className="self-start text-sm text-gray-400 hover:text-white">
+      <button type="button" onClick={onBack} className="self-start text-sm text-gray-400 hover:text-gray-900 dark:hover:text-white">
         ← Back to Store
       </button>
 
       <h1
         className={`text-lg font-bold ${
-          stage === 'ready' ? 'text-white' : flipped ? colors.text : revealColors.text
+          stage === 'ready' ? 'text-gray-900 dark:text-white' : flipped ? colors.text : revealColors.text
         }`}
       >
         {stage === 'ready' && 'Ready to Open'}
@@ -185,14 +185,14 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
         <div className="flex flex-col items-center gap-2">
           <p className="text-sm text-gray-400">
             Confirm purchase: open {tier.name} for{' '}
-            <span className="font-bold text-white">${tier.price.toFixed(0)}</span>?
+            <span className="font-bold text-gray-900 dark:text-white">${tier.price.toFixed(0)}</span>?
           </p>
           {balance < tier.price && <p className="text-xs text-red-400">Insufficient balance</p>}
           <div className="flex gap-3">
             <button
               type="button"
               onClick={() => setConfirming(false)}
-              className="rounded border border-gray-700 px-6 py-2 text-sm font-bold text-gray-300 transition-colors hover:border-purple-500"
+              className="rounded border border-gray-300 px-6 py-2 text-sm font-bold text-gray-600 transition-colors hover:border-purple-500 dark:border-gray-700 dark:text-gray-300"
             >
               Cancel
             </button>
@@ -209,9 +209,9 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
       )}
 
       {stage === 'result' && (
-        <div className="w-72 animate-fade-in rounded-lg border border-gray-800 bg-gray-900 p-4 text-center">
+        <div className="w-72 animate-fade-in rounded-lg border border-gray-200 bg-gray-50 p-4 text-center dark:border-gray-800 dark:bg-gray-900">
           <p className={`text-xs ${colors.text}`}>{card.rarity}</p>
-          <p className="text-lg font-bold text-white">{card.name}</p>
+          <p className="text-lg font-bold text-gray-900 dark:text-white">{card.name}</p>
           <p className="text-xs text-gray-500">
             {card.set_name} • {card.card_number} • PSA {card.grade}
           </p>
@@ -229,7 +229,7 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
             <button
               type="button"
               onClick={handleKeep}
-              className="flex-1 rounded border border-gray-700 py-2 text-sm font-bold text-white transition-colors hover:border-purple-500"
+              className="flex-1 rounded border border-gray-300 py-2 text-sm font-bold text-gray-900 transition-colors hover:border-purple-500 dark:border-gray-700 dark:text-white"
             >
               Keep in Collection
             </button>
