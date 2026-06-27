@@ -15,7 +15,7 @@ export default function GameChat() {
   if (!openMatch) return null
 
   return (
-    <div className="flex h-full flex-col rounded-lg border border-gray-800 bg-gray-950">
+    <div className="flex flex-col rounded-lg border border-gray-800 bg-gray-950">
       <div className="flex items-center justify-between border-b border-gray-800 px-4 py-3">
         <div>
           <p className="text-xs text-gray-500">Game Chat</p>
@@ -26,7 +26,7 @@ export default function GameChat() {
         </button>
       </div>
 
-      <div className="flex-1 space-y-3 overflow-y-auto p-3">
+      <div className="max-h-80 space-y-3 overflow-y-auto p-3">
         {MOCK_MESSAGES.map((message, index) => (
           <div key={index} className="flex gap-2">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-800 text-xs font-semibold text-gray-300">
