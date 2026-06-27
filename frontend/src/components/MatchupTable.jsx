@@ -15,12 +15,14 @@ function MatchRow({ match }) {
   const spread = findMarket(match.markets, 'spread')
   const total = findMarket(match.markets, 'total')
 
-  const select = (marketType, side, label, odds) =>
+  const select = (marketType, side, label, odds, line) =>
     toggleSelection({
       id: `${match.id}-${marketType}-${side}`,
       matchId: match.id,
       matchup: `${match.away_team} @ ${match.home_team}`,
       marketType,
+      side,
+      line,
       label,
       odds,
     })
@@ -30,6 +32,14 @@ function MatchRow({ match }) {
       <Link to={`/game/${match.id}`} className="hover:opacity-80">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-white">{match.away_team}</span>
+          {match.is_featured && (
+            <span
+              title="Featured"
+              className="rounded border border-amber-500 bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-400"
+            >
+              ★ Featured
+            </span>
+          )}
           {match.is_live && (
             <>
               <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
@@ -73,6 +83,7 @@ function MatchRow({ match }) {
               'away',
               `${match.away_team} ${spread.data.away.line > 0 ? '+' : ''}${spread.data.away.line}`,
               spread.data.away.odds,
+              spread.data.away.line,
             )
           }
         />
@@ -86,6 +97,7 @@ function MatchRow({ match }) {
               'home',
               `${match.home_team} ${spread.data.home.line > 0 ? '+' : ''}${spread.data.home.line}`,
               spread.data.home.odds,
+              spread.data.home.line,
             )
           }
         />
@@ -135,7 +147,7 @@ export default function MatchupTable() {
     ? matches.filter((match) => match.sport === selectedSport)
     : matches
   const visibleMatches = [...filteredMatches].sort(
-    (a, b) => Number(b.is_live) - Number(a.is_live),
+    (a, b) => Number(b.is_live) - Number(a.is_live) || Number(b.is_featured) - Number(a.is_featured),
   )
 
   return (

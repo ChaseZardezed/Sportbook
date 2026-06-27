@@ -47,6 +47,7 @@ function GameLinesSection({ match, select }) {
                   'away',
                   `${match.away_team} ${spread.data.away.line > 0 ? '+' : ''}${spread.data.away.line}`,
                   spread.data.away.odds,
+                  spread.data.away.line,
                 )
               }
             />
@@ -60,6 +61,7 @@ function GameLinesSection({ match, select }) {
                   'home',
                   `${match.home_team} ${spread.data.home.line > 0 ? '+' : ''}${spread.data.home.line}`,
                   spread.data.home.odds,
+                  spread.data.home.line,
                 )
               }
             />
@@ -223,12 +225,14 @@ export default function GamePage() {
   const match = matches.find((m) => String(m.id) === matchId)
   if (!match) return <p className="p-6 text-gray-400">Game not found.</p>
 
-  const select = (groupKey, side, label, odds) =>
+  const select = (groupKey, side, label, odds, line) =>
     toggleSelection({
       id: `${match.id}-${groupKey}-${side}`,
       matchId: match.id,
       matchup: `${match.away_team} @ ${match.home_team}`,
       marketType: groupKey,
+      side,
+      line,
       label,
       odds,
     })
