@@ -21,6 +21,7 @@ class MatchOut(BaseModel):
     away_team: str
     start_time: datetime
     is_live: bool
+    is_featured: bool
     home_score: int
     away_score: int
     markets: list[MarketOut]

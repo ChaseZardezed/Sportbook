@@ -12,6 +12,7 @@ MATCHES = [
         "away_team": "Buffalo Bills",
         "start_time": datetime.utcnow(),
         "is_live": True,
+        "is_featured": True,
         "home_score": 14,
         "away_score": 10,
         "markets": [
@@ -27,6 +28,7 @@ MATCHES = [
         "away_team": "Dallas Cowboys",
         "start_time": datetime.utcnow() + timedelta(days=1),
         "is_live": False,
+        "is_featured": True,
         "home_score": 0,
         "away_score": 0,
         "markets": [

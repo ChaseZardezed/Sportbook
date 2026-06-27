@@ -37,6 +37,7 @@ class Match(Base):
     away_team = Column(String, nullable=False)
     start_time = Column(DateTime, nullable=False)
     is_live = Column(Boolean, default=False)
+    is_featured = Column(Boolean, default=False)
     home_score = Column(Integer, default=0)
     away_score = Column(Integer, default=0)
 
