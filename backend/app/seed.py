@@ -20,6 +20,22 @@ MATCHES = [
             ("moneyline", {"home": -145, "away": 125}),
             ("spread", {"home": {"line": -2.5, "odds": -110}, "away": {"line": 2.5, "odds": -110}}),
             ("total", {"line": 48.5, "over": -108, "under": -112}),
+            ("alt_spread", {"home": {"line": -6.5, "odds": 240}, "away": {"line": 6.5, "odds": -310}}),
+            ("alt_spread", {"home": {"line": 1.5, "odds": -340}, "away": {"line": -1.5, "odds": 260}}),
+            ("alt_total", {"line": 44.5, "over": -150, "under": 125}),
+            ("alt_total", {"line": 52.5, "over": 135, "under": -165}),
+            (
+                "player_prop",
+                {"player": "Patrick Mahomes", "prop": "Passing Yards", "line": 275.5, "over": -115, "under": -105},
+            ),
+            (
+                "player_prop",
+                {"player": "Josh Allen", "prop": "Passing Yards", "line": 268.5, "over": -110, "under": -110},
+            ),
+            (
+                "player_prop",
+                {"player": "Travis Kelce", "prop": "Receiving Yards", "line": 65.5, "over": -120, "under": 100},
+            ),
         ],
     },
     {
@@ -68,6 +84,14 @@ MATCHES = [
             ("moneyline", {"home": -130, "away": 110}),
             ("spread", {"home": {"line": -2.5, "odds": -110}, "away": {"line": 2.5, "odds": -110}}),
             ("total", {"line": 228.5, "over": -110, "under": -110}),
+            (
+                "player_prop",
+                {"player": "Nikola Jokic", "prop": "Points", "line": 26.5, "over": -110, "under": -110},
+            ),
+            (
+                "player_prop",
+                {"player": "Stephen Curry", "prop": "3-Pointers Made", "line": 4.5, "over": -125, "under": 105},
+            ),
         ],
     },
     {
@@ -99,6 +123,16 @@ MATCHES = [
             ("moneyline", {"home": 105, "away": -125}),
             ("spread", {"home": {"line": 1.5, "odds": -130}, "away": {"line": -1.5, "odds": 110}}),
             ("total", {"line": 8.5, "over": -105, "under": -115}),
+            ("nrfi", {"yes": 105, "no": -130}),
+            ("alt_total", {"line": 7.5, "over": -160, "under": 135}),
+            (
+                "player_prop",
+                {"player": "Aaron Judge", "prop": "Total Bases", "line": 1.5, "over": -105, "under": -115},
+            ),
+            (
+                "player_prop",
+                {"player": "Gerrit Cole", "prop": "Strikeouts", "line": 6.5, "over": -120, "under": 100},
+            ),
         ],
     },
     {

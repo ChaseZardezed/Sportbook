@@ -1,27 +1,11 @@
+import { Link } from 'react-router-dom'
 import { useMatches } from '../hooks/useMatches'
-import { findMarket, formatOdds } from '../lib/odds'
+import { findMarket } from '../lib/odds'
 import { formatStartTime } from '../lib/time'
 import { useBetSlip } from '../store/betSlip'
 import { useSportFilter } from '../store/sportFilter'
 import { useGameChat } from '../store/gameChat'
-
-function OddsButton({ id, label, odds, onClick }) {
-  const isSelected = useBetSlip((state) => Boolean(state.selections[id]))
-
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`w-full rounded border px-2 py-1.5 text-sm font-medium ${
-        isSelected
-          ? 'border-purple-500 bg-purple-600/20 text-white'
-          : 'border-gray-700 bg-gray-900 text-gray-200 hover:border-purple-500 hover:text-white'
-      }`}
-    >
-      {label ? `${label} (${formatOdds(odds)})` : formatOdds(odds)}
-    </button>
-  )
-}
+import OddsButton from './OddsButton'
 
 function MatchRow({ match }) {
   const toggleSelection = useBetSlip((state) => state.toggleSelection)
@@ -43,7 +27,7 @@ function MatchRow({ match }) {
 
   return (
     <div className="grid grid-cols-[2fr_1fr_1fr_1fr_40px] items-center gap-3 border-b border-gray-800 px-4 py-3">
-      <div>
+      <Link to={`/game/${match.id}`} className="hover:opacity-80">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-white">{match.away_team}</span>
           {match.is_live && (
@@ -61,7 +45,7 @@ function MatchRow({ match }) {
         <p className="mt-0.5 text-xs text-gray-500">
           {match.is_live ? match.clock : formatStartTime(match.start_time)}
         </p>
-      </div>
+      </Link>
 
       <div className="flex flex-col gap-1">
         <OddsButton
