@@ -11,12 +11,10 @@ export default function TcgPage() {
   const [activeTier, setActiveTier] = useState(null)
 
   const balance = useBalance((state) => state.balance)
-  const deduct = useBalance((state) => state.deduct)
   const ownedCards = useTcgCollection((state) => state.ownedCards)
 
   const handleBuyPack = (tier) => {
     if (balance < tier.price) return
-    deduct(tier.price)
     setActiveTier(tier)
     setTab('opening')
   }
