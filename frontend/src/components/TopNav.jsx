@@ -7,7 +7,7 @@ import ProfileDropdown from './ProfileDropdown'
 
 const NAV_LINKS = [
   { label: 'Home', path: '/' },
-  { label: 'Sports', path: '/' },
+  { label: 'Sports', path: '/sports' },
   { label: 'TCG', path: '/tcg' },
   { label: 'Casino', path: null },
 ]
@@ -21,7 +21,10 @@ export default function TopNav() {
   const toggleTheme = useTheme((state) => state.toggleTheme)
   const location = useLocation()
   const hasOwnBetSlipToggle =
-    location.pathname === '/' || location.pathname.startsWith('/tcg') || location.pathname.startsWith('/game/')
+    location.pathname === '/' ||
+    location.pathname === '/sports' ||
+    location.pathname.startsWith('/tcg') ||
+    location.pathname.startsWith('/game/')
 
   return (
     <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3 dark:border-gray-800 dark:bg-gray-950">

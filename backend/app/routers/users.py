@@ -17,6 +17,11 @@ from app.schemas import (
     AddUnopenedPackIn,
 )
 
+# NOTE for review: there's no session/token auth on this router - any
+# caller can hit /users/{user_id}/... for any id. Ownership checks below
+# only guard cross-user tampering on sub-resources (e.g. deleting someone
+# else's owned card), not impersonation of the user_id itself. Fine for a
+# local demo; would need real auth (JWT/session) before going further.
 router = APIRouter(prefix="/users", tags=["users"])
 
 
@@ -64,6 +69,9 @@ async def add_to_collection(user_id: int, payload: AddOwnedCardIn, db: AsyncSess
 @router.delete("/{user_id}/collection/{owned_id}")
 async def remove_from_collection(user_id: int, owned_id: int, db: AsyncSession = Depends(get_db)):
     owned = await db.get(OwnedCard, owned_id)
+    # Ownership check: a valid owned_id that belongs to a different user
+    # is treated the same as "doesn't exist" rather than 403, so it doesn't
+    # confirm to the caller that the id exists at all.
     if not owned or owned.user_id != user_id:
         raise HTTPException(status_code=404, detail="Owned card not found")
     await db.delete(owned)
@@ -133,6 +141,8 @@ async def create_unopened_pack(user_id: int, payload: AddUnopenedPackIn, db: Asy
 
 @router.delete("/{user_id}/unopened-packs/{unopened_id}")
 async def remove_unopened_pack(user_id: int, unopened_id: int, db: AsyncSession = Depends(get_db)):
+    # Called once a pending pull is resolved (Sell/Keep chosen) - see
+    # PackOpeningFlow.resolveUnopenedPack on the frontend.
     unopened = await db.get(UnopenedPack, unopened_id)
     if not unopened or unopened.user_id != user_id:
         raise HTTPException(status_code=404, detail="Unopened pack not found")

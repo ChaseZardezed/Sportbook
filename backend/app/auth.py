@@ -1,5 +1,8 @@
 from passlib.context import CryptContext
 
+# bcrypt is pinned <4.0 in requirements.txt - passlib 1.7.4's bcrypt backend
+# breaks on bcrypt>=4.0 (it reads a __about__.__version__ attribute that
+# newer bcrypt releases removed).
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 

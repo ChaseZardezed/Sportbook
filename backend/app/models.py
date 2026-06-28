@@ -15,6 +15,8 @@ from sqlalchemy.orm import relationship
 from app.database import Base
 
 
+# A registered account. Holds auth credentials plus the live balance; all
+# other per-user data (collection, bets, unopened packs) hangs off this via FK.
 class User(Base):
     __tablename__ = "users"
 
@@ -33,6 +35,8 @@ class User(Base):
     unopened_packs = relationship("UnopenedPack", back_populates="user")
 
 
+# A sportsbook event (game). Score/clock fields are mutated by the seed data
+# directly (no live feed); odds live separately on the related Market rows.
 class Match(Base):
     __tablename__ = "matches"
 
@@ -53,6 +57,7 @@ class Match(Base):
     markets = relationship("Market", back_populates="match")
 
 
+# One bettable line on a match (moneyline/spread/total/prop/etc).
 class Market(Base):
     __tablename__ = "markets"
 
@@ -66,6 +71,9 @@ class Market(Base):
     bets = relationship("Bet", back_populates="market")
 
 
+# Legacy single-leg bet tied to one Market row. Superseded by PlacedBet for
+# what the app actually persists today (which supports parlays via JSON legs),
+# kept here for the original Market relationship.
 class Bet(Base):
     __tablename__ = "bets"
 
@@ -82,6 +90,8 @@ class Bet(Base):
     market = relationship("Market", back_populates="bets")
 
 
+# A purchasable pack (Bronze/Silver/Gold/Ruby/Diamond) for a given category.
+# Doesn't own its cards directly - see Card.category for the pooling model.
 class PackTier(Base):
     __tablename__ = "pack_tiers"
 
@@ -119,6 +129,9 @@ class Card(Base):
     pack_tier = relationship("PackTier", back_populates="cards")
 
 
+# A card a user kept from a pack. pulled_value is frozen at pull time;
+# current_value drifts via CollectionSidebar's periodic fluctuation (client-side
+# only - the backend never recalculates it).
 class OwnedCard(Base):
     __tablename__ = "owned_cards"
 
@@ -134,6 +147,10 @@ class OwnedCard(Base):
     card = relationship("Card")
 
 
+# What the sportsbook UI actually creates when a user places a bet (straight
+# or parlay). legs is a denormalized JSON snapshot rather than FK rows to
+# Market, since a parlay leg's odds/line should stay frozen at bet time even
+# if the live market line moves afterward.
 class PlacedBet(Base):
     __tablename__ = "placed_bets"
 
@@ -150,6 +167,11 @@ class PlacedBet(Base):
     user = relationship("User", back_populates="placed_bets")
 
 
+# A pack that's been paid for and had its card rolled, but hasn't been
+# resolved into a Sell/Keep decision yet. Created the moment a purchase is
+# confirmed (see PackOpeningFlow.handleConfirmOpen) so an abandoned pull
+# (closed tab, navigated away before flipping) isn't silently lost; deleted
+# once the user resolves it.
 class UnopenedPack(Base):
     __tablename__ = "unopened_packs"
 

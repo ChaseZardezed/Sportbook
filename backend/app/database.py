@@ -1,3 +1,6 @@
+# SQLAlchemy async engine/session setup. SQLite dev db lives at
+# backend/brace.db; Base is the declarative base every model in models.py
+# inherits from.
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import declarative_base
 import os

@@ -1,63 +1,248 @@
-import MatchupTable from '../components/MatchupTable'
-import GameChat from '../components/GameChat'
-import StatsPanel from '../components/StatsPanel'
+import { useNavigate } from 'react-router-dom'
+import { useCurrentUser } from '../store/currentUser'
+import { useBalance } from '../store/balance'
+import { usePlacedBets } from '../store/placedBets'
+import { useTcgCollection } from '../store/tcgCollection'
+import { useMatches } from '../hooks/useMatches'
+import { findMarket, formatOdds } from '../lib/odds'
+import { rarityColor } from '../lib/rarityColors'
+import { formatStartTime, formatTimeAgo } from '../lib/time'
 import BetSlip from '../components/BetSlip'
-import Ticker from '../components/Ticker'
-import PromoBanner from '../components/PromoBanner'
-import SportTabs from '../components/SportTabs'
-import { useSportFilter } from '../store/sportFilter'
-import { useGameChat } from '../store/gameChat'
-import { useStatsPanel } from '../store/statsPanel'
-import { useBetSlip } from '../store/betSlip'
 
-export default function HomePage() {
-  const selectedSport = useSportFilter((state) => state.selectedSport)
-  const isChatOpen = useGameChat((state) => state.openMatch !== null)
-  const isStatsOpen = useStatsPanel((state) => state.openMatch !== null)
-  const isLeftPanelOpen = isChatOpen || isStatsOpen
-  const isBetSlipOpen = useBetSlip((state) => state.isOpen)
-  const toggleBetSlipOpen = useBetSlip((state) => state.toggleOpen)
-  const selectionCount = useBetSlip((state) => Object.keys(state.selections).length)
+function StatCard({ icon, label, value, valueClass, sublabel }) {
+  return (
+    <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+      <p className="flex items-center gap-1.5 text-xs text-gray-500">
+        {icon} {label}
+      </p>
+      <p className={`mt-1 text-2xl font-bold ${valueClass}`}>{value}</p>
+      <p className="text-xs text-gray-500">{sublabel}</p>
+    </div>
+  )
+}
 
-  let gridColsClass = 'grid-cols-[1fr]'
-  if (isLeftPanelOpen && isBetSlipOpen) gridColsClass = 'grid-cols-[320px_1fr_320px]'
-  else if (isLeftPanelOpen) gridColsClass = 'grid-cols-[320px_1fr]'
-  else if (isBetSlipOpen) gridColsClass = 'grid-cols-[1fr_320px]'
+function LiveNowRow({ match }) {
+  const navigate = useNavigate()
+  const moneyline = findMarket(match.markets, 'moneyline')
 
   return (
-    <>
-      <Ticker />
-      <PromoBanner />
-      <div className="flex items-center justify-between border-b border-gray-200 px-6 pt-4 pb-3 dark:border-gray-800">
-        <SportTabs />
-        <button
-          type="button"
-          onClick={toggleBetSlipOpen}
-          className={`flex items-center gap-2 rounded border px-4 py-1.5 text-sm font-semibold ${
-            isBetSlipOpen
-              ? 'border-purple-500 bg-purple-600/20 text-gray-900 dark:text-white'
-              : 'border-gray-300 text-gray-600 hover:border-purple-500 dark:border-gray-700 dark:text-gray-300'
-          }`}
-        >
-          {isBetSlipOpen ? 'Close' : 'Bet Slip'}
-          {selectionCount > 0 && (
-            <span className="rounded-full bg-purple-600 px-1.5 text-xs text-white">{selectionCount}</span>
+    <button
+      type="button"
+      onClick={() => navigate(`/game/${match.id}`)}
+      className="flex w-full items-center justify-between border-b border-gray-200 py-3 text-left last:border-0 dark:border-gray-800"
+    >
+      <div>
+        <div className="flex items-center gap-2">
+          {match.is_live ? (
+            <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
+              Live {match.clock}
+            </span>
+          ) : (
+            <span className="text-xs text-gray-500">{formatStartTime(match.start_time)}</span>
           )}
-        </button>
-      </div>
-      <div className={`grid gap-4 p-6 ${gridColsClass}`}>
-        {isChatOpen && <GameChat />}
-        {isStatsOpen && <StatsPanel />}
-        <div>
-          <h1 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">{selectedSport ?? 'All Sports'}</h1>
-          <MatchupTable />
         </div>
-        {isBetSlipOpen && (
-          <div className="sticky top-4 self-start">
-            <BetSlip />
-          </div>
-        )}
+        <p className="font-semibold text-gray-900 dark:text-white">{match.home_team}</p>
+        <p className="text-xs text-gray-500">vs {match.away_team}</p>
       </div>
-    </>
+      {moneyline && (
+        <div className="text-right text-sm font-bold">
+          <p className={moneyline.data.home >= 0 ? 'text-green-500' : 'text-red-500'}>
+            {formatOdds(moneyline.data.home)}
+          </p>
+          <p className={moneyline.data.away >= 0 ? 'text-green-500' : 'text-red-500'}>
+            {formatOdds(moneyline.data.away)}
+          </p>
+        </div>
+      )}
+    </button>
+  )
+}
+
+function PackHistoryRow({ card }) {
+  const navigate = useNavigate()
+  const colors = rarityColor(card.rarity)
+
+  return (
+    <button
+      type="button"
+      onClick={() => navigate('/tcg')}
+      className="flex w-full items-center justify-between border-b border-gray-200 py-3 text-left last:border-0 dark:border-gray-800"
+    >
+      <div className="flex items-center gap-3">
+        <div
+          className={`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded border-2 ${colors.border} bg-gray-100 dark:bg-gray-900`}
+        >
+          {card.imageUrl ? (
+            <img src={card.imageUrl} alt={card.name} className="h-full w-full object-cover" />
+          ) : (
+            <span className="text-[10px] font-bold text-gray-500">{card.name.slice(0, 3).toUpperCase()}</span>
+          )}
+        </div>
+        <div>
+          <p className="font-semibold text-gray-900 dark:text-white">{card.name}</p>
+          <p className={`text-xs ${colors.text}`}>
+            {card.rarity} • {card.category}
+          </p>
+        </div>
+      </div>
+      <div className="text-right">
+        <p className="font-bold text-green-500">${card.pulledValue.toFixed(0)}</p>
+        <p className="text-xs text-gray-500">{formatTimeAgo(card.pulledAt)}</p>
+      </div>
+    </button>
+  )
+}
+
+const PROMOS = [
+  {
+    icon: '⭐',
+    iconClass: 'bg-green-600/15 text-green-400',
+    title: 'Parlay Boost',
+    subtitle: 'Up to 12x payout on 4+ leg parlays',
+  },
+  {
+    icon: '💎',
+    iconClass: 'bg-purple-600/15 text-purple-400',
+    title: 'TCG Welcome',
+    subtitle: 'Free Bronze Slab Pack on first deposit',
+  },
+  {
+    icon: '🏆',
+    iconClass: 'bg-amber-600/15 text-amber-400',
+    title: 'Refer a Friend',
+    subtitle: '$25 credit when they place first bet',
+  },
+]
+
+export default function HomePage() {
+  const navigate = useNavigate()
+  const user = useCurrentUser((state) => state.user)
+  const balance = useBalance((state) => state.balance)
+  const placedBets = usePlacedBets((state) => state.placedBets)
+  const ownedCards = useTcgCollection((state) => state.ownedCards)
+  const { data: matches } = useMatches()
+
+  const collectionValue = ownedCards.reduce((sum, card) => sum + card.currentValue, 0)
+
+  const liveMatches = [...(matches ?? [])]
+    .sort((a, b) => Number(b.is_live) - Number(a.is_live) || Number(b.is_featured) - Number(a.is_featured))
+    .slice(0, 4)
+
+  const packHistory = [...ownedCards]
+    .sort((a, b) => new Date(b.pulledAt) - new Date(a.pulledAt))
+    .slice(0, 4)
+
+  return (
+    <div className="grid grid-cols-[1fr_320px] gap-6 p-6">
+      <div className="space-y-6">
+        <div className="rounded-lg border border-green-900/40 bg-gradient-to-br from-green-900/30 to-gray-950 p-6">
+          <p className="text-sm text-green-400">Good morning,</p>
+          <h1 className="text-2xl font-bold text-white">{user?.first_name ?? 'Player'}</h1>
+          <p className="mt-1 text-sm text-gray-400">Here is your Strike dashboard. Ready to play?</p>
+          <div className="mt-4 flex gap-3">
+            <button
+              type="button"
+              onClick={() => navigate('/sports')}
+              className="flex items-center gap-1.5 rounded bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-500"
+            >
+              ⚡ View Live Odds
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/tcg')}
+              className="flex items-center gap-1.5 rounded border border-gray-600 bg-gray-900/60 px-4 py-2 text-sm font-bold text-white hover:border-purple-500"
+            >
+              💎 Open Packs
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-4 gap-4">
+          <StatCard
+            icon="💰"
+            label="Balance"
+            value={`$${balance.toFixed(2)}`}
+            valueClass="text-green-500"
+            sublabel="Available to bet"
+          />
+          <StatCard
+            icon="📊"
+            label="Active Bets"
+            value={placedBets.length}
+            valueClass="text-gray-900 dark:text-white"
+            sublabel={placedBets.length > 0 ? `${placedBets.length} open positions` : 'No open positions'}
+          />
+          <StatCard
+            icon="💎"
+            label="Collection"
+            value={`$${collectionValue.toFixed(0)}`}
+            valueClass="text-purple-400"
+            sublabel={`${ownedCards.length} slabs owned`}
+          />
+          <StatCard
+            icon="🏆"
+            label="Win Rate"
+            value="—"
+            valueClass="text-gray-900 dark:text-white"
+            sublabel="Place a bet to start"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-6">
+          <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+            <div className="mb-1 flex items-center justify-between">
+              <p className="flex items-center gap-1.5 font-bold text-gray-900 dark:text-white">🔥 Live Now</p>
+              <button
+                type="button"
+                onClick={() => navigate('/sports')}
+                className="text-xs font-semibold text-green-500 hover:underline"
+              >
+                All games →
+              </button>
+            </div>
+            {liveMatches.map((match) => (
+              <LiveNowRow key={match.id} match={match} />
+            ))}
+          </div>
+
+          <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+            <div className="mb-1 flex items-center justify-between">
+              <p className="flex items-center gap-1.5 font-bold text-gray-900 dark:text-white">📦 Pack Opening History</p>
+              <button
+                type="button"
+                onClick={() => navigate('/tcg')}
+                className="text-xs font-semibold text-green-500 hover:underline"
+              >
+                View collection →
+              </button>
+            </div>
+            {packHistory.length > 0 ? (
+              packHistory.map((card) => <PackHistoryRow key={card.ownedId} card={card} />)
+            ) : (
+              <p className="py-3 text-sm text-gray-500">No packs opened yet — open one to see it here.</p>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          {PROMOS.map((promo) => (
+            <div
+              key={promo.title}
+              className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950"
+            >
+              <span className={`flex h-9 w-9 items-center justify-center rounded ${promo.iconClass}`}>
+                {promo.icon}
+              </span>
+              <p className="mt-2 font-bold text-gray-900 dark:text-white">{promo.title}</p>
+              <p className="text-xs text-gray-500">{promo.subtitle}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="sticky top-4 self-start">
+        <BetSlip />
+      </div>
+    </div>
   )
 }

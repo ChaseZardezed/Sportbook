@@ -23,8 +23,13 @@ function getStoredTab() {
 export default function TcgPage() {
   const [category, setCategory] = useState(CATEGORIES[1].label)
   const [tab, setTabState] = useState(getStoredTab) // store | opening | collection | unopened
+  // Which tab to return to once the opening flow finishes - 'store' for a
+  // fresh purchase, 'unopened' when resuming a pending pull.
   const [returnTab, setReturnTab] = useState('store')
   const [activeTier, setActiveTier] = useState(null)
+  // Set when entering 'opening' via an Unopened Packs row instead of a
+  // fresh purchase - tells PackOpeningFlow to skip straight to the reveal
+  // stage with the already-rolled card instead of showing the buy/confirm UI.
   const [resumePack, setResumePack] = useState(null)
 
   const balance = useBalance((state) => state.balance)
@@ -37,6 +42,9 @@ export default function TcgPage() {
     if (next !== 'opening') localStorage.setItem(TAB_STORAGE_KEY, next)
   }
 
+  // "All" only makes sense as a category filter when browsing owned cards or
+  // pending pulls - the Pack Store always needs one concrete category since
+  // PackOpeningFlow needs a single tier.cards pool to roll against.
   const visibleCategories =
     tab === 'collection' || tab === 'unopened' ? CATEGORIES : CATEGORIES.filter((cat) => cat.label !== 'All')
 
@@ -49,6 +57,9 @@ export default function TcgPage() {
   }
 
   const handleOpenUnopenedPack = (pack) => {
+    // UnopenedPackOut only carries a lightweight tier reference (id/name/
+    // price), so the full tier (rarity_odds, card pool) has to be looked up
+    // from the already-fetched /packs data by id.
     const tier = packs?.find((t) => t.id === pack.packTierId)
     if (!tier) return
     setActiveTier(tier)
