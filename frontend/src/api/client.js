@@ -15,3 +15,96 @@ export async function fetchPacks() {
   }
   return response.json()
 }
+
+async function postAuth(path, body) {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    const message = Array.isArray(data.detail)
+      ? data.detail.map((error) => error.msg).join(', ')
+      : data.detail || 'Something went wrong'
+    throw new Error(message)
+  }
+  return data
+}
+
+export function registerUser(payload) {
+  return postAuth('/auth/register', payload)
+}
+
+export function loginUser(payload) {
+  return postAuth('/auth/login', payload)
+}
+
+export async function fetchUser(userId) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}`)
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user: ${response.status}`)
+  }
+  return response.json()
+}
+
+export async function fetchCollection(userId) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/collection`)
+  if (!response.ok) {
+    throw new Error(`Failed to fetch collection: ${response.status}`)
+  }
+  return response.json()
+}
+
+export async function addOwnedCard(userId, { cardId, category }) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/collection`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ card_id: cardId, category }),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to add card: ${response.status}`)
+  }
+  return response.json()
+}
+
+export async function removeOwnedCard(userId, ownedId) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/collection/${ownedId}`, {
+    method: 'DELETE',
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to remove card: ${response.status}`)
+  }
+}
+
+export async function updateBalance(userId, delta) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/balance`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ delta }),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to update balance: ${response.status}`)
+  }
+  return response.json()
+}
+
+export async function fetchPlacedBets(userId) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/bets`)
+  if (!response.ok) {
+    throw new Error(`Failed to fetch bets: ${response.status}`)
+  }
+  return response.json()
+}
+
+export async function createPlacedBet(userId, { type, legs, stake, odds, payout }) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/bets`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type, legs, stake, odds, payout }),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to place bet: ${response.status}`)
+  }
+  return response.json()
+}
