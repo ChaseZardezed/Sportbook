@@ -20,6 +20,7 @@ export default function TopNav() {
   const theme = useTheme((state) => state.theme)
   const toggleTheme = useTheme((state) => state.toggleTheme)
   const location = useLocation()
+  const isTcgPage = location.pathname.startsWith('/tcg')
 
   return (
     <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3 dark:border-gray-800 dark:bg-gray-950">
@@ -83,20 +84,22 @@ export default function TopNav() {
           🔔
         </button>
         <ProfileDropdown />
-        <button
-          type="button"
-          onClick={toggleOpen}
-          className={`flex items-center gap-2 rounded border px-4 py-1.5 text-sm font-semibold ${
-            isOpen
-              ? 'border-purple-500 bg-purple-600/20 text-gray-900 dark:text-white'
-              : 'border-gray-300 text-gray-600 hover:border-purple-500 dark:border-gray-700 dark:text-gray-300'
-          }`}
-        >
-          {isOpen ? 'Close' : 'Bet Slip'}
-          {selectionCount > 0 && (
-            <span className="rounded-full bg-purple-600 px-1.5 text-xs text-white">{selectionCount}</span>
-          )}
-        </button>
+        {!isTcgPage && (
+          <button
+            type="button"
+            onClick={toggleOpen}
+            className={`flex items-center gap-2 rounded border px-4 py-1.5 text-sm font-semibold ${
+              isOpen
+                ? 'border-purple-500 bg-purple-600/20 text-gray-900 dark:text-white'
+                : 'border-gray-300 text-gray-600 hover:border-purple-500 dark:border-gray-700 dark:text-gray-300'
+            }`}
+          >
+            {isOpen ? 'Close' : 'Bet Slip'}
+            {selectionCount > 0 && (
+              <span className="rounded-full bg-purple-600 px-1.5 text-xs text-white">{selectionCount}</span>
+            )}
+          </button>
+        )}
       </div>
     </header>
   )
