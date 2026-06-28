@@ -231,7 +231,6 @@ PACK_TIERS = [
                 {
                     "Market Price": "$13.26",
                     "Volatility": "Medium",
-                    "Listed Median": "-",
                     "Current Quantity": "673",
                     "Current Sellers": "360",
                     "6M Low Sale": "$9.99",
@@ -251,7 +250,6 @@ PACK_TIERS = [
                 {
                     "Market Price": "$16.01",
                     "Volatility": "Medium",
-                    "Listed Median": "-",
                     "Current Quantity": "822",
                     "Current Sellers": "410",
                     "6M Low Sale": "$1.00",
@@ -271,7 +269,6 @@ PACK_TIERS = [
                 {
                     "Market Price": "$22.22",
                     "Volatility": "Medium",
-                    "Listed Median": "-",
                     "Current Quantity": "853",
                     "Current Sellers": "374",
                     "6M Low Sale": "$0.16",
@@ -291,7 +288,6 @@ PACK_TIERS = [
                 {
                     "Market Price": "$28.71",
                     "Volatility": "Medium",
-                    "Listed Median": "-",
                     "Current Quantity": "183",
                     "Current Sellers": "127",
                     "6M Low Sale": "$10.97",
@@ -311,7 +307,6 @@ PACK_TIERS = [
                 {
                     "Market Price": "$72.51",
                     "Volatility": "Indeterminate",
-                    "Listed Median": "-",
                     "Current Quantity": "297",
                     "Current Sellers": "167",
                     "6M Low Sale": "$53.99",
@@ -331,7 +326,6 @@ PACK_TIERS = [
                 {
                     "Market Price": "$72.57",
                     "Volatility": "Medium",
-                    "Listed Median": "-",
                     "Current Quantity": "448",
                     "Current Sellers": "266",
                     "6M Low Sale": "$44.81",

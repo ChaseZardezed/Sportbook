@@ -237,6 +237,21 @@ export default function PackOpeningFlow({ tier, onDone, onBack, resumePack }) {
           <p className="mt-2 text-sm text-gray-400">
             Market Value <span className="font-bold text-green-400">${card.market_value.toFixed(0)}</span>
           </p>
+
+          {card.stats && Object.keys(card.stats).length > 0 && (
+            <div className="mt-3 grid grid-cols-2 gap-1.5 text-left text-xs">
+              {Object.entries(card.stats).map(([label, value]) => (
+                <div
+                  key={label}
+                  className="flex items-center justify-between rounded border border-gray-200 bg-white px-2 py-1 dark:border-gray-800 dark:bg-gray-950"
+                >
+                  <span className="text-gray-500">{label}</span>
+                  <span className="font-semibold text-gray-900 dark:text-white">{value}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="mt-3 flex gap-3">
             <button
               type="button"
