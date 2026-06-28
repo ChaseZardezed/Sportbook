@@ -50,7 +50,7 @@ uvicorn app.main:app --reload --port 8000
 npm install
 npm run dev
 
-The frontend expects the backend at http://localhost:8000 (see rontend/src/api/client.js) and runs on http://localhost:5173.
+The frontend expects the backend at http://localhost:8000 and runs on http://localhost:5173.
 
 ## Notes
 
