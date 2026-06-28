@@ -39,22 +39,7 @@ frontend/
 
 **Backend**:
 
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-venv\Scripts\activate
-# macOS/Linux:
-# source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Seed the database (fresh brace.db only)
-python -m app.seed
-
-# Start the FastAPI server
-uvicorn app.main:app --reload --port 8000
+python -m venv venv venv\Scripts\activate # or source venv/bin/activate on macOS/Linux pip install -r requirements.txt python -m app.seed # populates a fresh brace.db with demo data uvicorn app.main:app --reload --port 8000 can you clean this up
 
 **Frontend**:
 
