@@ -101,7 +101,11 @@ class Card(Base):
     __tablename__ = "cards"
 
     id = Column(Integer, primary_key=True)
+    # Cards are pooled by category+rarity across all tiers of that category,
+    # rather than belonging to one specific tier. pack_tier_id is kept only
+    # to satisfy the FK from seeding and isn't used to filter pull pools.
     pack_tier_id = Column(Integer, ForeignKey("pack_tiers.id"), nullable=False)
+    category = Column(String, nullable=False)
     name = Column(String, nullable=False)
     set_name = Column(String, nullable=False)
     card_number = Column(String, nullable=False)

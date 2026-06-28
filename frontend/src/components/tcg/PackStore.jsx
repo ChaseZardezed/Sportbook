@@ -14,9 +14,10 @@ function groupByCategory(tiers) {
 }
 
 function CardPool({ tier }) {
-  const sortedCards = [...tier.cards].sort(
-    (a, b) => RARITY_RANK.indexOf(a.rarity) - RARITY_RANK.indexOf(b.rarity),
-  )
+  const pullableRarities = new Set(Object.keys(tier.rarity_odds))
+  const sortedCards = tier.cards
+    .filter((card) => pullableRarities.has(card.rarity))
+    .sort((a, b) => RARITY_RANK.indexOf(a.rarity) - RARITY_RANK.indexOf(b.rarity))
 
   return (
     <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900">
