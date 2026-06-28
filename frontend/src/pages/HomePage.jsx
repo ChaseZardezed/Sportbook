@@ -29,7 +29,7 @@ function LiveNowRow({ match }) {
     <button
       type="button"
       onClick={() => navigate(`/game/${match.id}`)}
-      className="flex w-full items-center justify-between border-b border-gray-300 py-3 text-left last:border-0 dark:border-gray-800"
+      className="flex w-full items-center justify-between border-b border-gray-300 px-2 py-3 text-left transition-colors last:border-0 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-gray-900"
     >
       <div>
         <div className="flex items-center gap-2">
@@ -65,8 +65,8 @@ function PackHistoryRow({ card }) {
   return (
     <button
       type="button"
-      onClick={() => navigate('/tcg')}
-      className="flex w-full items-center gap-3 border-b border-gray-300 py-3 text-left last:border-0 dark:border-gray-800"
+      onClick={() => navigate('/tcg', { state: { tab: 'collection' } })}
+      className="flex w-full items-center gap-3 border-b border-gray-300 px-2 py-3 text-left transition-colors last:border-0 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-gray-900"
     >
       <div
         className={`flex h-16 w-12 shrink-0 items-center justify-center overflow-hidden rounded border ${colors.border} bg-gray-100 text-[10px] font-bold text-gray-500 dark:bg-gray-900`}
@@ -126,31 +126,32 @@ export default function HomePage() {
     .slice(0, 4)
 
   return (
-    <div className="grid grid-cols-[1fr_320px] gap-6 p-6">
-      <div className="space-y-6">
-        <div className="rounded-lg border border-purple-200 bg-gradient-to-br from-purple-100 to-white p-6 dark:border-purple-900/40 dark:from-purple-900/30 dark:to-gray-950">
-          <p className="text-sm text-purple-600 dark:text-purple-400">Good morning,</p>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{user?.first_name ?? 'Player'}</h1>
-          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Here is your Strike dashboard. Ready to play?</p>
-          <div className="mt-4 flex gap-3">
-            <button
-              type="button"
-              onClick={() => navigate('/sports')}
-              className="flex items-center gap-1.5 rounded bg-purple-600 px-4 py-2 text-sm font-bold text-white hover:bg-purple-500"
-            >
-              ⚡ View Live Odds
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/tcg')}
-              className="flex items-center gap-1.5 rounded border border-purple-300 bg-white px-4 py-2 text-sm font-bold text-gray-900 hover:border-purple-500 dark:border-gray-600 dark:bg-gray-900/60 dark:text-white"
-            >
-              💎 Open Packs
-            </button>
-          </div>
+    <div className="space-y-6 p-6">
+      <div className="rounded-lg border border-purple-200 bg-gradient-to-br from-purple-100 to-white p-6 dark:border-purple-900/40 dark:from-purple-900/30 dark:to-gray-950">
+        <p className="text-sm text-purple-600 dark:text-purple-400">Good morning,</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{user?.first_name ?? 'Player'}</h1>
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Here is your Strike dashboard. Ready to play?</p>
+        <div className="mt-4 flex gap-3">
+          <button
+            type="button"
+            onClick={() => navigate('/sports')}
+            className="flex items-center gap-1.5 rounded bg-purple-600 px-4 py-2 text-sm font-bold text-white hover:bg-purple-500"
+          >
+            ⚡ View Live Odds
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/tcg', { state: { tab: 'store' } })}
+            className="flex items-center gap-1.5 rounded border border-purple-300 bg-white px-4 py-2 text-sm font-bold text-gray-900 transition-colors hover:border-purple-500 hover:bg-purple-50 dark:border-gray-600 dark:bg-gray-900/60 dark:text-white dark:hover:bg-gray-800"
+          >
+            💎 Open Packs
+          </button>
         </div>
+      </div>
 
-        <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-[1fr_320px] gap-6">
+        <div className="space-y-6">
+          <div className="grid grid-cols-4 gap-4">
           <StatCard
             icon="💰"
             label="Balance"
@@ -188,7 +189,7 @@ export default function HomePage() {
               <button
                 type="button"
                 onClick={() => navigate('/sports')}
-                className="text-xs font-semibold text-green-500 hover:underline"
+                className="rounded px-2 py-1 text-xs font-semibold text-green-500 transition-colors hover:bg-green-500/10 hover:underline"
               >
                 All games →
               </button>
@@ -203,8 +204,8 @@ export default function HomePage() {
               <p className="flex items-center gap-1.5 font-bold text-gray-900 dark:text-white">📦 Pack Opening History</p>
               <button
                 type="button"
-                onClick={() => navigate('/tcg')}
-                className="text-xs font-semibold text-green-500 hover:underline"
+                onClick={() => navigate('/tcg', { state: { tab: 'collection' } })}
+                className="rounded px-2 py-1 text-xs font-semibold text-green-500 transition-colors hover:bg-green-500/10 hover:underline"
               >
                 View collection →
               </button>
@@ -231,10 +232,11 @@ export default function HomePage() {
             </div>
           ))}
         </div>
-      </div>
+        </div>
 
-      <div className="sticky top-4 self-start">
-        <BetSlip />
+        <div className="sticky top-4 self-start">
+          <BetSlip />
+        </div>
       </div>
     </div>
   )

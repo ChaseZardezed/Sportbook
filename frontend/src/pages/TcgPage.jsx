@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import PackStore from '../components/tcg/PackStore'
 import PackOpeningFlow from '../components/tcg/PackOpeningFlow'
 import MyCollection from '../components/tcg/MyCollection'
@@ -21,8 +22,15 @@ function getStoredTab() {
 }
 
 export default function TcgPage() {
+  const location = useLocation()
   const [category, setCategory] = useState(CATEGORIES[0].label)
-  const [tab, setTabState] = useState(getStoredTab) // store | opening | collection | unopened
+  // A navigation from elsewhere (e.g. HomePage's "View collection"/"Open
+  // Packs" links) can request a specific starting tab via route state -
+  // that takes priority over whatever tab was last persisted.
+  const [tab, setTabState] = useState(() => {
+    if (location.state?.tab === 'store' || location.state?.tab === 'collection') return location.state.tab
+    return getStoredTab()
+  }) // store | opening | collection | unopened
   // Which tab to return to once the opening flow finishes - 'store' for a
   // fresh purchase, 'unopened' when resuming a pending pull.
   const [returnTab, setReturnTab] = useState('store')
