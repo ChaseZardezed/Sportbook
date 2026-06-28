@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.database import engine, Base
 from app import models  # noqa: F401 - registers models on Base.metadata
-from app.routers import matches, packs
+from app.routers import matches, packs, auth, users
 
 app = FastAPI(title="Brace Sportsbook API")
 
@@ -17,6 +17,8 @@ app.add_middleware(
 
 app.include_router(matches.router)
 app.include_router(packs.router)
+app.include_router(auth.router)
+app.include_router(users.router)
 
 
 @app.on_event("startup")
