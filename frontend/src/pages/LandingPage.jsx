@@ -40,7 +40,7 @@ export default function LandingPage() {
       <header className="flex items-center gap-2 px-6 py-4">
         <BoltIcon className="h-5 w-5 text-purple-500" />
         <span className="text-lg font-bold text-gray-900 dark:text-white">Strike</span>
-        <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-gray-500 dark:bg-gray-800">
+        <span className="rounded bg-purple-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-purple-700 dark:bg-purple-900/40 dark:text-purple-300">
           Beta
         </span>
       </header>
@@ -66,7 +66,7 @@ export default function LandingPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-sm rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-900"
+          className="w-full max-w-sm rounded-lg border border-gray-300 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-900"
         >
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Sign in</h2>
           <p className="mb-4 text-sm text-gray-500">Welcome back. Enter your details to continue.</p>

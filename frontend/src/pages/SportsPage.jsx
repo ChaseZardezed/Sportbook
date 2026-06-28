@@ -28,7 +28,7 @@ export default function SportsPage() {
     <>
       <Ticker />
       <PromoBanner />
-      <div className="flex items-center justify-between border-b border-gray-200 px-6 pt-4 pb-3 dark:border-gray-800">
+      <div className="flex items-center justify-between border-b border-gray-300 px-6 pt-4 pb-3 dark:border-gray-800">
         <SportTabs />
         <button
           type="button"

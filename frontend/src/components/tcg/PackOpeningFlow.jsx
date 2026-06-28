@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { rollRarity, pickCardOfRarity } from '../../lib/rng'
 import { rarityColor, tierColor, getBestRarity } from '../../lib/rarityColors'
 import { useBalance } from '../../store/balance'
@@ -104,9 +104,54 @@ export default function PackOpeningFlow({ tier, onDone, onBack, resumePack }) {
   const revealColors = isBestPull ? colors : tierColor(tier.name)
   const tierStyle = tierColor(tier.name)
 
+  // Confetti is themed to the pulled card's true rarity color, regenerated only when a new card is pulled.
+  // Pieces spawn around the card's perimeter and fly outward away from center, like a confetti cannon going off.
+  const confettiPieces = useMemo(() => {
+    if (!card) return []
+    const baseColor = colors.glow.replace(/[\d.]+\)$/, '1)')
+    const palette = [
+      baseColor,
+      `color-mix(in srgb, ${baseColor} 65%, white)`,
+      `color-mix(in srgb, ${baseColor} 60%, black)`,
+      '#ffffff',
+    ]
+    return Array.from({ length: 40 }, (_, i) => {
+      const side = Math.floor(Math.random() * 4)
+      const t = Math.random() * 100
+      const spawn =
+        side === 0
+          ? { x: t, y: 0 }
+          : side === 1
+            ? { x: 100, y: t }
+            : side === 2
+              ? { x: 100 - t, y: 100 }
+              : { x: 0, y: 100 - t }
+
+      const dx = spawn.x - 50
+      const dy = spawn.y - 50
+      const len = Math.hypot(dx, dy) || 1
+      const distance = 70 + Math.random() * 160
+      const gravity = 20 + Math.random() * 50
+
+      return {
+        id: i,
+        left: spawn.x,
+        top: spawn.y,
+        size: 5 + Math.random() * 6,
+        rounded: i % 2 === 0,
+        color: palette[i % palette.length],
+        burstX: (dx / len) * distance,
+        burstY: (dy / len) * distance + gravity,
+        rotateEnd: 360 + Math.random() * 540,
+        duration: 1.3 + Math.random() * 0.9,
+        delay: Math.random() * 0.15,
+      }
+    })
+  }, [card])
+
   return (
     <div className="flex flex-col items-center gap-6 pb-10">
-      <button type="button" onClick={onBack} className="self-start text-sm text-gray-400 hover:text-gray-900 dark:hover:text-white">
+      <button type="button" onClick={onBack} className="self-start text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
         ← Back to Store
       </button>
 
@@ -130,7 +175,7 @@ export default function PackOpeningFlow({ tier, onDone, onBack, resumePack }) {
         >
           {/* Front face: the pack */}
           <div
-            className={`absolute inset-0 flex flex-col items-center justify-between rounded-xl border-2 bg-gradient-to-br from-gray-800 to-gray-950 p-6 [backface-visibility:hidden] ${
+            className={`absolute inset-0 flex flex-col items-center justify-between rounded-xl border-2 bg-gradient-to-br from-slate-300 to-slate-500 p-6 [backface-visibility:hidden] dark:from-gray-800 dark:to-gray-950 ${
               stage === 'ready' ? tierStyle.border : revealColors.border
             } ${stage === 'revealing' ? 'animate-pulse-glow' : ''}`}
             style={
@@ -142,8 +187,8 @@ export default function PackOpeningFlow({ tier, onDone, onBack, resumePack }) {
             }
           >
             <div className="text-center">
-              <p className="text-xs font-bold uppercase tracking-wide text-gray-300">Raw Card Pack</p>
-              <p className="text-sm font-bold text-white">{tier.name}</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-gray-700 dark:text-gray-300">Raw Card Pack</p>
+              <p className="text-sm font-bold text-gray-900 dark:text-white">{tier.name}</p>
             </div>
             <BoltIcon
               className={`h-10 w-10 ${stage === 'ready' ? `${tierStyle.text}/60` : revealColors.text}`}
@@ -151,8 +196,8 @@ export default function PackOpeningFlow({ tier, onDone, onBack, resumePack }) {
             {stage === 'waiting' ? (
               <p className={`animate-pulse text-xs font-bold ${revealColors.text}`}>👆 Click to flip</p>
             ) : (
-              <div className="rounded border border-white/20 bg-black/30 px-3 py-1">
-                <p className="font-bold text-white">${tier.price.toFixed(0)}</p>
+              <div className="rounded border border-black/20 bg-white/40 px-3 py-1 dark:border-white/20 dark:bg-black/30">
+                <p className="font-bold text-gray-900 dark:text-white">${tier.price.toFixed(0)}</p>
               </div>
             )}
           </div>
@@ -192,6 +237,29 @@ export default function PackOpeningFlow({ tier, onDone, onBack, resumePack }) {
             style={{ backgroundColor: colors.glow }}
           />
         )}
+
+        {showFlash && (
+          <div className="pointer-events-none absolute inset-0 overflow-visible">
+            {confettiPieces.map((piece) => (
+              <span
+                key={piece.id}
+                className={`animate-confetti-burst absolute ${piece.rounded ? 'rounded-full' : 'rounded-sm'}`}
+                style={{
+                  left: `${piece.left}%`,
+                  top: `${piece.top}%`,
+                  width: piece.size,
+                  height: piece.size,
+                  backgroundColor: piece.color,
+                  '--burst-x': `${piece.burstX}px`,
+                  '--burst-y': `${piece.burstY}px`,
+                  '--rotate-end': `${piece.rotateEnd}deg`,
+                  '--burst-duration': `${piece.duration}s`,
+                  '--burst-delay': `${piece.delay}s`,
+                }}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {stage === 'ready' && !confirming && (
@@ -206,7 +274,7 @@ export default function PackOpeningFlow({ tier, onDone, onBack, resumePack }) {
 
       {stage === 'ready' && confirming && (
         <div className="flex flex-col items-center gap-2">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             Confirm purchase: open {tier.name} for{' '}
             <span className="font-bold text-gray-900 dark:text-white">${tier.price.toFixed(0)}</span>?
           </p>
@@ -232,14 +300,14 @@ export default function PackOpeningFlow({ tier, onDone, onBack, resumePack }) {
       )}
 
       {stage === 'result' && (
-        <div className="w-72 animate-fade-in rounded-lg border border-gray-200 bg-gray-50 p-4 text-center dark:border-gray-800 dark:bg-gray-900">
+        <div className="w-72 animate-fade-in rounded-lg border border-gray-300 bg-gray-50 p-4 text-center dark:border-gray-800 dark:bg-gray-900">
           <p className={`text-xs ${colors.text}`}>{card.rarity}</p>
           <p className="text-lg font-bold text-gray-900 dark:text-white">{card.name}</p>
           <p className="text-xs text-gray-500">
             {card.set_name} • {card.card_number} • PSA {card.grade}
           </p>
-          <p className="mt-2 text-sm text-gray-400">
-            Market Value <span className="font-bold text-green-400">${card.market_value.toFixed(0)}</span>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Market Value <span className="font-bold text-green-600 dark:text-green-400">${card.market_value.toFixed(0)}</span>
           </p>
 
           {card.stats && Object.keys(card.stats).length > 0 && (
@@ -247,7 +315,7 @@ export default function PackOpeningFlow({ tier, onDone, onBack, resumePack }) {
               {Object.entries(card.stats).map(([label, value]) => (
                 <div
                   key={label}
-                  className="flex items-center justify-between rounded border border-gray-200 bg-white px-2 py-1 dark:border-gray-800 dark:bg-gray-950"
+                  className="flex items-center justify-between rounded border border-gray-300 bg-white px-2 py-1 dark:border-gray-800 dark:bg-gray-950"
                 >
                   <span className="text-gray-500">{label}</span>
                   <span className="font-semibold text-gray-900 dark:text-white">{value}</span>

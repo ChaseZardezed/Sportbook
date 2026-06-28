@@ -2,7 +2,10 @@ import { useState } from 'react'
 import { usePacks } from '../../hooks/usePacks'
 import { useBalance } from '../../store/balance'
 import { rarityColor, RARITY_RANK } from '../../lib/rarityColors'
+import { CATEGORIES } from '../../lib/categories'
 import PackTierCard from './PackTierCard'
+
+const CATEGORY_ICON = Object.fromEntries(CATEGORIES.map((cat) => [cat.label, cat.icon]))
 
 function groupByCategory(tiers) {
   const groups = new Map()
@@ -17,10 +20,13 @@ function CardPool({ tier }) {
   const pullableRarities = new Set(Object.keys(tier.rarity_odds))
   const sortedCards = tier.cards
     .filter((card) => pullableRarities.has(card.rarity))
-    .sort((a, b) => RARITY_RANK.indexOf(a.rarity) - RARITY_RANK.indexOf(b.rarity))
+    .sort(
+      (a, b) =>
+        RARITY_RANK.indexOf(a.rarity) - RARITY_RANK.indexOf(b.rarity) || a.market_value - b.market_value,
+    )
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900">
       <p className="mb-3 text-sm font-bold text-gray-900 dark:text-white">{tier.name} — Card Pool</p>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-3">
         {sortedCards.map((card) => {
@@ -52,7 +58,7 @@ function CardPool({ tier }) {
 export default function PackStore({ category, onBuyPack }) {
   const { data: packs, isLoading, error } = usePacks()
   const balance = useBalance((state) => state.balance)
-  const [openCategories, setOpenCategories] = useState(new Set())
+  const [openCategories, setOpenCategories] = useState(new Set(['Pokemon']))
   const [expandedTierId, setExpandedTierId] = useState(null)
 
   const toggleCategory = (groupCategory) => {
@@ -93,10 +99,27 @@ export default function PackStore({ category, onBuyPack }) {
               <button
                 type="button"
                 onClick={() => toggleCategory(groupCategory)}
-                className="flex w-full items-center gap-2 text-sm font-bold uppercase tracking-wide text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                className="flex w-full items-center justify-between rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 transition-colors hover:border-purple-500 dark:border-gray-800 dark:bg-gray-900"
               >
-                <span className={`transition-transform ${isOpen ? 'rotate-90' : ''}`}>▶</span>
-                {groupCategory}
+                <span className="flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-gray-700 dark:text-gray-300">
+                  {CATEGORY_ICON[groupCategory]} {groupCategory}
+                  <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-semibold text-gray-500 dark:bg-gray-800">
+                    {tiers.length}
+                  </span>
+                </span>
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  className={`h-4 w-4 shrink-0 text-purple-500 transition-transform ${isOpen ? 'rotate-90' : ''}`}
+                >
+                  <path
+                    d="M7 5l6 5-6 5"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </button>
             )}
             {isOpen && (

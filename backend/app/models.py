@@ -33,6 +33,7 @@ class User(Base):
     owned_cards = relationship("OwnedCard", back_populates="user")
     placed_bets = relationship("PlacedBet", back_populates="user")
     unopened_packs = relationship("UnopenedPack", back_populates="user")
+    card_history = relationship("CardHistory", back_populates="user")
 
 
 # A sportsbook event (game). Score/clock fields are mutated by the seed data
@@ -184,4 +185,22 @@ class UnopenedPack(Base):
 
     user = relationship("User", back_populates="unopened_packs")
     pack_tier = relationship("PackTier")
+    card = relationship("Card")
+
+
+# A permanent log entry created when a user sells or ships a card out of
+# their collection (see MyCollection's Sell/Ship buttons). value is frozen
+# at the time of the action, since the card's market_value drifts afterward.
+class CardHistory(Base):
+    __tablename__ = "card_history"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    card_id = Column(Integer, ForeignKey("cards.id"), nullable=False)
+    category = Column(String, nullable=False)
+    action = Column(String, nullable=False)  # "sold" or "shipped"
+    value = Column(Float, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="card_history")
     card = relationship("Card")

@@ -45,7 +45,7 @@ function StraightBetRow({ selection }) {
   const setStake = useBetSlip((state) => state.setStake)
 
   return (
-    <div className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded border border-gray-300 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
       <LegHeader selection={selection} onRemove={() => removeSelection(selection.id)} />
       <div className="mt-2 flex gap-2">
         {QUICK_STAKES.map((amount) => (
@@ -72,7 +72,7 @@ function ParlayLegRow({ selection }) {
   const removeSelection = useBetSlip((state) => state.removeSelection)
 
   return (
-    <div className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded border border-gray-300 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
       <LegHeader selection={selection} onRemove={() => removeSelection(selection.id)} />
     </div>
   )
@@ -80,7 +80,7 @@ function ParlayLegRow({ selection }) {
 
 function PlacedBetRow({ bet }) {
   return (
-    <div className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded border border-gray-300 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
       <div className="flex items-center justify-between">
         <span className="rounded bg-purple-600/20 px-1.5 py-0.5 text-[10px] font-bold uppercase text-purple-400">
           {bet.type}
@@ -96,7 +96,7 @@ function PlacedBetRow({ bet }) {
           </p>
         ))}
       </div>
-      <div className="mt-2 flex items-center justify-between border-t border-gray-200 dark:border-gray-800 pt-2 text-sm">
+      <div className="mt-2 flex items-center justify-between border-t border-gray-300 dark:border-gray-800 pt-2 text-sm">
         <span className="text-gray-400">
           ${bet.stake.toFixed(2)} @ {formatOdds(bet.odds)}
         </span>
@@ -165,8 +165,8 @@ export default function BetSlip() {
   }
 
   return (
-    <div className="flex flex-col rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
-      <div className="flex border-b border-gray-200 dark:border-gray-800">
+    <div className="flex flex-col rounded-lg border border-gray-300 bg-white dark:border-gray-800 dark:bg-gray-950">
+      <div className="flex border-b border-gray-300 dark:border-gray-800">
         <button
           type="button"
           onClick={() => setTab('slip')}
@@ -210,7 +210,7 @@ export default function BetSlip() {
           </div>
 
           {isParlay && (
-            <div className="border-t border-gray-200 dark:border-gray-800 p-3">
+            <div className="border-t border-gray-300 dark:border-gray-800 p-3">
               <div className="mb-2 flex items-center justify-between text-sm">
                 <span className="text-gray-400">Combined Odds</span>
                 <span className="font-semibold text-gray-900 dark:text-white">{formatOdds(parlayAmericanOdds)}</span>
@@ -240,7 +240,7 @@ export default function BetSlip() {
           )}
 
           {selections.length > 0 && (
-            <div className="border-t border-gray-200 dark:border-gray-800 p-3">
+            <div className="border-t border-gray-300 dark:border-gray-800 p-3">
               {stakeToPlace > balance && (
                 <p className="mb-2 text-center text-xs text-red-400">Insufficient balance</p>
               )}

@@ -9,7 +9,7 @@ export default function CardDetailModal({ card, onClose }) {
       onClick={onClose}
     >
       <div
-        className="flex max-h-full w-full max-w-2xl gap-6 overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950"
+        className="flex max-h-full w-full max-w-2xl gap-6 overflow-y-auto rounded-lg border border-gray-300 bg-white p-6 dark:border-gray-800 dark:bg-gray-950"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="w-48 shrink-0">
@@ -18,22 +18,17 @@ export default function CardDetailModal({ card, onClose }) {
               <img src={card.imageUrl} alt={card.name} className="h-full w-full object-contain" />
             ) : (
               <>
-                <div className="flex items-center justify-between bg-blue-700 px-2 py-0.5 text-[9px] font-bold text-white">
-                  <span>PSA</span>
+                <div className="flex items-center justify-end bg-blue-700 px-2 py-0.5 text-[9px] font-bold text-white">
                   <span className="rounded bg-blue-900 px-1">{card.rarity.slice(0, 4).toUpperCase()}</span>
                 </div>
                 <div className="flex flex-1 items-center justify-center">
                   <p className="text-sm font-bold text-gray-700">{card.name}</p>
                 </div>
-                <div className="flex items-center justify-between bg-blue-700 px-2 py-0.5 text-[10px] font-bold text-white">
-                  <span>GRADE</span>
-                  <span>{card.grade}</span>
-                </div>
               </>
             )}
           </div>
           {card.statsImageUrl && (
-            <div className="aspect-[5/7] overflow-hidden rounded border border-gray-200 dark:border-gray-800">
+            <div className="aspect-[5/7] overflow-hidden rounded border border-gray-300 dark:border-gray-800">
               <img src={card.statsImageUrl} alt={`${card.name} stats`} className="h-full w-full object-contain" />
             </div>
           )}
@@ -67,14 +62,14 @@ export default function CardDetailModal({ card, onClose }) {
               <p className="font-semibold text-gray-900 dark:text-white">{card.cardNumber}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-500">PSA Grade</p>
-              <p className="font-semibold text-gray-900 dark:text-white">{card.grade}</p>
-            </div>
-            <div>
               <p className="text-xs text-gray-500">Current Value</p>
               <p className="font-semibold text-green-400">
                 ${card.currentValue.toFixed(0)}
-                {changed && <span className="ml-1 text-xs">{wentUp ? '↗' : '↘'}</span>}
+                {changed && (
+                  <span className={`ml-1 text-xs ${wentUp ? 'text-green-500' : 'text-red-500'}`}>
+                    {wentUp ? '↗︎' : '↘︎'}
+                  </span>
+                )}
               </p>
             </div>
           </div>
@@ -86,7 +81,7 @@ export default function CardDetailModal({ card, onClose }) {
                 {statEntries.map(([label, value]) => (
                   <div
                     key={label}
-                    className="flex items-center justify-between rounded border border-gray-200 px-3 py-1.5 dark:border-gray-800"
+                    className="flex items-center justify-between rounded border border-gray-300 px-3 py-1.5 dark:border-gray-800"
                   >
                     <span className="text-gray-500">{label}</span>
                     <span className="font-semibold text-gray-900 dark:text-white">{value}</span>

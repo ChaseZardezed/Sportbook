@@ -40,7 +40,7 @@ function PromoCard({ promo }) {
 
 export default function PromoBanner() {
   return (
-    <div className="mx-6 mt-4 rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
+    <div className="mx-6 mt-4 rounded-lg border border-gray-300 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
       <p className="mb-2 text-xs font-semibold uppercase text-gray-500">Promotions</p>
       <div className="flex gap-3 overflow-x-auto pb-1">
         {PROMOS.map((promo) => (

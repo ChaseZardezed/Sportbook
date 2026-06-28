@@ -19,7 +19,7 @@ export default function Scoreboard({ match }) {
   if (!periods) return null
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-950">
+    <div className="rounded-lg border border-gray-300 bg-white p-3 dark:border-gray-800 dark:bg-gray-950">
       <table className="text-sm">
         <thead>
           <tr className="text-xs uppercase text-gray-500">

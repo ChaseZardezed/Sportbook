@@ -170,3 +170,28 @@ class AddUnopenedPackIn(BaseModel):
     pack_tier_id: int
     card_id: int
     category: str
+
+
+class CardHistoryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    category: str
+    action: str
+    value: float
+    created_at: datetime
+    card: CardOut
+
+
+class AddCardHistoryIn(BaseModel):
+    card_id: int
+    category: str
+    action: str
+    value: float
+
+    @field_validator("action")
+    @classmethod
+    def action_must_be_known(cls, value: str) -> str:
+        if value not in ("sold", "shipped"):
+            raise ValueError('action must be "sold" or "shipped"')
+        return value

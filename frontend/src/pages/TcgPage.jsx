@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import PackStore from '../components/tcg/PackStore'
 import PackOpeningFlow from '../components/tcg/PackOpeningFlow'
 import MyCollection from '../components/tcg/MyCollection'
@@ -21,8 +22,15 @@ function getStoredTab() {
 }
 
 export default function TcgPage() {
-  const [category, setCategory] = useState(CATEGORIES[1].label)
-  const [tab, setTabState] = useState(getStoredTab) // store | opening | collection | unopened
+  const location = useLocation()
+  const [category, setCategory] = useState(CATEGORIES[0].label)
+  // A navigation from elsewhere (e.g. HomePage's "View collection"/"Open
+  // Packs" links) can request a specific starting tab via route state -
+  // that takes priority over whatever tab was last persisted.
+  const [tab, setTabState] = useState(() => {
+    if (location.state?.tab === 'store' || location.state?.tab === 'collection') return location.state.tab
+    return getStoredTab()
+  }) // store | opening | collection | unopened
   // Which tab to return to once the opening flow finishes - 'store' for a
   // fresh purchase, 'unopened' when resuming a pending pull.
   const [returnTab, setReturnTab] = useState('store')
@@ -42,11 +50,10 @@ export default function TcgPage() {
     if (next !== 'opening') localStorage.setItem(TAB_STORAGE_KEY, next)
   }
 
-  // "All" only makes sense as a category filter when browsing owned cards or
-  // pending pulls - the Pack Store always needs one concrete category since
-  // PackOpeningFlow needs a single tier.cards pool to roll against.
-  const visibleCategories =
-    tab === 'collection' || tab === 'unopened' ? CATEGORIES : CATEGORIES.filter((cat) => cat.label !== 'All')
+  // "All" is selectable everywhere now, including the Pack Store - browsing
+  // doesn't need a concrete category since each tier card carries its own
+  // category and PackStore groups tiers by category when "All" is active.
+  const visibleCategories = CATEGORIES
 
   const handleBuyPack = (tier) => {
     if (balance < tier.price) return
@@ -74,7 +81,6 @@ export default function TcgPage() {
   }
 
   const goToStore = () => {
-    if (category === 'All') setCategory(CATEGORIES[1].label)
     setTab('store')
   }
 
@@ -97,7 +103,7 @@ export default function TcgPage() {
       </div>
 
       <div>
-        <div className="mb-4 flex items-center gap-6 border-b border-gray-200 text-sm font-semibold dark:border-gray-800">
+        <div className="mb-4 flex items-center gap-6 border-b border-gray-300 text-sm font-semibold dark:border-gray-800">
           <button
             type="button"
             onClick={goToStore}
