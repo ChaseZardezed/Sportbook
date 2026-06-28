@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { usePacks } from '../../hooks/usePacks'
 import { useBalance } from '../../store/balance'
 import { useTcgCollection } from '../../store/tcgCollection'
@@ -16,6 +17,16 @@ export default function PackStore({ category, onBuyPack }) {
   const { data: packs, isLoading, error } = usePacks()
   const balance = useBalance((state) => state.balance)
   const lastPull = useTcgCollection((state) => state.lastPull)
+  const [openCategories, setOpenCategories] = useState(new Set())
+
+  const toggleCategory = (groupCategory) => {
+    setOpenCategories((prev) => {
+      const next = new Set(prev)
+      if (next.has(groupCategory)) next.delete(groupCategory)
+      else next.add(groupCategory)
+      return next
+    })
+  }
 
   if (isLoading) return <p className="text-gray-400">Loading packs…</p>
   if (error) return <p className="text-red-400">Failed to load packs: {error.message}</p>
@@ -45,23 +56,36 @@ export default function PackStore({ category, onBuyPack }) {
         <p className="text-sm text-gray-500">Each pack contains one raw card. Higher tiers pull from exclusive card pools.</p>
       </div>
 
-      {[...groups.entries()].map(([groupCategory, tiers]) => (
-        <div key={groupCategory} className="space-y-3">
-          {category === 'All' && (
-            <h2 className="text-sm font-bold uppercase tracking-wide text-gray-400">{groupCategory}</h2>
-          )}
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
-            {tiers.map((tier) => (
-              <PackTierCard
-                key={tier.id}
-                tier={tier}
-                disabled={balance < tier.price}
-                onBuy={() => onBuyPack(tier)}
-              />
-            ))}
+      {[...groups.entries()].map(([groupCategory, tiers]) => {
+        const isOpen = category !== 'All' || openCategories.has(groupCategory)
+
+        return (
+          <div key={groupCategory} className="space-y-3">
+            {category === 'All' && (
+              <button
+                type="button"
+                onClick={() => toggleCategory(groupCategory)}
+                className="flex w-full items-center gap-2 text-sm font-bold uppercase tracking-wide text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              >
+                <span className={`transition-transform ${isOpen ? 'rotate-90' : ''}`}>▶</span>
+                {groupCategory}
+              </button>
+            )}
+            {isOpen && (
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-4">
+                {tiers.map((tier) => (
+                  <PackTierCard
+                    key={tier.id}
+                    tier={tier}
+                    disabled={balance < tier.price}
+                    onBuy={() => onBuyPack(tier)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }

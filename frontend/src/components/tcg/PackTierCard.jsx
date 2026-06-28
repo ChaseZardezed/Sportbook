@@ -14,11 +14,12 @@ export default function PackTierCard({ tier, onBuy, disabled }) {
 
   return (
     <div className="flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg dark:border-gray-800 dark:bg-gray-950">
-      <div className={`bg-gradient-to-br ${style.gradient} px-4 py-4`}>
-        <p className={`flex items-center gap-1 text-sm font-bold ${style.text}`}>
+      <div className={`relative overflow-hidden bg-gradient-to-br ${style.gradient} px-4 py-4`}>
+        <div className="animate-shine pointer-events-none absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent" />
+        <p className={`relative flex items-center gap-1 text-sm font-bold ${style.text}`}>
           {style.icon} {tier.name}
         </p>
-        <p className="text-2xl font-bold text-white">${tier.price.toFixed(0)}</p>
+        <p className="relative text-2xl font-bold text-white">${tier.price.toFixed(0)}</p>
       </div>
 
       <div className="flex-1 space-y-3 p-4">

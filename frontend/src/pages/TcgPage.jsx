@@ -8,12 +8,14 @@ import { useTcgCollection } from '../store/tcgCollection'
 import { CATEGORIES } from '../lib/categories'
 
 export default function TcgPage() {
-  const [category, setCategory] = useState('All')
+  const [category, setCategory] = useState(CATEGORIES[1].label)
   const [tab, setTab] = useState('store') // store | opening | collection
   const [activeTier, setActiveTier] = useState(null)
 
   const balance = useBalance((state) => state.balance)
   const ownedCards = useTcgCollection((state) => state.ownedCards)
+
+  const visibleCategories = tab === 'collection' ? CATEGORIES : CATEGORIES.filter((cat) => cat.label !== 'All')
 
   const handleBuyPack = (tier) => {
     if (balance < tier.price) return
@@ -21,11 +23,16 @@ export default function TcgPage() {
     setTab('opening')
   }
 
+  const goToStore = () => {
+    if (category === 'All') setCategory(CATEGORIES[1].label)
+    setTab('store')
+  }
+
   return (
     <div className="grid grid-cols-[176px_1fr] gap-6 p-6">
       <div className="space-y-1">
         <p className="mb-2 px-1 text-xs font-semibold uppercase text-gray-500">Categories</p>
-        {CATEGORIES.map((cat) => (
+        {visibleCategories.map((cat) => (
           <button
             key={cat.label}
             type="button"
@@ -43,7 +50,7 @@ export default function TcgPage() {
         <div className="mb-4 flex items-center gap-6 border-b border-gray-200 text-sm font-semibold dark:border-gray-800">
           <button
             type="button"
-            onClick={() => setTab('store')}
+            onClick={goToStore}
             className={`flex items-center gap-1 border-b-2 pb-3 ${
               tab === 'store' ? 'border-purple-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-900 dark:hover:text-white'
             }`}
@@ -52,7 +59,10 @@ export default function TcgPage() {
           </button>
           <button
             type="button"
-            onClick={() => setTab('collection')}
+            onClick={() => {
+              setCategory('All')
+              setTab('collection')
+            }}
             className={`flex items-center gap-1 border-b-2 pb-3 ${
               tab === 'collection' ? 'border-purple-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-900 dark:hover:text-white'
             }`}
