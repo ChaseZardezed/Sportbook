@@ -30,6 +30,7 @@ class User(Base):
     bets = relationship("Bet", back_populates="user")
     owned_cards = relationship("OwnedCard", back_populates="user")
     placed_bets = relationship("PlacedBet", back_populates="user")
+    unopened_packs = relationship("UnopenedPack", back_populates="user")
 
 
 class Match(Base):
@@ -100,7 +101,11 @@ class Card(Base):
     __tablename__ = "cards"
 
     id = Column(Integer, primary_key=True)
+    # Cards are pooled by category+rarity across all tiers of that category,
+    # rather than belonging to one specific tier. pack_tier_id is kept only
+    # to satisfy the FK from seeding and isn't used to filter pull pools.
     pack_tier_id = Column(Integer, ForeignKey("pack_tiers.id"), nullable=False)
+    category = Column(String, nullable=False)
     name = Column(String, nullable=False)
     set_name = Column(String, nullable=False)
     card_number = Column(String, nullable=False)
@@ -108,6 +113,8 @@ class Card(Base):
     rarity = Column(String, nullable=False)  # must match a key in pack_tier.rarity_odds
     market_value = Column(Float, nullable=False)
     image_url = Column(String, nullable=True)  # e.g. "/cards/piplup.jpg"
+    stats_image_url = Column(String, nullable=True)  # e.g. "/cards/piplup-stats.jpg"
+    stats = Column(JSON, nullable=True)  # e.g. {"PPG": "27.4", "Team": "Lakers"}
 
     pack_tier = relationship("PackTier", back_populates="cards")
 
@@ -141,3 +148,18 @@ class PlacedBet(Base):
     placed_at = Column(DateTime, default=datetime.utcnow)
 
     user = relationship("User", back_populates="placed_bets")
+
+
+class UnopenedPack(Base):
+    __tablename__ = "unopened_packs"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    pack_tier_id = Column(Integer, ForeignKey("pack_tiers.id"), nullable=False)
+    card_id = Column(Integer, ForeignKey("cards.id"), nullable=False)
+    category = Column(String, nullable=False)
+    purchased_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="unopened_packs")
+    pack_tier = relationship("PackTier")
+    card = relationship("Card")

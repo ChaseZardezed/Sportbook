@@ -13,6 +13,8 @@ function fromOwnedCardOut(owned) {
     grade: owned.card.grade,
     rarity: owned.card.rarity,
     imageUrl: owned.card.image_url,
+    statsImageUrl: owned.card.stats_image_url,
+    stats: owned.card.stats,
     pulledValue: owned.pulled_value,
     currentValue: owned.current_value,
     pulledAt: owned.pulled_at,

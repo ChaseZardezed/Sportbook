@@ -72,3 +72,16 @@ input[type='number'] {
   animation: fade-in 0.3s ease-out;
 }
 
+@keyframes shine {
+  0% {
+    transform: translateX(-150%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(150%) skewX(-20deg);
+  }
+}
+
+.animate-shine {
+  animation: shine 2.5s ease-in-out infinite;
+}
+

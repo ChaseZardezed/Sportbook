@@ -108,3 +108,32 @@ export async function createPlacedBet(userId, { type, legs, stake, odds, payout 
   }
   return response.json()
 }
+
+export async function fetchUnopenedPacks(userId) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/unopened-packs`)
+  if (!response.ok) {
+    throw new Error(`Failed to fetch unopened packs: ${response.status}`)
+  }
+  return response.json()
+}
+
+export async function createUnopenedPack(userId, { packTierId, cardId, category }) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/unopened-packs`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pack_tier_id: packTierId, card_id: cardId, category }),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to save unopened pack: ${response.status}`)
+  }
+  return response.json()
+}
+
+export async function removeUnopenedPack(userId, unopenedId) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/unopened-packs/${unopenedId}`, {
+    method: 'DELETE',
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to remove unopened pack: ${response.status}`)
+  }
+}
