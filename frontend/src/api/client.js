@@ -137,3 +137,23 @@ export async function removeUnopenedPack(userId, unopenedId) {
     throw new Error(`Failed to remove unopened pack: ${response.status}`)
   }
 }
+
+export async function fetchCardHistory(userId) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/card-history`)
+  if (!response.ok) {
+    throw new Error(`Failed to fetch card history: ${response.status}`)
+  }
+  return response.json()
+}
+
+export async function addCardHistory(userId, { cardId, category, action, value }) {
+  const response = await fetch(`${API_BASE_URL}/users/${userId}/card-history`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ card_id: cardId, category, action, value }),
+  })
+  if (!response.ok) {
+    throw new Error(`Failed to record card history: ${response.status}`)
+  }
+  return response.json()
+}

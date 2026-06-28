@@ -43,6 +43,7 @@ function useHydrateUserData() {
   const userId = useCurrentUser((state) => state.user?.id)
   const setBalance = useBalance((state) => state.setBalance)
   const loadCollection = useTcgCollection((state) => state.loadCollection)
+  const loadHistory = useTcgCollection((state) => state.loadHistory)
   const clearCollection = useTcgCollection((state) => state.clearCollection)
   const loadPlacedBets = usePlacedBets((state) => state.loadPlacedBets)
   const clearPlacedBets = usePlacedBets((state) => state.clearPlacedBets)
@@ -62,12 +63,14 @@ function useHydrateUserData() {
       .then((user) => setBalance(user.balance))
       .catch((error) => console.error('Failed to load balance:', error))
     loadCollection(userId)
+    loadHistory(userId)
     loadPlacedBets(userId)
     loadUnopenedPacks(userId)
   }, [
     userId,
     setBalance,
     loadCollection,
+    loadHistory,
     clearCollection,
     loadPlacedBets,
     clearPlacedBets,

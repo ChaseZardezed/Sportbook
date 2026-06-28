@@ -4,7 +4,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 
 from app.database import get_db
-from app.models import User, Card, OwnedCard, PlacedBet, UnopenedPack
+from app.models import User, Card, OwnedCard, PlacedBet, UnopenedPack, CardHistory
 from app.schemas import (
     OwnedCardOut,
     AddOwnedCardIn,
@@ -15,6 +15,8 @@ from app.schemas import (
     AddPlacedBetIn,
     UnopenedPackOut,
     AddUnopenedPackIn,
+    CardHistoryOut,
+    AddCardHistoryIn,
 )
 
 # NOTE for review: there's no session/token auth on this router - any
@@ -149,3 +151,35 @@ async def remove_unopened_pack(user_id: int, unopened_id: int, db: AsyncSession 
     await db.delete(unopened)
     await db.commit()
     return {"status": "ok"}
+
+
+@router.get("/{user_id}/card-history", response_model=list[CardHistoryOut])
+async def list_card_history(user_id: int, db: AsyncSession = Depends(get_db)):
+    await _get_user_or_404(user_id, db)
+    result = await db.execute(
+        select(CardHistory)
+        .options(selectinload(CardHistory.card))
+        .where(CardHistory.user_id == user_id)
+        .order_by(CardHistory.created_at.desc())
+    )
+    return result.scalars().all()
+
+
+@router.post("/{user_id}/card-history", response_model=CardHistoryOut)
+async def add_card_history(user_id: int, payload: AddCardHistoryIn, db: AsyncSession = Depends(get_db)):
+    await _get_user_or_404(user_id, db)
+    card = await db.get(Card, payload.card_id)
+    if not card:
+        raise HTTPException(status_code=404, detail="Card not found")
+
+    entry = CardHistory(
+        user_id=user_id,
+        card_id=card.id,
+        category=payload.category,
+        action=payload.action,
+        value=payload.value,
+    )
+    db.add(entry)
+    await db.commit()
+    await db.refresh(entry, attribute_names=["card"])
+    return entry

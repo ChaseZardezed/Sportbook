@@ -1,5 +1,11 @@
 import { create } from 'zustand'
-import { fetchCollection, addOwnedCard, removeOwnedCard } from '../api/client'
+import {
+  fetchCollection,
+  addOwnedCard,
+  removeOwnedCard,
+  fetchCardHistory,
+  addCardHistory,
+} from '../api/client'
 import { useCurrentUser } from './currentUser'
 
 // Backend's OwnedCardOut nests the card under `card` (snake_case fields);
@@ -23,9 +29,26 @@ function fromOwnedCardOut(owned) {
   }
 }
 
+// Backend's CardHistoryOut nests the card the same way OwnedCardOut does;
+// flattens it into the shape CollectionSidebar's history panel expects.
+function fromCardHistoryOut(entry) {
+  return {
+    id: entry.id,
+    name: entry.card.name,
+    imageUrl: entry.card.image_url,
+    rarity: entry.card.rarity,
+    value: entry.value,
+    action: entry.action,
+    timestamp: entry.created_at,
+  }
+}
+
 export const useTcgCollection = create((set) => ({
   ownedCards: [],
   lastPull: null,
+  // Sell/Ship history for the sidebar's history panel - persisted server-side
+  // via /users/{id}/card-history, so it survives logout/refresh.
+  history: [],
 
   loadCollection: async (userId) => {
     try {
@@ -36,7 +59,16 @@ export const useTcgCollection = create((set) => ({
     }
   },
 
-  clearCollection: () => set({ ownedCards: [], lastPull: null }),
+  loadHistory: async (userId) => {
+    try {
+      const entries = await fetchCardHistory(userId)
+      set({ history: entries.map(fromCardHistoryOut) })
+    } catch (error) {
+      console.error('Failed to load card history:', error)
+    }
+  },
+
+  clearCollection: () => set({ ownedCards: [], lastPull: null, history: [] }),
 
   // Called for every pull regardless of outcome (kept or sold) - lastPull
   // is just UI flavor (was used for a "last pull vs cost" banner, now mostly
@@ -58,15 +90,38 @@ export const useTcgCollection = create((set) => ({
     }
   },
 
-  removeCard: (ownedId) => {
+  // action is 'sold' or 'shipped' - just labels the history entry, doesn't
+  // change removal behavior (selling and shipping both just drop the card).
+  removeCard: (ownedId, action = 'sold') => {
+    const card = useTcgCollection.getState().ownedCards.find((owned) => owned.ownedId === ownedId)
+
+    // Optimistic local entry so the sidebar updates immediately; replaced
+    // wholesale once loadHistory next runs (e.g. on a future page load).
+    const optimisticEntry = card && {
+      id: `pending-${ownedId}`,
+      name: card.name,
+      imageUrl: card.imageUrl,
+      rarity: card.rarity,
+      value: card.currentValue,
+      action,
+      timestamp: new Date().toISOString(),
+    }
+
     set((state) => ({
-      ownedCards: state.ownedCards.filter((card) => card.ownedId !== ownedId),
+      ownedCards: state.ownedCards.filter((owned) => owned.ownedId !== ownedId),
+      history: optimisticEntry ? [optimisticEntry, ...state.history].slice(0, 100) : state.history,
     }))
 
     const userId = useCurrentUser.getState().user?.id
-    if (userId) {
-      removeOwnedCard(userId, ownedId).catch((error) =>
-        console.error('Failed to remove card:', error),
+    if (!userId) return
+
+    removeOwnedCard(userId, ownedId).catch((error) =>
+      console.error('Failed to remove card:', error),
+    )
+
+    if (card) {
+      addCardHistory(userId, { cardId: card.cardId, category: card.category, action, value: card.currentValue }).catch(
+        (error) => console.error('Failed to record card history:', error),
       )
     }
   },

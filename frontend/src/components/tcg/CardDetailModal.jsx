@@ -18,16 +18,11 @@ export default function CardDetailModal({ card, onClose }) {
               <img src={card.imageUrl} alt={card.name} className="h-full w-full object-contain" />
             ) : (
               <>
-                <div className="flex items-center justify-between bg-blue-700 px-2 py-0.5 text-[9px] font-bold text-white">
-                  <span>PSA</span>
+                <div className="flex items-center justify-end bg-blue-700 px-2 py-0.5 text-[9px] font-bold text-white">
                   <span className="rounded bg-blue-900 px-1">{card.rarity.slice(0, 4).toUpperCase()}</span>
                 </div>
                 <div className="flex flex-1 items-center justify-center">
                   <p className="text-sm font-bold text-gray-700">{card.name}</p>
-                </div>
-                <div className="flex items-center justify-between bg-blue-700 px-2 py-0.5 text-[10px] font-bold text-white">
-                  <span>GRADE</span>
-                  <span>{card.grade}</span>
                 </div>
               </>
             )}
@@ -67,14 +62,14 @@ export default function CardDetailModal({ card, onClose }) {
               <p className="font-semibold text-gray-900 dark:text-white">{card.cardNumber}</p>
             </div>
             <div>
-              <p className="text-xs text-gray-500">PSA Grade</p>
-              <p className="font-semibold text-gray-900 dark:text-white">{card.grade}</p>
-            </div>
-            <div>
               <p className="text-xs text-gray-500">Current Value</p>
               <p className="font-semibold text-green-400">
                 ${card.currentValue.toFixed(0)}
-                {changed && <span className="ml-1 text-xs">{wentUp ? '↗' : '↘'}</span>}
+                {changed && (
+                  <span className={`ml-1 text-xs ${wentUp ? 'text-green-500' : 'text-red-500'}`}>
+                    {wentUp ? '↗︎' : '↘︎'}
+                  </span>
+                )}
               </p>
             </div>
           </div>

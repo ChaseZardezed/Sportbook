@@ -14,12 +14,12 @@ function CollectionCard({ card, onSelect }) {
   const handleSell = (event) => {
     event.stopPropagation()
     credit(card.currentValue)
-    removeCard(card.ownedId)
+    removeCard(card.ownedId, 'sold')
   }
 
   const handleShip = (event) => {
     event.stopPropagation()
-    removeCard(card.ownedId)
+    removeCard(card.ownedId, 'shipped')
   }
 
   const changed = card.currentValue !== card.pulledValue
@@ -28,23 +28,18 @@ function CollectionCard({ card, onSelect }) {
   return (
     <div
       onClick={() => onSelect(card)}
-      className="w-44 cursor-pointer rounded-lg border border-gray-300 bg-white p-3 transition-transform hover:-translate-y-1 hover:shadow-lg dark:border-gray-800 dark:bg-gray-950"
+      className="flex w-44 cursor-pointer flex-col rounded-lg border border-gray-300 bg-white p-3 transition-transform hover:-translate-y-1 hover:shadow-lg dark:border-gray-800 dark:bg-gray-950"
     >
       <div className={`mb-2 flex aspect-[5/7] flex-col overflow-hidden rounded border-2 ${colors.border} bg-gray-200 text-gray-900`}>
         {card.imageUrl ? (
           <img src={card.imageUrl} alt={card.name} className="h-full w-full object-contain" />
         ) : (
           <>
-            <div className="flex items-center justify-between bg-blue-700 px-2 py-0.5 text-[9px] font-bold text-white">
-              <span>PSA</span>
+            <div className="flex items-center justify-end bg-blue-700 px-2 py-0.5 text-[9px] font-bold text-white">
               <span className="rounded bg-blue-900 px-1">{card.rarity.slice(0, 4).toUpperCase()}</span>
             </div>
             <div className="flex flex-1 items-center justify-center">
               <p className="text-sm font-bold text-gray-700">{card.name}</p>
-            </div>
-            <div className="flex items-center justify-between bg-blue-700 px-2 py-0.5 text-[10px] font-bold text-white">
-              <span>GRADE</span>
-              <span>{card.grade}</span>
             </div>
           </>
         )}
@@ -53,14 +48,16 @@ function CollectionCard({ card, onSelect }) {
         {card.rarity} • {card.category}
       </p>
       <p className="font-bold text-gray-900 dark:text-white">{card.name}</p>
-      <p className="text-xs text-gray-500">
-        PSA {card.grade} • {card.setName}
-      </p>
+      <p className="text-xs text-gray-500">{card.setName}</p>
       <p className="font-semibold text-green-400">
         ${card.currentValue.toFixed(0)}
-        {changed && <span className="ml-1 text-xs">{wentUp ? '↗' : '↘'}</span>}
+        {changed && (
+          <span className={`ml-1 text-xs ${wentUp ? 'text-green-500' : 'text-red-500'}`}>
+            {wentUp ? '↗︎' : '↘︎'}
+          </span>
+        )}
       </p>
-      <div className="mt-2 flex gap-2">
+      <div className="mt-auto flex gap-2 pt-2">
         <button
           type="button"
           onClick={handleSell}
