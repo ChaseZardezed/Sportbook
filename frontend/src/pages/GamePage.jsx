@@ -220,6 +220,7 @@ export default function GamePage() {
   const { data: matches, isLoading, error } = useMatches()
   const toggleSelection = useBetSlip((state) => state.toggleSelection)
   const isBetSlipOpen = useBetSlip((state) => state.isOpen)
+  const toggleBetSlipOpen = useBetSlip((state) => state.toggleOpen)
   const toggleChat = useGameChat((state) => state.toggleChat)
   const isChatOpen = useGameChat((state) => state.openMatch?.matchId === Number(matchId))
 
@@ -242,15 +243,17 @@ export default function GamePage() {
     })
 
   let gridColsClass = 'grid-cols-[1fr]'
-  if (isBetSlipOpen) gridColsClass = 'grid-cols-[1fr_320px]'
+  if (isChatOpen && isBetSlipOpen) gridColsClass = 'grid-cols-[320px_1fr_320px]'
+  else if (isChatOpen) gridColsClass = 'grid-cols-[320px_1fr]'
+  else if (isBetSlipOpen) gridColsClass = 'grid-cols-[1fr_320px]'
 
   return (
-    <div className={`grid gap-4 p-6 ${gridColsClass}`}>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="text-sm text-gray-400 hover:text-gray-900 dark:hover:text-white">
-            ← Back to all games
-          </Link>
+    <div className="space-y-6 p-6">
+      <div className="flex items-center justify-between">
+        <Link to="/" className="text-sm text-gray-400 hover:text-gray-900 dark:hover:text-white">
+          ← Back to all games
+        </Link>
+        <div className="flex items-center gap-2">
           <button
             type="button"
             aria-label="Toggle game chat"
@@ -265,46 +268,66 @@ export default function GamePage() {
           >
             💬 Chat
           </button>
+          <button
+            type="button"
+            aria-label="Toggle bet slip"
+            onClick={toggleBetSlipOpen}
+            className={`rounded border px-2 py-1.5 text-sm ${
+              isBetSlipOpen
+                ? 'border-purple-500 bg-purple-600/20 text-gray-900 dark:text-white'
+                : 'border-gray-300 text-gray-400 hover:border-purple-500 hover:text-gray-900 dark:border-gray-700 dark:hover:text-white'
+            }`}
+          >
+            {isBetSlipOpen ? 'Close' : 'Bet Slip'}
+          </button>
         </div>
-
-        {isChatOpen && <GameChat />}
-
-        <div className="flex items-start justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-                {match.away_team} @ {match.home_team}
-              </h1>
-              {match.is_live && (
-                <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
-                  Live
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-gray-500">
-              {match.is_live ? (
-                <>
-                  {match.clock} · {match.away_score} - {match.home_score}
-                </>
-              ) : (
-                formatStartTime(match.start_time)
-              )}
-            </p>
-          </div>
-          <Scoreboard match={match} />
-        </div>
-
-        <GameLinesSection match={match} select={select} />
-        <AltLinesSection match={match} select={select} />
-        <NrfiSection match={match} select={select} />
-        <PlayerPropsSection match={match} select={select} />
       </div>
 
-      {isBetSlipOpen && (
-        <div className="sticky top-4 self-start">
-          <BetSlip />
+      <div className="flex items-start justify-between gap-6">
+        <div>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+              {match.away_team} @ {match.home_team}
+            </h1>
+            {match.is_live && (
+              <span className="rounded bg-purple-600 px-1.5 py-0.5 text-[10px] font-bold uppercase text-white">
+                Live
+              </span>
+            )}
+          </div>
+          <p className="text-sm text-gray-500">
+            {match.is_live ? (
+              <>
+                {match.clock} · {match.away_score} - {match.home_score}
+              </>
+            ) : (
+              formatStartTime(match.start_time)
+            )}
+          </p>
         </div>
-      )}
+        <Scoreboard match={match} />
+      </div>
+
+      <div className={`grid gap-4 ${gridColsClass}`}>
+        {isChatOpen && (
+          <div className="sticky top-4 self-start">
+            <GameChat />
+          </div>
+        )}
+
+        <div className="space-y-6">
+          <GameLinesSection match={match} select={select} />
+          <AltLinesSection match={match} select={select} />
+          <NrfiSection match={match} select={select} />
+          <PlayerPropsSection match={match} select={select} />
+        </div>
+
+        {isBetSlipOpen && (
+          <div className="sticky top-4 self-start">
+            <BetSlip />
+          </div>
+        )}
+      </div>
     </div>
   )
 }
