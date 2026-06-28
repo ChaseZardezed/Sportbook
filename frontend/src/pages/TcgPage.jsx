@@ -3,24 +3,63 @@ import PackStore from '../components/tcg/PackStore'
 import PackOpeningFlow from '../components/tcg/PackOpeningFlow'
 import MyCollection from '../components/tcg/MyCollection'
 import CollectionSidebar from '../components/tcg/CollectionSidebar'
+import UnopenedPacks from '../components/tcg/UnopenedPacks'
 import { useBalance } from '../store/balance'
 import { useTcgCollection } from '../store/tcgCollection'
+import { useUnopenedPacks } from '../store/unopenedPacks'
+import { usePacks } from '../hooks/usePacks'
 import { CATEGORIES } from '../lib/categories'
+
+const TAB_STORAGE_KEY = 'tcgActiveTab'
+
+function getStoredTab() {
+  const stored = localStorage.getItem(TAB_STORAGE_KEY)
+  // "opening" can't be resumed after a refresh since the in-flight pack/tier
+  // state isn't persisted, so never restore directly into it.
+  if (stored === 'store' || stored === 'collection' || stored === 'unopened') return stored
+  return 'store'
+}
 
 export default function TcgPage() {
   const [category, setCategory] = useState(CATEGORIES[1].label)
-  const [tab, setTab] = useState('store') // store | opening | collection
+  const [tab, setTabState] = useState(getStoredTab) // store | opening | collection | unopened
+  const [returnTab, setReturnTab] = useState('store')
   const [activeTier, setActiveTier] = useState(null)
+  const [resumePack, setResumePack] = useState(null)
 
   const balance = useBalance((state) => state.balance)
   const ownedCards = useTcgCollection((state) => state.ownedCards)
+  const unopenedPacks = useUnopenedPacks((state) => state.unopenedPacks)
+  const { data: packs } = usePacks()
 
-  const visibleCategories = tab === 'collection' ? CATEGORIES : CATEGORIES.filter((cat) => cat.label !== 'All')
+  const setTab = (next) => {
+    setTabState(next)
+    if (next !== 'opening') localStorage.setItem(TAB_STORAGE_KEY, next)
+  }
+
+  const visibleCategories =
+    tab === 'collection' || tab === 'unopened' ? CATEGORIES : CATEGORIES.filter((cat) => cat.label !== 'All')
 
   const handleBuyPack = (tier) => {
     if (balance < tier.price) return
     setActiveTier(tier)
+    setResumePack(null)
+    setReturnTab('store')
     setTab('opening')
+  }
+
+  const handleOpenUnopenedPack = (pack) => {
+    const tier = packs?.find((t) => t.id === pack.packTierId)
+    if (!tier) return
+    setActiveTier(tier)
+    setResumePack(pack)
+    setReturnTab('unopened')
+    setTab('opening')
+  }
+
+  const handleDoneOpening = () => {
+    setResumePack(null)
+    setTab(returnTab)
   }
 
   const goToStore = () => {
@@ -69,20 +108,33 @@ export default function TcgPage() {
           >
             🏆 My Collection ({ownedCards.length})
           </button>
-          {tab === 'opening' && (
-            <span className="flex items-center gap-1 border-b-2 border-purple-500 pb-3 text-gray-900 dark:text-white">
-              ✨ Opening Pack
-            </span>
-          )}
+          <button
+            type="button"
+            onClick={() => {
+              setCategory('All')
+              setTab('unopened')
+            }}
+            className={`flex items-center gap-1 border-b-2 pb-3 ${
+              tab === 'unopened' ? 'border-purple-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-900 dark:hover:text-white'
+            }`}
+          >
+            📦 Unopened Packs ({unopenedPacks.length})
+          </button>
         </div>
 
         <div className="grid grid-cols-[1fr_288px] gap-6">
           <div>
             {tab === 'store' && <PackStore category={category} onBuyPack={handleBuyPack} />}
             {tab === 'opening' && activeTier && (
-              <PackOpeningFlow tier={activeTier} onDone={() => setTab('store')} onBack={() => setTab('store')} />
+              <PackOpeningFlow
+                tier={activeTier}
+                resumePack={resumePack}
+                onDone={handleDoneOpening}
+                onBack={handleDoneOpening}
+              />
             )}
             {tab === 'collection' && <MyCollection category={category} />}
+            {tab === 'unopened' && <UnopenedPacks category={category} onOpen={handleOpenUnopenedPack} />}
           </div>
 
           <div className="sticky top-4 self-start">

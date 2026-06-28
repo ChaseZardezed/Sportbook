@@ -1,16 +1,20 @@
+import { useState } from 'react'
 import { useTcgCollection } from '../../store/tcgCollection'
 import { useBalance } from '../../store/balance'
+import CardDetailModal from './CardDetailModal'
 
-function CollectionCard({ card }) {
+function CollectionCard({ card, onSelect }) {
   const removeCard = useTcgCollection((state) => state.removeCard)
   const credit = useBalance((state) => state.credit)
 
-  const handleSell = () => {
+  const handleSell = (event) => {
+    event.stopPropagation()
     credit(card.currentValue)
     removeCard(card.ownedId)
   }
 
-  const handleShip = () => {
+  const handleShip = (event) => {
+    event.stopPropagation()
     removeCard(card.ownedId)
   }
 
@@ -18,7 +22,10 @@ function CollectionCard({ card }) {
   const wentUp = card.currentValue > card.pulledValue
 
   return (
-    <div className="w-44 rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-950">
+    <div
+      onClick={() => onSelect(card)}
+      className="w-44 cursor-pointer rounded-lg border border-gray-200 bg-white p-3 transition-transform hover:-translate-y-1 hover:shadow-lg dark:border-gray-800 dark:bg-gray-950"
+    >
       <div className="mb-2 flex aspect-[5/7] flex-col overflow-hidden rounded border-2 border-gray-400 bg-gray-200 text-gray-900">
         {card.imageUrl ? (
           <img src={card.imageUrl} alt={card.name} className="h-full w-full object-contain" />
@@ -76,6 +83,7 @@ export default function MyCollection({ category }) {
 
   const totalValue = ownedCards.reduce((sum, card) => sum + card.currentValue, 0)
   const avgValue = ownedCards.length > 0 ? totalValue / ownedCards.length : 0
+  const [selectedCard, setSelectedCard] = useState(null)
 
   return (
     <div className="space-y-4">
@@ -103,10 +111,12 @@ export default function MyCollection({ category }) {
       ) : (
         <div className="flex flex-wrap gap-4">
           {ownedCards.map((card) => (
-            <CollectionCard key={card.ownedId} card={card} />
+            <CollectionCard key={card.ownedId} card={card} onSelect={setSelectedCard} />
           ))}
         </div>
       )}
+
+      {selectedCard && <CardDetailModal card={selectedCard} onClose={() => setSelectedCard(null)} />}
     </div>
   )
 }

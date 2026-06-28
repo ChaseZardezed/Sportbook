@@ -3,22 +3,31 @@ import { rollRarity, pickCardOfRarity } from '../../lib/rng'
 import { rarityColor, tierColor, getBestRarity } from '../../lib/rarityColors'
 import { useBalance } from '../../store/balance'
 import { useTcgCollection } from '../../store/tcgCollection'
+import { useUnopenedPacks } from '../../store/unopenedPacks'
 import BoltIcon from '../icons/BoltIcon'
 
 const BUILD_UP_MS = 1800
 const FLIP_MS = 1100
 
-export default function PackOpeningFlow({ tier, onDone, onBack }) {
-  const [stage, setStage] = useState('ready') // ready | revealing | waiting | result
-  const [card, setCard] = useState(null)
+export default function PackOpeningFlow({ tier, onDone, onBack, resumePack }) {
+  const [stage, setStage] = useState(resumePack ? 'waiting' : 'ready') // ready | revealing | waiting | result
+  const [card, setCard] = useState(resumePack ? resumePack.card : null)
   const [flipped, setFlipped] = useState(false)
   const [showFlash, setShowFlash] = useState(false)
   const [confirming, setConfirming] = useState(false)
+
+  const category = resumePack ? resumePack.category : tier.category
 
   const balance = useBalance((state) => state.balance)
   const deduct = useBalance((state) => state.deduct)
   const credit = useBalance((state) => state.credit)
   const recordPull = useTcgCollection((state) => state.recordPull)
+  const addUnopenedPack = useUnopenedPacks((state) => state.addUnopenedPack)
+  const removeUnopenedPack = useUnopenedPacks((state) => state.removeUnopenedPack)
+
+  // Tracks the in-flight (or already-resolved) unopened-pack record for this
+  // purchase, so Sell/Keep can clear it once the pull is finally resolved.
+  const unopenedPackRef = useRef(resumePack ? Promise.resolve(resumePack) : null)
 
   // Mirrors current stage/card for the unmount cleanup below, since that
   // closure only captures values from when the effect first ran.
@@ -29,11 +38,14 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
   useEffect(() => {
     return () => {
       const { stage: lastStage, card: lastCard } = latest.current
-      // If the flow is abandoned (back link, tab switch, navigating away)
-      // after the card was revealed but before Sell/Keep was chosen,
-      // default to keeping it rather than losing it.
+      // If the card was already revealed but the user backed out before
+      // choosing Sell/Keep, default to keeping it in the collection rather
+      // than leaving it stuck as an unopened pack.
       if (lastStage === 'result' && lastCard && !resolvedRef.current) {
-        recordPull(lastCard, tier.price, true, tier.category)
+        recordPull(lastCard, tier.price, true, category)
+        unopenedPackRef.current?.then((entry) => {
+          if (entry) removeUnopenedPack(entry.id)
+        })
       }
     }
   }, [])
@@ -48,6 +60,10 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
     setCard(pulledCard)
     setStage('revealing')
     setTimeout(() => setStage('waiting'), BUILD_UP_MS)
+
+    // Persist immediately so an abandoned pull (closed tab, navigated away
+    // before flipping) shows up under Unopened Packs instead of being lost.
+    unopenedPackRef.current = addUnopenedPack(tier, pulledCard, category)
   }
 
   const handleFlip = () => {
@@ -57,16 +73,23 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
     setTimeout(() => setStage('result'), FLIP_MS)
   }
 
+  const resolveUnopenedPack = async () => {
+    const entry = await unopenedPackRef.current
+    if (entry) removeUnopenedPack(entry.id)
+  }
+
   const handleSell = () => {
     resolvedRef.current = true
     credit(card.market_value)
-    recordPull(card, tier.price, false, tier.category)
+    recordPull(card, tier.price, false, category)
+    resolveUnopenedPack()
     onDone()
   }
 
   const handleKeep = () => {
     resolvedRef.current = true
-    recordPull(card, tier.price, true, tier.category)
+    recordPull(card, tier.price, true, category)
+    resolveUnopenedPack()
     onDone()
   }
 
@@ -78,7 +101,7 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
   const tierStyle = tierColor(tier.name)
 
   return (
-    <div className="flex flex-col items-center gap-6 py-10">
+    <div className="flex flex-col items-center gap-6 pb-10">
       <button type="button" onClick={onBack} className="self-start text-sm text-gray-400 hover:text-gray-900 dark:hover:text-white">
         ← Back to Store
       </button>
@@ -103,13 +126,9 @@ export default function PackOpeningFlow({ tier, onDone, onBack }) {
         >
           {/* Front face: the pack */}
           <div
-            className={`absolute inset-0 flex flex-col items-center justify-between rounded-xl border-2 p-6 [backface-visibility:hidden] ${
-              stage === 'ready'
-                ? `${tierStyle.border} bg-gradient-to-br ${tierStyle.gradient}`
-                : `${revealColors.border} bg-gradient-to-br from-gray-800 to-gray-950 ${
-                    stage === 'revealing' ? 'animate-pulse-glow' : ''
-                  }`
-            }`}
+            className={`absolute inset-0 flex flex-col items-center justify-between rounded-xl border-2 bg-gradient-to-br from-gray-800 to-gray-950 p-6 [backface-visibility:hidden] ${
+              stage === 'ready' ? tierStyle.border : revealColors.border
+            } ${stage === 'revealing' ? 'animate-pulse-glow' : ''}`}
             style={
               stage === 'ready'
                 ? { boxShadow: `0 0 30px 8px ${tierStyle.glow}` }

@@ -4,7 +4,7 @@ from sqlalchemy.orm import selectinload
 from sqlalchemy import select
 
 from app.database import get_db
-from app.models import User, Card, OwnedCard, PlacedBet
+from app.models import User, Card, OwnedCard, PlacedBet, UnopenedPack
 from app.schemas import (
     OwnedCardOut,
     AddOwnedCardIn,
@@ -13,6 +13,8 @@ from app.schemas import (
     UserOut,
     PlacedBetOut,
     AddPlacedBetIn,
+    UnopenedPackOut,
+    AddUnopenedPackIn,
 )
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -101,3 +103,39 @@ async def place_bet(user_id: int, payload: AddPlacedBetIn, db: AsyncSession = De
     await db.commit()
     await db.refresh(bet)
     return bet
+
+
+@router.get("/{user_id}/unopened-packs", response_model=list[UnopenedPackOut])
+async def list_unopened_packs(user_id: int, db: AsyncSession = Depends(get_db)):
+    await _get_user_or_404(user_id, db)
+    result = await db.execute(
+        select(UnopenedPack)
+        .options(selectinload(UnopenedPack.pack_tier), selectinload(UnopenedPack.card))
+        .where(UnopenedPack.user_id == user_id)
+    )
+    return result.scalars().all()
+
+
+@router.post("/{user_id}/unopened-packs", response_model=UnopenedPackOut)
+async def create_unopened_pack(user_id: int, payload: AddUnopenedPackIn, db: AsyncSession = Depends(get_db)):
+    await _get_user_or_404(user_id, db)
+    unopened = UnopenedPack(
+        user_id=user_id,
+        pack_tier_id=payload.pack_tier_id,
+        card_id=payload.card_id,
+        category=payload.category,
+    )
+    db.add(unopened)
+    await db.commit()
+    await db.refresh(unopened, attribute_names=["pack_tier", "card"])
+    return unopened
+
+
+@router.delete("/{user_id}/unopened-packs/{unopened_id}")
+async def remove_unopened_pack(user_id: int, unopened_id: int, db: AsyncSession = Depends(get_db)):
+    unopened = await db.get(UnopenedPack, unopened_id)
+    if not unopened or unopened.user_id != user_id:
+        raise HTTPException(status_code=404, detail="Unopened pack not found")
+    await db.delete(unopened)
+    await db.commit()
+    return {"status": "ok"}

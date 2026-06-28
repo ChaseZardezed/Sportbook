@@ -10,6 +10,7 @@ import { useCurrentUser } from './store/currentUser'
 import { useBalance } from './store/balance'
 import { useTcgCollection } from './store/tcgCollection'
 import { usePlacedBets } from './store/placedBets'
+import { useUnopenedPacks } from './store/unopenedPacks'
 import { fetchUser } from './api/client'
 
 function RequireAuth({ children }) {
@@ -31,12 +32,15 @@ function useHydrateUserData() {
   const clearCollection = useTcgCollection((state) => state.clearCollection)
   const loadPlacedBets = usePlacedBets((state) => state.loadPlacedBets)
   const clearPlacedBets = usePlacedBets((state) => state.clearPlacedBets)
+  const loadUnopenedPacks = useUnopenedPacks((state) => state.loadUnopenedPacks)
+  const clearUnopenedPacks = useUnopenedPacks((state) => state.clearUnopenedPacks)
 
   useEffect(() => {
     if (!userId) {
       setBalance(0)
       clearCollection()
       clearPlacedBets()
+      clearUnopenedPacks()
       return
     }
 
@@ -45,7 +49,17 @@ function useHydrateUserData() {
       .catch((error) => console.error('Failed to load balance:', error))
     loadCollection(userId)
     loadPlacedBets(userId)
-  }, [userId, setBalance, loadCollection, clearCollection, loadPlacedBets, clearPlacedBets])
+    loadUnopenedPacks(userId)
+  }, [
+    userId,
+    setBalance,
+    loadCollection,
+    clearCollection,
+    loadPlacedBets,
+    clearPlacedBets,
+    loadUnopenedPacks,
+    clearUnopenedPacks,
+  ])
 }
 
 function App() {

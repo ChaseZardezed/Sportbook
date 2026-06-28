@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { useTcgCollection } from '../../store/tcgCollection'
 
 const RARITY_LEGEND = [
-  { label: 'Common', color: 'bg-gray-400' },
-  { label: 'Uncommon', color: 'bg-green-500' },
-  { label: 'Rare', color: 'bg-blue-500' },
-  { label: 'Ultra Rare', color: 'bg-purple-500' },
-  { label: 'Secret Rare', color: 'bg-amber-500' },
-  { label: '1st Edition', color: 'bg-red-500' },
+  { label: 'Common', color: 'bg-gray-400', min: 5, max: 20 },
+  { label: 'Uncommon', color: 'bg-green-500', min: 21, max: 60 },
+  { label: 'Rare', color: 'bg-blue-500', min: 61, max: 120 },
+  { label: 'Epic', color: 'bg-purple-500', min: 121, max: 400 },
+  { label: 'Legendary', color: 'bg-amber-500', min: 401, max: 1400 },
+  { label: 'Mythical', color: 'bg-red-500', min: 1401, max: 25000 },
 ]
 
 const UPDATE_INTERVAL_SECONDS = 30
@@ -66,9 +66,14 @@ export default function CollectionSidebar() {
         </p>
         <div className="space-y-1.5">
           {RARITY_LEGEND.map((rarity) => (
-            <div key={rarity.label} className="flex items-center gap-2 text-xs text-gray-400">
-              <span className={`h-2 w-2 rounded-full ${rarity.color}`} />
-              {rarity.label}
+            <div key={rarity.label} className="flex items-center justify-between gap-2 text-xs text-gray-400">
+              <span className="flex items-center gap-2">
+                <span className={`h-2 w-2 rounded-full ${rarity.color}`} />
+                {rarity.label}
+              </span>
+              <span className="text-gray-500">
+                ${rarity.min}–${rarity.max}
+              </span>
             </div>
           ))}
         </div>

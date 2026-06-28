@@ -40,6 +40,8 @@ class CardOut(BaseModel):
     rarity: str
     market_value: float
     image_url: str | None
+    stats_image_url: str | None = None
+    stats: dict | None = None
 
 
 class PackTierOut(BaseModel):
@@ -136,3 +138,28 @@ class AddPlacedBetIn(BaseModel):
 
 class BalanceOut(BaseModel):
     balance: float
+
+
+class PackTierMiniOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    price: float
+    category: str
+
+
+class UnopenedPackOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    category: str
+    purchased_at: datetime
+    pack_tier: PackTierMiniOut
+    card: CardOut
+
+
+class AddUnopenedPackIn(BaseModel):
+    pack_tier_id: int
+    card_id: int
+    category: str

@@ -4,12 +4,12 @@ const RARITY_BAR_COLOR = {
   Common: 'bg-gray-400',
   Uncommon: 'bg-green-500',
   Rare: 'bg-blue-500',
-  'Ultra Rare': 'bg-purple-500',
-  'Secret Rare': 'bg-amber-500',
-  '1st Edition': 'bg-red-500',
+  'Epic': 'bg-purple-500',
+  'Legendary': 'bg-amber-500',
+  'Mythical': 'bg-red-500',
 }
 
-export default function PackTierCard({ tier, onBuy, disabled }) {
+export default function PackTierCard({ tier, onBuy, disabled, isExpanded, onTogglePulls }) {
   const style = tierColor(tier.name)
 
   return (
@@ -42,7 +42,7 @@ export default function PackTierCard({ tier, onBuy, disabled }) {
         </div>
       </div>
 
-      <div className="p-4 pt-0">
+      <div className="space-y-2 p-4 pt-0">
         <button
           type="button"
           disabled={disabled}
@@ -50,6 +50,17 @@ export default function PackTierCard({ tier, onBuy, disabled }) {
           className="w-full rounded bg-green-600 py-2 text-sm font-bold text-white transition-colors hover:bg-green-500 disabled:cursor-not-allowed disabled:opacity-40"
         >
           Buy Pack — ${tier.price.toFixed(0)}
+        </button>
+        <button
+          type="button"
+          onClick={onTogglePulls}
+          className={`w-full rounded border py-1.5 text-xs font-bold transition-colors ${
+            isExpanded
+              ? 'border-purple-500 bg-purple-600/20 text-gray-900 dark:text-white'
+              : 'border-gray-300 text-gray-500 hover:border-purple-500 hover:text-gray-900 dark:border-gray-700 dark:hover:text-white'
+          }`}
+        >
+          {isExpanded ? 'Hide Card Pool' : 'View Card Pool'}
         </button>
       </div>
     </div>
