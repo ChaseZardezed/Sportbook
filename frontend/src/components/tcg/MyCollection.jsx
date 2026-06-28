@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import { useTcgCollection } from '../../store/tcgCollection'
 import { useBalance } from '../../store/balance'
+import { rarityColor, RARITY_RANK } from '../../lib/rarityColors'
 import CardDetailModal from './CardDetailModal'
+
+const RARITY_FILTERS = ['All', ...RARITY_RANK]
 
 function CollectionCard({ card, onSelect }) {
   const removeCard = useTcgCollection((state) => state.removeCard)
   const credit = useBalance((state) => state.credit)
+  const colors = rarityColor(card.rarity)
 
   const handleSell = (event) => {
     event.stopPropagation()
@@ -26,7 +30,7 @@ function CollectionCard({ card, onSelect }) {
       onClick={() => onSelect(card)}
       className="w-44 cursor-pointer rounded-lg border border-gray-300 bg-white p-3 transition-transform hover:-translate-y-1 hover:shadow-lg dark:border-gray-800 dark:bg-gray-950"
     >
-      <div className="mb-2 flex aspect-[5/7] flex-col overflow-hidden rounded border-2 border-gray-400 bg-gray-200 text-gray-900">
+      <div className={`mb-2 flex aspect-[5/7] flex-col overflow-hidden rounded border-2 ${colors.border} bg-gray-200 text-gray-900`}>
         {card.imageUrl ? (
           <img src={card.imageUrl} alt={card.name} className="h-full w-full object-contain" />
         ) : (
@@ -45,7 +49,7 @@ function CollectionCard({ card, onSelect }) {
           </>
         )}
       </div>
-      <p className="text-xs text-gray-500">
+      <p className={`text-xs ${colors.text}`}>
         {card.rarity} • {card.category}
       </p>
       <p className="font-bold text-gray-900 dark:text-white">{card.name}</p>
@@ -78,8 +82,14 @@ function CollectionCard({ card, onSelect }) {
 
 export default function MyCollection({ category }) {
   const allOwnedCards = useTcgCollection((state) => state.ownedCards)
-  const ownedCards =
+  const byCategory =
     category === 'All' ? allOwnedCards : allOwnedCards.filter((card) => card.category === category)
+
+  const [rarityFilter, setRarityFilter] = useState('All')
+  const ownedCards =
+    rarityFilter === 'All'
+      ? [...byCategory].sort((a, b) => RARITY_RANK.indexOf(b.rarity) - RARITY_RANK.indexOf(a.rarity))
+      : byCategory.filter((card) => card.rarity === rarityFilter)
 
   const totalValue = ownedCards.reduce((sum, card) => sum + card.currentValue, 0)
   const avgValue = ownedCards.length > 0 ? totalValue / ownedCards.length : 0
@@ -104,6 +114,27 @@ export default function MyCollection({ category }) {
           <p className="text-xs text-gray-500">Avg Value</p>
           <p className="font-bold text-gray-900 dark:text-white">${avgValue.toFixed(0)}</p>
         </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        {RARITY_FILTERS.map((rarity) => {
+          const isActive = rarityFilter === rarity
+          const colors = rarity === 'All' ? null : rarityColor(rarity)
+          return (
+            <button
+              key={rarity}
+              type="button"
+              onClick={() => setRarityFilter(rarity)}
+              className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
+                isActive
+                  ? `${colors ? colors.border : 'border-purple-500'} ${colors ? colors.text : 'text-purple-600 dark:text-purple-300'} bg-gray-100 dark:bg-gray-900`
+                  : 'border-gray-300 text-gray-500 hover:border-purple-500 dark:border-gray-700'
+              }`}
+            >
+              {rarity}
+            </button>
+          )
+        })}
       </div>
 
       {ownedCards.length === 0 ? (

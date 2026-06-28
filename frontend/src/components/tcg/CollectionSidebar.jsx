@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTcgCollection } from '../../store/tcgCollection'
+import { rarityColor } from '../../lib/rarityColors'
 
 const RARITY_LEGEND = [
   { label: 'Common', color: 'bg-gray-400', min: 5, max: 20 },
@@ -48,11 +49,17 @@ export default function CollectionSidebar() {
         <div className="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
           <p className="mb-2 text-xs text-gray-500">Best Pull</p>
           <div className="flex items-center gap-3">
-            <div className="flex h-16 w-12 shrink-0 items-center justify-center rounded border border-purple-500 bg-gray-100 text-[10px] font-bold text-purple-700 dark:bg-gray-900 dark:text-purple-300">
-              {bestPull.name.slice(0, 3).toUpperCase()}
+            <div
+              className={`flex h-16 w-12 shrink-0 items-center justify-center overflow-hidden rounded border ${rarityColor(bestPull.rarity).border} bg-gray-100 text-[10px] font-bold text-gray-500 dark:bg-gray-900`}
+            >
+              {bestPull.imageUrl ? (
+                <img src={bestPull.imageUrl} alt={bestPull.name} className="h-full w-full object-cover" />
+              ) : (
+                bestPull.name.slice(0, 3).toUpperCase()
+              )}
             </div>
             <div>
-              <p className="text-xs text-purple-400">{bestPull.rarity}</p>
+              <p className={`text-xs ${rarityColor(bestPull.rarity).text}`}>{bestPull.rarity}</p>
               <p className="text-sm font-bold text-gray-900 dark:text-white">{bestPull.name}</p>
               <p className="text-sm font-semibold text-green-400">${bestPull.currentValue.toFixed(0)}</p>
             </div>

@@ -17,7 +17,10 @@ function CardPool({ tier }) {
   const pullableRarities = new Set(Object.keys(tier.rarity_odds))
   const sortedCards = tier.cards
     .filter((card) => pullableRarities.has(card.rarity))
-    .sort((a, b) => RARITY_RANK.indexOf(a.rarity) - RARITY_RANK.indexOf(b.rarity))
+    .sort(
+      (a, b) =>
+        RARITY_RANK.indexOf(a.rarity) - RARITY_RANK.indexOf(b.rarity) || a.market_value - b.market_value,
+    )
 
   return (
     <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900">

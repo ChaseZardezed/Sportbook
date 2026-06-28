@@ -40,7 +40,7 @@ export default function LandingPage() {
       <header className="flex items-center gap-2 px-6 py-4">
         <BoltIcon className="h-5 w-5 text-purple-500" />
         <span className="text-lg font-bold text-gray-900 dark:text-white">Strike</span>
-        <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-gray-500 dark:bg-gray-800">
+        <span className="rounded bg-purple-100 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-purple-700 dark:bg-purple-900/40 dark:text-purple-300">
           Beta
         </span>
       </header>

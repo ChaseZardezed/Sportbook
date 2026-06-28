@@ -6,7 +6,7 @@ import { useTcgCollection } from '../store/tcgCollection'
 import { useMatches } from '../hooks/useMatches'
 import { findMarket, formatOdds } from '../lib/odds'
 import { rarityColor } from '../lib/rarityColors'
-import { formatStartTime, formatTimeAgo } from '../lib/time'
+import { formatStartTime } from '../lib/time'
 import BetSlip from '../components/BetSlip'
 
 function StatCard({ icon, label, value, valueClass, sublabel }) {
@@ -66,28 +66,21 @@ function PackHistoryRow({ card }) {
     <button
       type="button"
       onClick={() => navigate('/tcg')}
-      className="flex w-full items-center justify-between border-b border-gray-300 py-3 text-left last:border-0 dark:border-gray-800"
+      className="flex w-full items-center gap-3 border-b border-gray-300 py-3 text-left last:border-0 dark:border-gray-800"
     >
-      <div className="flex items-center gap-3">
-        <div
-          className={`flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded border-2 ${colors.border} bg-gray-100 dark:bg-gray-900`}
-        >
-          {card.imageUrl ? (
-            <img src={card.imageUrl} alt={card.name} className="h-full w-full object-cover" />
-          ) : (
-            <span className="text-[10px] font-bold text-gray-500">{card.name.slice(0, 3).toUpperCase()}</span>
-          )}
-        </div>
-        <div>
-          <p className="font-semibold text-gray-900 dark:text-white">{card.name}</p>
-          <p className={`text-xs ${colors.text}`}>
-            {card.rarity} • {card.category}
-          </p>
-        </div>
+      <div
+        className={`flex h-16 w-12 shrink-0 items-center justify-center overflow-hidden rounded border ${colors.border} bg-gray-100 text-[10px] font-bold text-gray-500 dark:bg-gray-900`}
+      >
+        {card.imageUrl ? (
+          <img src={card.imageUrl} alt={card.name} className="h-full w-full object-cover" />
+        ) : (
+          card.name.slice(0, 3).toUpperCase()
+        )}
       </div>
-      <div className="text-right">
-        <p className="font-bold text-green-500">${card.pulledValue.toFixed(0)}</p>
-        <p className="text-xs text-gray-500">{formatTimeAgo(card.pulledAt)}</p>
+      <div>
+        <p className={`text-xs ${colors.text}`}>{card.rarity}</p>
+        <p className="text-sm font-bold text-gray-900 dark:text-white">{card.name}</p>
+        <p className="text-sm font-semibold text-green-500">${card.pulledValue.toFixed(0)}</p>
       </div>
     </button>
   )
