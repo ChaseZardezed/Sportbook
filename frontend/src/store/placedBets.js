@@ -2,6 +2,9 @@ import { create } from 'zustand'
 import { fetchPlacedBets, createPlacedBet } from '../api/client'
 import { useCurrentUser } from './currentUser'
 
+// bet.legs holds a snapshot of {matchup, label, odds} per leg (straight bets
+// have one leg, parlays have several) - see PlacedBet.legs on the backend
+// for why this is a JSON blob instead of normalized rows.
 function fromPlacedBetOut(bet) {
   return {
     id: bet.id,

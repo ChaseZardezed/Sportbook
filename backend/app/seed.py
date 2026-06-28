@@ -1,3 +1,9 @@
+# Populates a fresh dev database with demo matches, pack tiers, and cards.
+# Run via `python -m app.seed`. NOT idempotent - re-running against an
+# existing db duplicates everything, since nothing here checks for existing
+# rows first. Safe for a clean db; for an in-place data fix against a live
+# db with real user accounts, write a one-off script instead (see session
+# history for examples - ALTER TABLE + targeted INSERT/UPDATE, not reseeding).
 import asyncio
 from datetime import datetime, timedelta
 
@@ -212,6 +218,9 @@ MATCHES = [
 
 
 
+# Tier metadata only - no card lists here. Each tier draws from
+# CARD_POOLS[category] below, filtered at runtime by rarity_odds (see
+# routers/packs.py and lib/rng.js on the frontend).
 PACK_TIERS = [
     {
         "name": 'Bronze Raw Card',
@@ -456,6 +465,10 @@ PACK_TIERS = [
 ]
 
 
+# Per-category card pool, shared across every tier of that category.
+# The 6-tuple/8-tuple shape is (name, set_name, card_number, grade, rarity,
+# market_value[, image_url[, stats]]) - image_url/stats are optional, hence
+# the variable-length tuples (see seed()'s unpacking below).
 CARD_POOLS = {
     'Pokemon': [
         ("Cynthia's Spiritomb", 'ME: Ascended Heroes', '244/217', 9, 'Common', 13.26, '/cards/cynthias-spiritomb.jpg', {'Market Price': '$13.26', 'Volatility': 'Medium', 'Current Quantity': '673', 'Current Sellers': '360', '6M Low Sale': '$9.99', '6M High Sale': '$33.00', 'Total Sold (6M)': '2,713', 'Avg Daily Sold': '15'}),

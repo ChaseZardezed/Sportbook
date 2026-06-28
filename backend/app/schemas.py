@@ -55,9 +55,13 @@ class PackTierOut(BaseModel):
     description: str
     top_pull_text: str
     rarity_odds: dict
+    # The full shared card pool for this tier's category (not just cards
+    # "belonging" to this tier) - see packs.py for how this is assembled.
     cards: list[CardOut]
 
 
+# Plaintext password in transit (over HTTPS in prod); auth.hash_password
+# turns it into a bcrypt hash before it ever touches the DB - see routers/auth.py.
 class RegisterIn(BaseModel):
     first_name: str
     last_name: str
@@ -141,6 +145,8 @@ class BalanceOut(BaseModel):
     balance: float
 
 
+# Lightweight tier reference for UnopenedPackOut - avoids re-sending the
+# whole pooled card list that PackTierOut carries.
 class PackTierMiniOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

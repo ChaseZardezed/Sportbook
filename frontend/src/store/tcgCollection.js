@@ -2,6 +2,8 @@ import { create } from 'zustand'
 import { fetchCollection, addOwnedCard, removeOwnedCard } from '../api/client'
 import { useCurrentUser } from './currentUser'
 
+// Backend's OwnedCardOut nests the card under `card` (snake_case fields);
+// flattens it into the shape MyCollection/CollectionSidebar/etc. expect.
 function fromOwnedCardOut(owned) {
   return {
     ownedId: owned.id,
@@ -36,6 +38,10 @@ export const useTcgCollection = create((set) => ({
 
   clearCollection: () => set({ ownedCards: [], lastPull: null }),
 
+  // Called for every pull regardless of outcome (kept or sold) - lastPull
+  // is just UI flavor (was used for a "last pull vs cost" banner, now mostly
+  // unused since that banner was removed). Only persists to the collection
+  // when kept=true; selling never adds a row here.
   recordPull: async (card, packPrice, kept, category) => {
     set({ lastPull: { delta: card.market_value - packPrice, packPrice, cardValue: card.market_value } })
 
@@ -65,6 +71,9 @@ export const useTcgCollection = create((set) => ({
     }
   },
 
+  // Cosmetic market simulation only - called on a timer from
+  // CollectionSidebar. currentValue drift is never persisted to the
+  // backend, so it resets to pulledValue on next login/refresh.
   fluctuateValues: () =>
     set((state) => ({
       ownedCards: state.ownedCards.map((card) => ({

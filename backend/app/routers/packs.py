@@ -21,6 +21,9 @@ async def list_packs(db: AsyncSession = Depends(get_db)):
     for card in cards:
         cards_by_category.setdefault(card.category, []).append(card)
 
+    # Returned as plain dicts rather than the PackTier ORM objects directly,
+    # since PackTierOut.cards needs to be overridden with the shared pool
+    # above instead of falling back to PackTier's own `cards` relationship.
     return [
         {
             "id": tier.id,

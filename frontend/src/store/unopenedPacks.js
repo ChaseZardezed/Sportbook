@@ -28,6 +28,11 @@ export const useUnopenedPacks = create((set) => ({
 
   clearUnopenedPacks: () => set({ unopenedPacks: [] }),
 
+  // Called the instant a purchase is confirmed (before the reveal
+  // animation even starts), so the pull survives a tab close or navigation
+  // away mid-flow. Returns the created entry (or null on failure) -
+  // PackOpeningFlow awaits this and stashes the promise so it can later
+  // call removeUnopenedPack with the real id once Sell/Keep is chosen.
   addUnopenedPack: async (tier, card, category) => {
     const userId = useCurrentUser.getState().user?.id
     if (!userId) return null

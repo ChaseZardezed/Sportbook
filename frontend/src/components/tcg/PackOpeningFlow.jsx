@@ -73,6 +73,10 @@ export default function PackOpeningFlow({ tier, onDone, onBack, resumePack }) {
     setTimeout(() => setStage('result'), FLIP_MS)
   }
 
+  // Awaits the create-call's promise (it may still be in flight if Sell/Keep
+  // is clicked fast) before deleting by the real server-assigned id.
+  // Safe to call when resuming too, since unopenedPackRef is pre-resolved
+  // to resumePack in that case.
   const resolveUnopenedPack = async () => {
     const entry = await unopenedPackRef.current
     if (entry) removeUnopenedPack(entry.id)
