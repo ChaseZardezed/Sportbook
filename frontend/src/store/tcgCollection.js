@@ -72,14 +72,39 @@ export const useTcgCollection = create((set) => ({
 
   // Called for every pull regardless of outcome (kept or sold) - lastPull
   // is just UI flavor (was used for a "last pull vs cost" banner, now mostly
-  // unused since that banner was removed). Only persists to the collection
-  // when kept=true; selling never adds a row here.
+  // unused since that banner was removed). Kept pulls join the collection;
+  // sold-on-pull cards skip the collection but still log a sold history entry
+  // (this is the only place a card is sold without ever going through
+  // MyCollection's Sell button, since it never entered ownedCards).
   recordPull: async (card, packPrice, kept, category) => {
     set({ lastPull: { delta: card.market_value - packPrice, packPrice, cardValue: card.market_value } })
 
-    if (!kept) return
-
     const userId = useCurrentUser.getState().user?.id
+
+    if (!kept) {
+      set((state) => ({
+        history: [
+          {
+            id: `pending-${Date.now()}`,
+            name: card.name,
+            imageUrl: card.image_url,
+            rarity: card.rarity,
+            value: card.market_value,
+            action: 'sold',
+            timestamp: new Date().toISOString(),
+          },
+          ...state.history,
+        ].slice(0, 100),
+      }))
+
+      if (userId) {
+        addCardHistory(userId, { cardId: card.id, category, action: 'sold', value: card.market_value }).catch(
+          (error) => console.error('Failed to record card history:', error),
+        )
+      }
+      return
+    }
+
     if (!userId) return
 
     try {

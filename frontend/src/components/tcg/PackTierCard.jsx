@@ -23,7 +23,7 @@ export default function PackTierCard({ tier, onBuy, disabled, isExpanded, onTogg
       </div>
 
       <div className="flex-1 space-y-3 p-4">
-        <p className="text-xs text-gray-400">{tier.description}</p>
+        <p className="min-h-[2.25rem] text-xs text-gray-400">{tier.description}</p>
         <p className="text-xs text-purple-400">✦ Top pull: {tier.top_pull_text}</p>
 
         <div className="space-y-1.5">

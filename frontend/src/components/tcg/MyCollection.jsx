@@ -47,8 +47,12 @@ function CollectionCard({ card, onSelect }) {
       <p className={`text-xs ${colors.text}`}>
         {card.rarity} • {card.category}
       </p>
-      <p className="font-bold text-gray-900 dark:text-white">{card.name}</p>
-      <p className="text-xs text-gray-500">{card.setName}</p>
+      <p className="truncate font-bold text-gray-900 dark:text-white" title={card.name}>
+        {card.name}
+      </p>
+      <p className="truncate text-xs text-gray-500" title={card.setName}>
+        {card.setName}
+      </p>
       <p className="font-semibold text-green-400">
         ${card.currentValue.toFixed(0)}
         {changed && (
