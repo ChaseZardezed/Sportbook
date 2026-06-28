@@ -19,12 +19,17 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
     email = Column(String, unique=True, nullable=False, index=True)
+    date_of_birth = Column(DateTime, nullable=False)
     hashed_password = Column(String, nullable=False)
-    balance = Column(Float, default=0.0)
+    balance = Column(Float, default=1000.0)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     bets = relationship("Bet", back_populates="user")
+    owned_cards = relationship("OwnedCard", back_populates="user")
+    placed_bets = relationship("PlacedBet", back_populates="user")
 
 
 class Match(Base):
@@ -105,3 +110,34 @@ class Card(Base):
     image_url = Column(String, nullable=True)  # e.g. "/cards/piplup.jpg"
 
     pack_tier = relationship("PackTier", back_populates="cards")
+
+
+class OwnedCard(Base):
+    __tablename__ = "owned_cards"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    card_id = Column(Integer, ForeignKey("cards.id"), nullable=False)
+    category = Column(String, nullable=False)
+    pulled_value = Column(Float, nullable=False)
+    current_value = Column(Float, nullable=False)
+    pulled_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="owned_cards")
+    card = relationship("Card")
+
+
+class PlacedBet(Base):
+    __tablename__ = "placed_bets"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    type = Column(String, nullable=False)  # "straight" or "parlay"
+    # Snapshot of each leg, e.g. [{"matchup": "...", "label": "...", "odds": -110}]
+    legs = Column(JSON, nullable=False)
+    stake = Column(Float, nullable=False)
+    odds = Column(Float, nullable=False)
+    payout = Column(Float, nullable=False)
+    placed_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User", back_populates="placed_bets")

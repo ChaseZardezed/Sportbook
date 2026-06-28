@@ -22,7 +22,7 @@ export default function TcgPage() {
   }
 
   return (
-    <div className="grid grid-cols-[176px_1fr_288px] gap-6 p-6">
+    <div className="grid grid-cols-[176px_1fr] gap-6 p-6">
       <div className="space-y-1">
         <p className="mb-2 px-1 text-xs font-semibold uppercase text-gray-500">Categories</p>
         {CATEGORIES.map((cat) => (
@@ -31,7 +31,7 @@ export default function TcgPage() {
             type="button"
             onClick={() => setCategory(cat.label)}
             className={`flex w-full items-center gap-2 rounded px-3 py-2 text-left text-sm font-semibold ${
-              category === cat.label ? 'bg-purple-600 text-white' : 'text-gray-400 hover:text-white'
+              category === cat.label ? 'bg-purple-600 text-white' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
             {cat.icon} {cat.label}
@@ -40,12 +40,12 @@ export default function TcgPage() {
       </div>
 
       <div>
-        <div className="mb-4 flex items-center gap-6 border-b border-gray-800 text-sm font-semibold">
+        <div className="mb-4 flex items-center gap-6 border-b border-gray-200 text-sm font-semibold dark:border-gray-800">
           <button
             type="button"
             onClick={() => setTab('store')}
             className={`flex items-center gap-1 border-b-2 pb-3 ${
-              tab === 'store' ? 'border-purple-500 text-white' : 'border-transparent text-gray-500 hover:text-white'
+              tab === 'store' ? 'border-purple-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
             💎 Pack Store
@@ -54,26 +54,32 @@ export default function TcgPage() {
             type="button"
             onClick={() => setTab('collection')}
             className={`flex items-center gap-1 border-b-2 pb-3 ${
-              tab === 'collection' ? 'border-purple-500 text-white' : 'border-transparent text-gray-500 hover:text-white'
+              tab === 'collection' ? 'border-purple-500 text-gray-900 dark:text-white' : 'border-transparent text-gray-500 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
             🏆 My Collection ({ownedCards.length})
           </button>
           {tab === 'opening' && (
-            <span className="flex items-center gap-1 border-b-2 border-purple-500 pb-3 text-white">
+            <span className="flex items-center gap-1 border-b-2 border-purple-500 pb-3 text-gray-900 dark:text-white">
               ✨ Opening Pack
             </span>
           )}
         </div>
 
-        {tab === 'store' && <PackStore category={category} onBuyPack={handleBuyPack} />}
-        {tab === 'opening' && activeTier && (
-          <PackOpeningFlow tier={activeTier} onDone={() => setTab('store')} onBack={() => setTab('store')} />
-        )}
-        {tab === 'collection' && <MyCollection category={category} />}
-      </div>
+        <div className="grid grid-cols-[1fr_288px] gap-6">
+          <div>
+            {tab === 'store' && <PackStore category={category} onBuyPack={handleBuyPack} />}
+            {tab === 'opening' && activeTier && (
+              <PackOpeningFlow tier={activeTier} onDone={() => setTab('store')} onBack={() => setTab('store')} />
+            )}
+            {tab === 'collection' && <MyCollection category={category} />}
+          </div>
 
-      <CollectionSidebar />
+          <div className="sticky top-4 self-start">
+            <CollectionSidebar />
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

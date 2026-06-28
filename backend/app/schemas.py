@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import date, datetime
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr, field_validator
 
 
 class MarketOut(BaseModel):
@@ -53,3 +53,86 @@ class PackTierOut(BaseModel):
     top_pull_text: str
     rarity_odds: dict
     cards: list[CardOut]
+
+
+class RegisterIn(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    date_of_birth: date
+    password: str
+
+    @field_validator("password")
+    @classmethod
+    def password_min_length(cls, value: str) -> str:
+        if len(value) < 8:
+            raise ValueError("Password must be at least 8 characters")
+        return value
+
+    @field_validator("date_of_birth")
+    @classmethod
+    def must_be_18(cls, value: date) -> date:
+        today = date.today()
+        age = today.year - value.year - ((today.month, today.day) < (value.month, value.day))
+        if age < 18:
+            raise ValueError("You must be 18 or older")
+        return value
+
+
+class LoginIn(BaseModel):
+    email: EmailStr
+    password: str
+
+
+class UserOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    first_name: str
+    last_name: str
+    email: str
+    balance: float
+
+
+class OwnedCardOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    category: str
+    pulled_value: float
+    current_value: float
+    pulled_at: datetime
+    card: CardOut
+
+
+class AddOwnedCardIn(BaseModel):
+    card_id: int
+    category: str
+
+
+class BalanceUpdateIn(BaseModel):
+    delta: float
+
+
+class PlacedBetOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    type: str
+    legs: list[dict]
+    stake: float
+    odds: float
+    payout: float
+    placed_at: datetime
+
+
+class AddPlacedBetIn(BaseModel):
+    type: str
+    legs: list[dict]
+    stake: float
+    odds: float
+    payout: float
+
+
+class BalanceOut(BaseModel):
+    balance: float
