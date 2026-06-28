@@ -9,7 +9,7 @@ export default function CardDetailModal({ card, onClose }) {
       onClick={onClose}
     >
       <div
-        className="flex max-h-full w-full max-w-2xl gap-6 overflow-y-auto rounded-lg border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-950"
+        className="flex max-h-full w-full max-w-2xl gap-6 overflow-y-auto rounded-lg border border-gray-300 bg-white p-6 dark:border-gray-800 dark:bg-gray-950"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="w-48 shrink-0">
@@ -33,7 +33,7 @@ export default function CardDetailModal({ card, onClose }) {
             )}
           </div>
           {card.statsImageUrl && (
-            <div className="aspect-[5/7] overflow-hidden rounded border border-gray-200 dark:border-gray-800">
+            <div className="aspect-[5/7] overflow-hidden rounded border border-gray-300 dark:border-gray-800">
               <img src={card.statsImageUrl} alt={`${card.name} stats`} className="h-full w-full object-contain" />
             </div>
           )}
@@ -86,7 +86,7 @@ export default function CardDetailModal({ card, onClose }) {
                 {statEntries.map(([label, value]) => (
                   <div
                     key={label}
-                    className="flex items-center justify-between rounded border border-gray-200 px-3 py-1.5 dark:border-gray-800"
+                    className="flex items-center justify-between rounded border border-gray-300 px-3 py-1.5 dark:border-gray-800"
                   >
                     <span className="text-gray-500">{label}</span>
                     <span className="font-semibold text-gray-900 dark:text-white">{value}</span>

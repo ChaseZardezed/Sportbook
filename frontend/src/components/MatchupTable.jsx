@@ -31,7 +31,7 @@ function MatchRow({ match }) {
     })
 
   return (
-    <div className="grid grid-cols-[2fr_1fr_1fr_1fr_40px] items-center gap-3 border-b border-gray-200 px-4 py-3 dark:border-gray-800">
+    <div className="grid grid-cols-[2fr_1fr_1fr_1fr_40px] items-center gap-3 border-b border-gray-300 px-4 py-3 dark:border-gray-800">
       <Link to={`/game/${match.id}`} className="hover:opacity-80">
         <div className="flex items-center gap-2">
           <span className="font-semibold text-gray-900 dark:text-white">{match.away_team}</span>
@@ -170,8 +170,8 @@ export default function MatchupTable() {
   )
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
-      <div className="grid grid-cols-[2fr_1fr_1fr_1fr_40px] gap-3 border-b border-gray-200 bg-gray-50 px-4 py-2 text-xs font-semibold uppercase text-gray-400 dark:border-gray-800 dark:bg-gray-900">
+    <div className="overflow-hidden rounded-lg border border-gray-300 bg-white dark:border-gray-800 dark:bg-gray-950">
+      <div className="grid grid-cols-[2fr_1fr_1fr_1fr_40px] gap-3 border-b border-gray-300 bg-gray-50 px-4 py-2 text-xs font-semibold uppercase text-gray-400 dark:border-gray-800 dark:bg-gray-900">
         <span>Matchup</span>
         <span className="text-center">Moneyline</span>
         <span className="text-center">Spread</span>

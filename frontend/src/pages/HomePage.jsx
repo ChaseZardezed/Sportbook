@@ -11,7 +11,7 @@ import BetSlip from '../components/BetSlip'
 
 function StatCard({ icon, label, value, valueClass, sublabel }) {
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+    <div className="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
       <p className="flex items-center gap-1.5 text-xs text-gray-500">
         {icon} {label}
       </p>
@@ -29,7 +29,7 @@ function LiveNowRow({ match }) {
     <button
       type="button"
       onClick={() => navigate(`/game/${match.id}`)}
-      className="flex w-full items-center justify-between border-b border-gray-200 py-3 text-left last:border-0 dark:border-gray-800"
+      className="flex w-full items-center justify-between border-b border-gray-300 py-3 text-left last:border-0 dark:border-gray-800"
     >
       <div>
         <div className="flex items-center gap-2">
@@ -66,7 +66,7 @@ function PackHistoryRow({ card }) {
     <button
       type="button"
       onClick={() => navigate('/tcg')}
-      className="flex w-full items-center justify-between border-b border-gray-200 py-3 text-left last:border-0 dark:border-gray-800"
+      className="flex w-full items-center justify-between border-b border-gray-300 py-3 text-left last:border-0 dark:border-gray-800"
     >
       <div className="flex items-center gap-3">
         <div
@@ -135,22 +135,22 @@ export default function HomePage() {
   return (
     <div className="grid grid-cols-[1fr_320px] gap-6 p-6">
       <div className="space-y-6">
-        <div className="rounded-lg border border-green-900/40 bg-gradient-to-br from-green-900/30 to-gray-950 p-6">
-          <p className="text-sm text-green-400">Good morning,</p>
-          <h1 className="text-2xl font-bold text-white">{user?.first_name ?? 'Player'}</h1>
-          <p className="mt-1 text-sm text-gray-400">Here is your Strike dashboard. Ready to play?</p>
+        <div className="rounded-lg border border-purple-200 bg-gradient-to-br from-purple-100 to-white p-6 dark:border-purple-900/40 dark:from-purple-900/30 dark:to-gray-950">
+          <p className="text-sm text-purple-600 dark:text-purple-400">Good morning,</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{user?.first_name ?? 'Player'}</h1>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Here is your Strike dashboard. Ready to play?</p>
           <div className="mt-4 flex gap-3">
             <button
               type="button"
               onClick={() => navigate('/sports')}
-              className="flex items-center gap-1.5 rounded bg-green-600 px-4 py-2 text-sm font-bold text-white hover:bg-green-500"
+              className="flex items-center gap-1.5 rounded bg-purple-600 px-4 py-2 text-sm font-bold text-white hover:bg-purple-500"
             >
               ⚡ View Live Odds
             </button>
             <button
               type="button"
               onClick={() => navigate('/tcg')}
-              className="flex items-center gap-1.5 rounded border border-gray-600 bg-gray-900/60 px-4 py-2 text-sm font-bold text-white hover:border-purple-500"
+              className="flex items-center gap-1.5 rounded border border-purple-300 bg-white px-4 py-2 text-sm font-bold text-gray-900 hover:border-purple-500 dark:border-gray-600 dark:bg-gray-900/60 dark:text-white"
             >
               💎 Open Packs
             </button>
@@ -189,7 +189,7 @@ export default function HomePage() {
         </div>
 
         <div className="grid grid-cols-2 gap-6">
-          <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+          <div className="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
             <div className="mb-1 flex items-center justify-between">
               <p className="flex items-center gap-1.5 font-bold text-gray-900 dark:text-white">🔥 Live Now</p>
               <button
@@ -205,7 +205,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+          <div className="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
             <div className="mb-1 flex items-center justify-between">
               <p className="flex items-center gap-1.5 font-bold text-gray-900 dark:text-white">📦 Pack Opening History</p>
               <button
@@ -228,7 +228,7 @@ export default function HomePage() {
           {PROMOS.map((promo) => (
             <div
               key={promo.title}
-              className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950"
+              className="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-950"
             >
               <span className={`flex h-9 w-9 items-center justify-center rounded ${promo.iconClass}`}>
                 {promo.icon}

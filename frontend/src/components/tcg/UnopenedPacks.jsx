@@ -26,18 +26,18 @@ export default function UnopenedPacks({ category, onOpen }) {
               <div
                 key={pack.id}
                 onClick={() => onOpen(pack)}
-                className={`flex w-44 cursor-pointer flex-col items-center justify-between gap-3 rounded-xl border-2 bg-gradient-to-br from-gray-800 to-gray-950 p-5 transition-transform hover:-translate-y-1 ${style.border}`}
+                className={`flex w-44 cursor-pointer flex-col items-center justify-between gap-3 rounded-xl border-2 bg-gradient-to-br from-slate-300 to-slate-500 p-5 transition-transform hover:-translate-y-1 dark:from-gray-800 dark:to-gray-950 ${style.border}`}
                 style={{ boxShadow: `0 0 20px 5px ${style.glow}` }}
               >
                 <div className="text-center">
-                  <p className="text-[10px] font-bold uppercase tracking-wide text-gray-300">Raw Card Pack</p>
-                  <p className="text-sm font-bold text-white">{pack.tierName}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wide text-gray-700 dark:text-gray-300">Raw Card Pack</p>
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">{pack.tierName}</p>
                 </div>
                 <BoltIcon className={`h-8 w-8 ${style.text}/60`} />
-                <div className="rounded border border-white/20 bg-black/30 px-3 py-1">
-                  <p className="text-sm font-bold text-white">${pack.tierPrice.toFixed(0)}</p>
+                <div className="rounded border border-black/20 bg-white/40 px-3 py-1 dark:border-white/20 dark:bg-black/30">
+                  <p className="text-sm font-bold text-gray-900 dark:text-white">${pack.tierPrice.toFixed(0)}</p>
                 </div>
-                <p className="text-xs font-bold text-gray-400">Tap to open</p>
+                <p className="text-xs font-bold text-gray-600 dark:text-gray-400">Tap to open</p>
               </div>
             )
           })}

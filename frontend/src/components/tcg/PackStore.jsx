@@ -20,7 +20,7 @@ function CardPool({ tier }) {
     .sort((a, b) => RARITY_RANK.indexOf(a.rarity) - RARITY_RANK.indexOf(b.rarity))
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900">
+    <div className="rounded-lg border border-gray-300 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-900">
       <p className="mb-3 text-sm font-bold text-gray-900 dark:text-white">{tier.name} — Card Pool</p>
       <div className="grid grid-cols-[repeat(auto-fit,minmax(160px,1fr))] gap-3">
         {sortedCards.map((card) => {

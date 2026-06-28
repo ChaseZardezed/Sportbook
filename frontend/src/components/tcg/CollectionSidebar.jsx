@@ -38,14 +38,14 @@ export default function CollectionSidebar() {
 
   return (
     <div className="w-72 space-y-3">
-      <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+      <div className="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
         <p className="text-xs text-gray-500">Total Value</p>
         <p className="text-2xl font-bold text-green-400">${totalValue.toFixed(0)}</p>
         <p className="text-xs text-gray-500">Cards: {ownedCards.length}</p>
       </div>
 
       {bestPull && (
-        <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+        <div className="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
           <p className="mb-2 text-xs text-gray-500">Best Pull</p>
           <div className="flex items-center gap-3">
             <div className="flex h-16 w-12 shrink-0 items-center justify-center rounded border border-purple-500 bg-gray-100 text-[10px] font-bold text-purple-700 dark:bg-gray-900 dark:text-purple-300">
@@ -60,7 +60,7 @@ export default function CollectionSidebar() {
         </div>
       )}
 
-      <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
+      <div className="rounded-lg border border-gray-300 bg-white p-4 dark:border-gray-800 dark:bg-gray-950">
         <p className="mb-2 flex items-center gap-1 text-xs text-gray-500">
           🕐 Market update in {secondsLeft}s
         </p>

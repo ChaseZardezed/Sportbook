@@ -27,7 +27,7 @@ export default function TopNav() {
     location.pathname.startsWith('/game/')
 
   return (
-    <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3 dark:border-gray-800 dark:bg-gray-950">
+    <header className="flex items-center justify-between border-b border-gray-300 bg-white px-6 py-3 dark:border-gray-800 dark:bg-gray-950">
       <div className="flex items-center gap-8">
         <span className="flex items-center gap-1 text-lg font-bold">
           <BoltIcon className="h-5 w-5 text-purple-500" />

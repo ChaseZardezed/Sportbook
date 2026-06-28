@@ -66,7 +66,7 @@ export default function LandingPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-sm rounded-lg border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-900"
+          className="w-full max-w-sm rounded-lg border border-gray-300 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-900"
         >
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Sign in</h2>
           <p className="mb-4 text-sm text-gray-500">Welcome back. Enter your details to continue.</p>

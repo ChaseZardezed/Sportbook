@@ -15,8 +15,8 @@ export default function GameChat() {
   if (!openMatch) return null
 
   return (
-    <div className="flex flex-col rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-950">
-      <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-800">
+    <div className="flex flex-col rounded-lg border border-gray-300 bg-white dark:border-gray-800 dark:bg-gray-950">
+      <div className="flex items-center justify-between border-b border-gray-300 px-4 py-3 dark:border-gray-800">
         <div>
           <p className="text-xs text-gray-500">Game Chat</p>
           <h2 className="font-bold text-gray-900 dark:text-white">{openMatch.matchup}</h2>
@@ -43,12 +43,12 @@ export default function GameChat() {
         ))}
       </div>
 
-      <div className="border-t border-gray-200 p-3 dark:border-gray-800">
+      <div className="border-t border-gray-300 p-3 dark:border-gray-800">
         <input
           type="text"
           disabled
           placeholder="Chat preview — sending disabled"
-          className="w-full rounded border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500 placeholder:text-gray-600 dark:border-gray-800 dark:bg-gray-900"
+          className="w-full rounded border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500 placeholder:text-gray-600 dark:border-gray-800 dark:bg-gray-900"
         />
       </div>
     </div>

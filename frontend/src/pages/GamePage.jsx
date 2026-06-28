@@ -186,7 +186,7 @@ function PlayerPropsSection({ match, select }) {
       <h2 className="mb-2 text-sm font-semibold uppercase text-gray-400">Player Props</h2>
       <div className="space-y-2">
         {props.map((market) => (
-          <div key={market.id} className="rounded border border-gray-200 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
+          <div key={market.id} className="rounded border border-gray-300 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-900">
             <p className="mb-2 text-sm font-semibold text-gray-900 dark:text-white">
               {market.data.player} — {market.data.prop} ({market.data.line})
             </p>

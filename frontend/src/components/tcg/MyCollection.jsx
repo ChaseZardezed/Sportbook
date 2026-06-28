@@ -24,7 +24,7 @@ function CollectionCard({ card, onSelect }) {
   return (
     <div
       onClick={() => onSelect(card)}
-      className="w-44 cursor-pointer rounded-lg border border-gray-200 bg-white p-3 transition-transform hover:-translate-y-1 hover:shadow-lg dark:border-gray-800 dark:bg-gray-950"
+      className="w-44 cursor-pointer rounded-lg border border-gray-300 bg-white p-3 transition-transform hover:-translate-y-1 hover:shadow-lg dark:border-gray-800 dark:bg-gray-950"
     >
       <div className="mb-2 flex aspect-[5/7] flex-col overflow-hidden rounded border-2 border-gray-400 bg-gray-200 text-gray-900">
         {card.imageUrl ? (
@@ -91,7 +91,7 @@ export default function MyCollection({ category }) {
         My Collection — {category === 'All' ? 'All Categories' : category} ({ownedCards.length})
       </h1>
 
-      <div className="flex gap-6 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
+      <div className="flex gap-6 rounded-lg border border-gray-300 bg-gray-50 px-4 py-3 dark:border-gray-800 dark:bg-gray-900">
         <div>
           <p className="text-xs text-gray-500">Total Market Value</p>
           <p className="font-bold text-green-400">${totalValue.toFixed(0)}</p>

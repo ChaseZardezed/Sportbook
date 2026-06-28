@@ -45,7 +45,7 @@ export default function Ticker() {
   if (featuredMatches.length === 0) return null
 
   return (
-    <div className="overflow-hidden border-b border-gray-200 bg-white py-2 dark:border-gray-800 dark:bg-gray-950">
+    <div className="overflow-hidden border-b border-gray-300 bg-white py-2 dark:border-gray-800 dark:bg-gray-950">
       <div className="flex w-max animate-ticker">
         <TickerLap matches={featuredMatches} />
         <TickerLap matches={featuredMatches} />

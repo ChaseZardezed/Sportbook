@@ -85,3 +85,20 @@ input[type='number'] {
   animation: shine 2.5s ease-in-out infinite;
 }
 
+@keyframes confetti-burst {
+  0% {
+    transform: translate(-50%, -50%) translate(0, 0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) translate(var(--burst-x, 0px), var(--burst-y, 0px)) rotate(var(--rotate-end, 600deg))
+      scale(0.6);
+    opacity: 0;
+  }
+}
+
+.animate-confetti-burst {
+  animation: confetti-burst var(--burst-duration, 1.8s) cubic-bezier(0.15, 0.6, 0.4, 1) forwards;
+  animation-delay: var(--burst-delay, 0s);
+}
+

@@ -97,7 +97,7 @@ export default function TcgPage() {
       </div>
 
       <div>
-        <div className="mb-4 flex items-center gap-6 border-b border-gray-200 text-sm font-semibold dark:border-gray-800">
+        <div className="mb-4 flex items-center gap-6 border-b border-gray-300 text-sm font-semibold dark:border-gray-800">
           <button
             type="button"
             onClick={goToStore}

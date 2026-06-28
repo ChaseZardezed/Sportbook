@@ -46,9 +46,9 @@ export default function ProfileDropdown() {
             onClick={() => setIsOpen(false)}
             className="fixed inset-0 z-10 cursor-default"
           />
-          <div className="absolute right-0 z-20 mt-2 w-56 rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-800 dark:bg-gray-900">
+          <div className="absolute right-0 z-20 mt-2 w-56 rounded-lg border border-gray-300 bg-white py-1 shadow-lg dark:border-gray-800 dark:bg-gray-900">
             {user && (
-              <div className="border-b border-gray-200 px-4 py-2 dark:border-gray-800">
+              <div className="border-b border-gray-300 px-4 py-2 dark:border-gray-800">
                 <p className="truncate text-sm font-semibold text-gray-900 dark:text-white">
                   {user.first_name} {user.last_name}
                 </p>
@@ -66,7 +66,7 @@ export default function ProfileDropdown() {
                 {item.label}
               </button>
             ))}
-            <div className="my-1 border-t border-gray-200 dark:border-gray-800" />
+            <div className="my-1 border-t border-gray-300 dark:border-gray-800" />
             <button
               type="button"
               onClick={handleLogout}
