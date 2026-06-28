@@ -20,7 +20,8 @@ export default function TopNav() {
   const theme = useTheme((state) => state.theme)
   const toggleTheme = useTheme((state) => state.toggleTheme)
   const location = useLocation()
-  const isTcgPage = location.pathname.startsWith('/tcg')
+  const hasOwnBetSlipToggle =
+    location.pathname === '/' || location.pathname.startsWith('/tcg') || location.pathname.startsWith('/game/')
 
   return (
     <header className="flex items-center justify-between border-b border-gray-200 bg-white px-6 py-3 dark:border-gray-800 dark:bg-gray-950">
@@ -84,7 +85,7 @@ export default function TopNav() {
           🔔
         </button>
         <ProfileDropdown />
-        {!isTcgPage && (
+        {!hasOwnBetSlipToggle && (
           <button
             type="button"
             onClick={toggleOpen}

@@ -26,7 +26,7 @@ export default function SportTabs() {
   const sportCounts = buildSportCounts(matches ?? [])
 
   return (
-    <div className="flex items-center gap-2 border-b border-gray-200 px-1 pb-3 dark:border-gray-800">
+    <div className="flex items-center gap-2 px-1">
       <button
         type="button"
         onClick={() => selectSport(null)}
