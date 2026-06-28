@@ -16,7 +16,6 @@ A simulated sportsbook + trading-card pack-opening web app. This is an entertain
 
 ## Project structure
 
-`
 backend/
   app/
     models.py          SQLAlchemy ORM models
@@ -35,26 +34,21 @@ frontend/
     hooks/             TanStack Query hooks for matches/packs
     lib/               Pure helper functions (odds formatting, parlay math, rarity colors, RNG)
     api/client.js      Fetch wrappers for every backend endpoint
-`
 
 ## Running locally
 
-**Backend** (from ackend/):
+**Backend**:
 
-`
 python -m venv venv
 venv\Scripts\activate          # or source venv/bin/activate on macOS/Linux
 pip install -r requirements.txt
 python -m app.seed             # populates a fresh brace.db with demo data
 uvicorn app.main:app --reload --port 8000
-`
 
-**Frontend** (from rontend/):
+**Frontend**:
 
-`
 npm install
 npm run dev
-`
 
 The frontend expects the backend at http://localhost:8000 (see rontend/src/api/client.js) and runs on http://localhost:5173.
 
