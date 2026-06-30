@@ -11,7 +11,7 @@ Full-stack sports betting and trading card game platform built with React, FastA
 
 | | |
 |---|---|
-| ![Home Dashboard](screenshots/HomeDashboard.png) | ![Pack Store]() |
+| ![Home Dashboard](screenshots/HomeDashboard.png) | ![Pack Store](screenshots/Pack_Strore_Page.png) |
 | ![Pack Opening]() | ![My Collection]() |
 | ![Collection Sidebar]() | ![Sports Betting]() |
 
