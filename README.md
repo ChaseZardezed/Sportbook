@@ -1,55 +1,96 @@
-﻿# StrikeBets
+﻿# Strike — Sportsbook & TCG Platform Case Study
 
-A simulated sportsbook + trading-card pack-opening web app. This is an entertainment/demo platform — no real money changes hands.
+Full-stack sports betting and trading card game platform built with React, FastAPI, and SQLite — case study covering architecture, engineering decisions, and feature design.
 
-## What it does
+---
 
-- **Sportsbook**: live and upcoming games across NFL, NBA, MLB, Soccer, Tennis, and NHL, with moneyline/spread/total markets, player props, alt lines, and parlay support via a persistent bet slip.
-- **TCG pack opening**: buy raw card packs (Bronze → Diamond tiers) across multiple categories (Pokémon, Basketball, Football, Baseball, Soccer, Women's Soccer), open them with an animated reveal, and either sell the pulled card for its market value or keep it in your collection.
-- **Accounts**: real registration/login with bcrypt-hashed passwords. Balance, card collection, placed bets, and unopened packs are all persisted per-user in the database, not just in browser state.
-- **Dashboard home page**: balance, active bets, collection value, live games, and recent pack-opening history at a glance.
+## Screenshots
 
-## Tech stack
+<!-- Add screenshots here -->
+<!-- Suggested: Landing page, Home dashboard, Pack Store, Pack opening flow, My Collection, CollectionSidebar history panel -->
 
-- **Backend**: FastAPI + SQLAlchemy (async) + SQLite, Pydantic v2 for request/response schemas, Passlib/bcrypt for password hashing.
-- **Frontend**: React 19 + Vite, React Router, Zustand for state, TanStack Query for data fetching, Tailwind CSS v4.
+| | |
+|---|---|
+| ![Home Dashboard]() | ![Pack Store]() |
+| ![Pack Opening]() | ![My Collection]() |
+| ![Collection Sidebar]() | ![Sports Betting]() |
 
-## Project structure
+---
 
-backend/
-  app/
-    models.py          SQLAlchemy ORM models
-    schemas.py         Pydantic request/response schemas
-    routers/           FastAPI route handlers (auth, users, matches, packs)
-    auth.py            Password hashing helpers
-    database.py         Async engine/session setup
-    seed.py            Demo data - matches, pack tiers, card pools
-  brace.db             SQLite dev database (gitignored in spirit, but currently tracked)
+## What is Strike
 
-frontend/
-  src/
-    pages/             Top-level routed pages (Home, Sports, TCG, Game, Landing, Create Account)
-    components/        Shared UI (nav, bet slip, matchup table, TCG pack/collection UI)
-    store/             Zustand stores (auth, balance, collection, placed bets, unopened packs, UI toggles)
-    hooks/             TanStack Query hooks for matches/packs
-    lib/               Pure helper functions (odds formatting, parlay math, rarity colors, RNG)
-    api/client.js      Fetch wrappers for every backend endpoint
+Strike is a simulated sports betting and trading card game platform. Users can place bets on live and upcoming sports events, pull cards from graded TCG packs across four rarity tiers, manage and track their card collection's live market value, and review their full sell/ship history — all backed by a persistent user account and balance.
 
-## Running locally
+The platform spans two main product areas:
 
-**Backend**:
+**Sports Betting** — browse live and upcoming matches across multiple sports, view real-time moneyline odds, place single bets or multi-leg parlays via a persistent bet slip, and track active positions from the home dashboard.
 
-python -m venv venv venv\Scripts\activate # or source venv/bin/activate on macOS/Linux pip install -r requirements.txt python -m app.seed # populates a fresh brace.db with demo data uvicorn app.main:app --reload --port 8000 can you clean this up
+**TCG Pack Opening** — browse packs across categories and rarity tiers (Bronze → Silver → Gold → Diamond), purchase and open packs with an animated card reveal, keep cards for your collection or sell immediately, and track every pull and sale in a persistent history log.
 
-**Frontend**:
+Built as a solo project over Spring 2026.
 
-npm install
-npm run dev
+---
 
-The frontend expects the backend at http://localhost:8000 and runs on http://localhost:5173.
+## Tech Stack
 
-## Notes
+| Layer | Technology |
+|---|---|
+| Frontend | React 18 + Vite, React Router, Tailwind CSS |
+| State | Zustand (balance, collection, bets, unopened packs, current user) |
+| Backend | FastAPI (Python), SQLAlchemy (async ORM) |
+| Database | SQLite (`brace.db`) |
+| Charts / Animation | CSS keyframe animations, custom CSS properties for confetti |
 
-- seed.py is **not idempotent** — re-running it against an existing database duplicates everything. It's meant for a fresh race.db; in-place schema or data changes against a live database with real accounts should be done as targeted SQL, not a reseed.
-- There's no session/token-based auth on the API yet — user_id is passed directly in URLs. Fine for local/demo use, but would need real auth before being exposed publicly.
-- Card artwork may be copyrighted (official trading card images) and is intentionally kept out of git history — see .gitignore. Card images live locally in rontend/public/cards/ and aren't tracked.
+---
+
+## What I Built
+
+### Sports Betting
+
+- Built the live match feed with moneyline odds display, live/scheduled status badges, and per-match detail pages.
+- Built the bet slip — persistent across navigation, supports single bets and multi-leg parlays, deducts balance on placement, and tracks open positions from the home dashboard.
+
+### Pack Store & Pack Opening
+
+- Built the pack store with category grouping (collapsible sections per TCG category), rarity tier cards with verbal odds descriptions, and accurate top-pull highlights pulled from the real card pool.
+- Implemented the pack opening flow: animated two-stage card reveal (pack face flip → card reveal), rarity-weighted card pool selection, and a post-pull keep/sell decision that routes the card into the collection or immediately logs a sale.
+- Engineered a confetti burst animation on card reveal — 40 pieces spawned from the card's perimeter edges, flying outward radially using CSS custom properties (`--burst-x`, `--burst-y`, `--burst-duration`, `--burst-delay`) for per-piece variation, colored to match the pulled card's rarity.
+
+### Card Collection & History
+
+- Built the My Collection view with rarity-colored card borders and labels, a rarity filter pill bar, and descending rarity sort when viewing all cards, so highest-rarity pulls always surface first.
+- Built the CollectionSidebar with a live market value tracker (cosmetic price fluctuation on a timer), a Best Pull highlight with rarity-matched border color, and a Sold/Shipped history panel with tabs and an expandable full-history view.
+- Added a persistent sell/ship history backed by a server-side `card_history` table — history survives logout and page refresh, and is recorded whether a card is sold immediately after a pull or later from the collection view.
+
+### Home Dashboard
+
+- Built the home dashboard surfacing four live stats (balance, active bets, collection market value, win rate), a Live Now feed of upcoming/live matches, a Pack Opening History panel showing recent pulls with rarity-colored thumbnails, and a promotions row.
+- Wired deep-link navigation between the dashboard and TCG sub-tabs (pack store, collection) via React Router route state so buttons land on the correct tab without extra clicks.
+
+### Backend & Data Model
+
+- Implemented async FastAPI routes for users, cards, owned cards, pack tiers, pack purchases, unopened packs, and card history — all with SQLAlchemy async ORM and Pydantic schemas for request/response validation.
+- Added a `card_history` table for persistent sell/ship records, with a `GET` endpoint (ordered by recency) and a `POST` endpoint, both wired into the frontend store's optimistic-update flow.
+- Seeded the database with real graded Pokemon TCG cards across all four rarity tiers (Epic, Legendary, Mythical, and commons) using actual market values sourced from analytics data.
+
+---
+
+## Engineering Notes
+
+**Optimistic UI with async fire-and-forget** — sells, ships, and pack pulls update local Zustand state immediately so the UI responds without waiting on the network. Backend calls run in the background and log errors to the console; on next load the server is authoritative. This keeps the feel instant without requiring rollback logic for a simulated platform.
+
+**Perimeter-spawning confetti** — the confetti burst needed to feel like it was exploding off the card rather than falling from above. Each piece is spawned at a random point along the card's four edges (top, bottom, left, right) and given an outward radial velocity computed from its spawn position. CSS custom properties carry per-piece values into `@keyframes` so a single animation class handles all 40 pieces with no JS animation loop.
+
+**Rarity-aware UI without hardcoded color strings** — all rarity colors (border, text, background tint) are centralized in a single `rarityColor(rarity)` utility that returns Tailwind class strings. Every component that needs rarity coloring — card borders in My Collection, the Best Pull thumbnail, the Pack History rows on the home page, confetti palette — calls the same function, so adding or renaming a rarity tier is a one-file change.
+
+**Sell path from pack opening vs. collection** — selling a card from the collection goes through the `removeCard` store action. Selling immediately after a pull never enters the collection at all, so the original `recordPull` path needed its own `addCardHistory` call to avoid a gap in the history log. Keeping both paths explicit (rather than funneling through a shared helper) made it easier to reason about which API calls fire in which sequence.
+
+**Non-destructive DB seeding** — `seed.py` is explicitly non-idempotent (marked in a comment) because the live database holds real user accounts, balances, and collection data. All schema changes after initial setup were applied via targeted SQLite scripts rather than re-running seed, and new tables (`card_history`) are created automatically by SQLAlchemy's `create_all` on server startup without touching existing tables.
+
+**Category filter consistency** — the Pack Store and My Collection share the same left-nav category selector. "All" is always available and defaults open, with each TCG category collapsible beneath it in the store. Keeping "All" always visible (rather than hiding it on the store tab) means the selected category persists naturally when switching between store/collection/unopened tabs.
+
+---
+
+## Source
+
+The full source is available in this repository. The backend seed data references real Pokemon TCG market values used for simulation purposes only — this is a non-commercial personal project.
